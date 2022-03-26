@@ -6,3 +6,5 @@ abstract class RegisterEvent extends Equatable {
   @override
   List<Object> get props => [];
 }
+
+class ValidateForm extends RegisterEvent {}
