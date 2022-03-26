@@ -6,9 +6,12 @@
 // https://opensource.org/licenses/MIT.
 
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
-import 'package:perseus_front_mobile/counter/counter.dart';
+import 'package:perseus_front_mobile/common/auth/bloc/auth_bloc.dart';
+import 'package:perseus_front_mobile/pages/counter/counter.dart';
 import 'package:perseus_front_mobile/l10n/l10n.dart';
+import 'package:perseus_front_mobile/pages/register/view/register_page.dart';
 
 class App extends StatelessWidget {
   const App({Key? key}) : super(key: key);
@@ -27,7 +30,20 @@ class App extends StatelessWidget {
         GlobalMaterialLocalizations.delegate,
       ],
       supportedLocales: AppLocalizations.supportedLocales,
-      home: const CounterPage(),
+      home: BlocBuilder<AuthBloc, AuthState>(
+        builder: (context, state) {
+          if (state is AuthUninitialized) {
+            return const Scaffold(body: CircularProgressIndicator());
+          } else if (state is AuthUnauthenticated) {
+            return const RegisterPage();
+          } else if (state is AuthAuthenticated) {
+            return const CounterPage();
+          }
+
+          // TODO add default SplashScreen
+          return const Scaffold();
+        },
+      ),
     );
   }
 }

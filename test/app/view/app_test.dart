@@ -7,7 +7,7 @@
 
 import 'package:flutter_test/flutter_test.dart';
 import 'package:perseus_front_mobile/app/app.dart';
-import 'package:perseus_front_mobile/counter/counter.dart';
+import 'package:perseus_front_mobile/pages/counter/counter.dart';
 
 void main() {
   group('App', () {
