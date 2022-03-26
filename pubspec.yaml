@@ -8,11 +8,13 @@ environment:
 
 dependencies:
   bloc: ^8.0.3
+  equatable: ^2.0.3
   flutter:
     sdk: flutter
   flutter_bloc: ^8.0.1
   flutter_localizations:
     sdk: flutter
+  flutter_secure_storage: ^5.0.2
   intl: ^0.17.0
 
 dev_dependencies:
