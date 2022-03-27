@@ -10,6 +10,7 @@ part 'auth_state.dart';
 class AuthBloc extends Bloc<AuthEvent, AuthState> {
   AuthBloc() : super(AuthUninitialized()) {
     on<AppStarted>(_appStarted);
+    on<LoggedIn>(_loggedIn);
   }
 
   final _storage = SecureStorage();
@@ -19,8 +20,11 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
     _initStartup(emit);
   }
 
+  void _loggedIn(LoggedIn event, Emitter<AuthState> emit) {
+    emit(AuthAuthenticated());
+  }
+
   Future<void> _initStartup(Emitter<AuthState> emit) async {
-    print('## _initStartup ##');
     final hasToken = await _storage.hasToken();
 
     if (!hasToken) {
@@ -33,7 +37,6 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
   }
 
   Future<void> _cleanUpStorage() async {
-    print('## clean up storage ##');
     final prefs = await SharedPreferences.getInstance();
 
     if (prefs.getBool('first_run') ?? true) {

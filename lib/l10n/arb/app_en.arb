@@ -4,5 +4,6 @@
     "@counterAppBarTitle": {
         "description": "Text shown in the AppBar of the Counter Page"
     },
-    "registerAppBarTitle": "Register"
+    "registerAppBarTitle": "Register",
+    "loginAppBarTitle": "Login"
 }

@@ -7,54 +7,42 @@
 
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:perseus_front_mobile/common/auth/bloc/auth_bloc.dart';
 import 'package:perseus_front_mobile/l10n/l10n.dart';
-import 'package:perseus_front_mobile/pages/register/bloc/register_bloc.dart';
+import 'package:perseus_front_mobile/pages/login/bloc/login_bloc.dart';
 import 'package:perseus_front_mobile/repositories/auth_repository.dart';
 
-class RegisterPage extends StatelessWidget {
-  const RegisterPage({Key? key}) : super(key: key);
+class LoginPage extends StatelessWidget {
+  const LoginPage({Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
     return BlocProvider(
-      create: (_) => RegisterBloc(context.read<AuthRepository>()),
-      child: const RegisterView(),
+      create: (_) =>
+          LoginBloc(context.read<AuthRepository>(), context.read<AuthBloc>()),
+      child: const LoginView(),
     );
   }
 }
 
-class RegisterView extends StatelessWidget {
-  const RegisterView({Key? key}) : super(key: key);
+class LoginView extends StatelessWidget {
+  const LoginView({Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
     final l10n = context.l10n;
     return Scaffold(
-      appBar: AppBar(title: Text(l10n.registerAppBarTitle)),
+      appBar: AppBar(title: Text(l10n.loginAppBarTitle)),
       body: Center(
         child: Padding(
           padding: const EdgeInsets.all(20),
           child: Column(
             children: [
               _usernameField(),
-              _emailField(),
               _passwordField(),
-              _registerButton(context)
+              _loginButton(context)
             ],
           ),
-        ),
-      ),
-    );
-  }
-
-  Widget _emailField() {
-    return Padding(
-      padding: const EdgeInsets.all(8),
-      child: TextFormField(
-        initialValue: 'username@mail.com',
-        decoration: const InputDecoration(
-          border: OutlineInputBorder(),
-          labelText: 'email',
         ),
       ),
     );
@@ -87,13 +75,13 @@ class RegisterView extends StatelessWidget {
     );
   }
 
-  Widget _registerButton(BuildContext context) {
+  Widget _loginButton(BuildContext context) {
     return Padding(
       padding: const EdgeInsets.all(8),
       child: TextButton(
         child: const Text('Validate'),
         onPressed: () {
-          context.read<RegisterBloc>().add(ValidateForm());
+          context.read<LoginBloc>().add(ValidateForm());
         },
       ),
     );
