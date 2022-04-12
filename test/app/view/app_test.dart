@@ -7,12 +7,13 @@
 
 import 'package:flutter_test/flutter_test.dart';
 import 'package:perseus_front_mobile/app/app.dart';
-import 'package:perseus_front_mobile/counter/counter.dart';
+import 'package:perseus_front_mobile/app_router.dart';
+import 'package:perseus_front_mobile/pages/counter/counter.dart';
 
 void main() {
   group('App', () {
     testWidgets('renders CounterPage', (tester) async {
-      await tester.pumpWidget(const App());
+      await tester.pumpWidget(App(appRouter: AppRouter()));
       expect(find.byType(CounterPage), findsOneWidget);
     });
   });

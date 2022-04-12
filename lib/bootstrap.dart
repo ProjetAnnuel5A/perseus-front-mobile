@@ -8,8 +8,9 @@
 import 'dart:async';
 import 'dart:developer';
 
-import 'package:bloc/bloc.dart';
 import 'package:flutter/widgets.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:perseus_front_mobile/common/auth/bloc/auth_bloc.dart';
 
 class AppBlocObserver extends BlocObserver {
   @override
@@ -33,7 +34,15 @@ Future<void> bootstrap(FutureOr<Widget> Function() builder) async {
   await runZonedGuarded(
     () async {
       await BlocOverrides.runZoned(
-        () async => runApp(await builder()),
+        () async => runApp(
+          BlocProvider<AuthBloc>(
+            create: (context) {
+              return AuthBloc()..add(AppStarted());
+            },
+            child: await builder(),
+          ),
+        ),
+        // runApp(await builder()),
         blocObserver: AppBlocObserver(),
       );
     },

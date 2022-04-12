@@ -8,12 +8,18 @@ environment:
 
 dependencies:
   bloc: ^8.0.3
+  dio: ^4.0.6
+  equatable: ^2.0.3
   flutter:
     sdk: flutter
   flutter_bloc: ^8.0.1
   flutter_localizations:
     sdk: flutter
+  flutter_secure_storage: ^5.0.2
+  http: ^0.13.4
   intl: ^0.17.0
+  jwt_decoder: ^2.0.1
+  shared_preferences: ^2.0.13
 
 dev_dependencies:
   bloc_test: ^9.0.3
