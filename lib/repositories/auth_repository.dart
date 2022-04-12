@@ -33,9 +33,9 @@ class AuthRepository {
     return '';
   }
 
-  Future<String?> login() async {
+  Future<String?> login(String username, String password) async {
     final body = jsonEncode(
-      <String, String>{'username': 'username14', 'password': 'azerA123!'},
+      <String, String>{'username': username, 'password': password},
     );
 
     final dio = Dio();

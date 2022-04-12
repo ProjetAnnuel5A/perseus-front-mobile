@@ -9,8 +9,18 @@ part 'login_state.dart';
 class LoginBloc extends Bloc<LoginEvent, LoginState> {
   LoginBloc(this._authRepository, this._authenticationBloc)
       : super(LoginInitial()) {
-    on<ValidateForm>((event, emit) async {
-      final result = await _authRepository.login();
+    on<LoginUsernameChangedEvent>((event, emit) async {
+      print(event.username);
+    });
+
+    on<LoginValidateFormEvent>((event, emit) async {
+      print(event.username);
+      print(event.password);
+
+      //! TODO add form validation
+
+      final result =
+          await _authRepository.login(event.username, event.password);
 
       if (result != null && result != '') {
         _authenticationBloc.add(LoggedIn('username', result));
