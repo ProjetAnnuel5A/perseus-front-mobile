@@ -1,69 +1,74 @@
 import 'dart:convert';
 
-import 'package:http/http.dart' as http;
+import 'package:dio/dio.dart';
+import 'package:jwt_decoder/jwt_decoder.dart';
+import 'package:perseus_front_mobile/model/dao/register_dao.dart';
 
 class AuthRepository {
+
+  static const server = 'http://localhost:9090';
+
   Future<String?> register() async {
-    const server = 'localhost:9090';
-    final body = jsonEncode(<String, String>{
-      'username': 'userName',
-      'email': 'username@email.com',
-      'password': 'azerA123!'
-    });
+    final data =
+        RegisterDao('username14', 'username14@email.com', 'azerA123!').toJson();
 
-    final url = Uri.http(server, '/auth/register');
-    final response = await http.post(
-      url,
-      headers: <String, String>{
-        'Content-Type': 'application/json; charset=UTF-8',
-      },
-      body: body,
-    );
+    final dio = Dio();
+    dio.options.headers['content-Type'] = 'application/json';
 
-    if (response.statusCode == 201) {
-      print(response.body);
-      // var jsonResponse =
-      //     convert.jsonDecode(response.body) as Map<String, dynamic>;
-      // var itemCount = jsonResponse['totalItems'];
-      // print('Number of books about http: $itemCount.');
-    } else {
-      print('Request failed with status: ${response.statusCode}.');
+    try {
+      final response = await dio.post<RegisterDao>(
+        '$server/auth/register',
+        data: jsonEncode(data),
+      );
+
+      if (response.statusCode == 201) {
+        print(response.data);
+      } else {
+        print('Request failed with status: ${response.statusCode}.');
+      }
+    } catch (e) {
+      print(e);
     }
 
     return '';
   }
 
   Future<String?> login() async {
-    const server = 'localhost:9090';
     final body = jsonEncode(
-        <String, String>{'username': 'username', 'password': 'azerA123!'});
-
-    final url = Uri.http(server, '/auth/login');
-    final response = await http.post(
-      url,
-      headers: <String, String>{
-        'Content-Type': 'application/json; charset=UTF-8',
-      },
-      body: body,
+      <String, String>{'username': 'username14', 'password': 'azerA123!'},
     );
 
-    if (response.statusCode == 201) {
-      var token = response.headers['authorization'];
+    final dio = Dio();
+    dio.options.headers['Content-Type'] = 'application/json';
 
-      // TODO Check token validity + date etc
-      if (token != null) {
-        token = token.substring(7);
-        print(token);
+    try {
+      final response =
+          await dio.post<dynamic>('$server/auth/login', data: body);
 
-        return token;
+      if (response.statusCode == 201) {
+        final header = response.headers['authorization'];
+
+        // TODO Check token validity
+        if (header != null) {
+          final token = header[0].substring(7);
+          print(token);
+
+          final decodedToken = JwtDecoder.decode(token);
+          print(decodedToken);
+
+          final isTokenExpired = JwtDecoder.isExpired(token);
+
+          if(isTokenExpired) {
+            // TODO handle use case
+          }
+
+          return 'token';
+        }
+      } else {
+        print('Request failed with status: ${response.statusCode}.');
       }
-
-      // var jsonResponse =
-      //     convert.jsonDecode(response.body) as Map<String, dynamic>;
-      // var itemCount = jsonResponse['totalItems'];
-      // print('Number of books about http: $itemCount.');
-    } else {
-      print('Request failed with status: ${response.statusCode}.');
+    } catch (e) {
+      print(e);
     }
 
     return '';

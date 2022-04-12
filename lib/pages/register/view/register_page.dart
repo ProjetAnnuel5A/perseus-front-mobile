@@ -36,10 +36,15 @@ class RegisterView extends StatelessWidget {
           padding: const EdgeInsets.all(20),
           child: Column(
             children: [
+              const Spacer(),
+              _headerText(),
+              const Spacer(),
               _usernameField(),
               _emailField(),
               _passwordField(),
-              _registerButton(context)
+              _registerButton(context),
+              _loginText(context),
+              const Spacer(),
             ],
           ),
         ),
@@ -90,11 +95,34 @@ class RegisterView extends StatelessWidget {
   Widget _registerButton(BuildContext context) {
     return Padding(
       padding: const EdgeInsets.all(8),
-      child: TextButton(
-        child: const Text('Validate'),
+      child: ElevatedButton(
+        style: ButtonStyle(
+          backgroundColor: MaterialStateProperty.all<Color>(
+              const Color.fromARGB(255, 197, 70, 101)),
+        ),
         onPressed: () {
           context.read<RegisterBloc>().add(ValidateForm());
         },
+        child: const Text('Register'),
+      ),
+    );
+  }
+
+  Widget _loginText(BuildContext context) {
+    return TextButton(
+      onPressed: () {
+        Navigator.pushReplacementNamed(context, '/login');
+      },
+      child: const Text('Do you already have an account ?'),
+    );
+  }
+
+  Widget _headerText() {
+    return const Padding(
+      padding: EdgeInsets.all(8),
+      child: Text(
+        'Get started in a couple of minutes !',
+        style: TextStyle(fontWeight: FontWeight.bold, fontSize: 20),
       ),
     );
   }

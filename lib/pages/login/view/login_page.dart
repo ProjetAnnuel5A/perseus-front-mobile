@@ -37,13 +37,31 @@ class LoginView extends StatelessWidget {
         child: Padding(
           padding: const EdgeInsets.all(20),
           child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
             children: [
+              const Spacer(),
+              _headerText(),
+              const Spacer(),
               _usernameField(),
               _passwordField(),
-              _loginButton(context)
+              _loginButton(context),
+              _registerText(context),
+              _passwordForgotten(context),
+              _legalMentionsText(),
+              const Spacer(),
             ],
           ),
         ),
+      ),
+    );
+  }
+
+  Widget _headerText() {
+    return const Padding(
+      padding: EdgeInsets.all(8),
+      child: Text(
+        'Get started in a couple of minutes !',
+        style: TextStyle(fontWeight: FontWeight.bold, fontSize: 20),
       ),
     );
   }
@@ -67,6 +85,8 @@ class LoginView extends StatelessWidget {
       child: TextFormField(
         initialValue: 'azerA123+',
         obscureText: true,
+        enableSuggestions: false,
+        autocorrect: false,
         decoration: const InputDecoration(
           border: OutlineInputBorder(),
           labelText: 'Password',
@@ -78,11 +98,40 @@ class LoginView extends StatelessWidget {
   Widget _loginButton(BuildContext context) {
     return Padding(
       padding: const EdgeInsets.all(8),
-      child: TextButton(
-        child: const Text('Validate'),
+      child: ElevatedButton(
+        style: ButtonStyle(
+          backgroundColor: MaterialStateProperty.all<Color>(
+              const Color.fromARGB(255, 197, 70, 101)),
+        ),
         onPressed: () {
           context.read<LoginBloc>().add(ValidateForm());
         },
+        child: const Text('Login'),
+      ),
+    );
+  }
+
+  Widget _registerText(BuildContext context) {
+    return TextButton(
+      onPressed: () {
+        Navigator.pushReplacementNamed(context, '/register');
+      },
+      child: const Text('Register and create an account'),
+    );
+  }
+
+  Widget _passwordForgotten(BuildContext context) {
+    return TextButton(
+      onPressed: () {},
+      child: const Text('Forgot your password ?'),
+    );
+  }
+
+  Widget _legalMentionsText() {
+    return const Padding(
+      padding: EdgeInsets.all(8),
+      child: Text(
+        'By continuing, you agree to the Terms, Conditions and Privacy Policy.',
       ),
     );
   }

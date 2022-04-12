@@ -8,15 +8,17 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
+import 'package:perseus_front_mobile/app_router.dart';
 import 'package:perseus_front_mobile/common/auth/bloc/auth_bloc.dart';
 import 'package:perseus_front_mobile/l10n/l10n.dart';
 import 'package:perseus_front_mobile/pages/counter/counter.dart';
 import 'package:perseus_front_mobile/pages/login/view/login_page.dart';
-import 'package:perseus_front_mobile/pages/register/view/register_page.dart';
 import 'package:perseus_front_mobile/repositories/auth_repository.dart';
 
 class App extends StatelessWidget {
-  const App({Key? key}) : super(key: key);
+  const App({Key? key, required this.appRouter}) : super(key: key);
+
+  final AppRouter appRouter;
 
   @override
   Widget build(BuildContext context) {
@@ -25,9 +27,10 @@ class App extends StatelessWidget {
       providers: [RepositoryProvider.value(value: AuthRepository())],
       child: MaterialApp(
         theme: ThemeData(
-          appBarTheme: const AppBarTheme(color: Color(0xFF13B9FF)),
+          appBarTheme:
+              const AppBarTheme(color: Color.fromARGB(255, 45, 53, 137)),
           colorScheme: ColorScheme.fromSwatch(
-            accentColor: const Color(0xFF13B9FF),
+            accentColor: const Color.fromARGB(255, 197, 70, 101),
           ),
         ),
         localizationsDelegates: const [
@@ -35,13 +38,13 @@ class App extends StatelessWidget {
           GlobalMaterialLocalizations.delegate,
         ],
         supportedLocales: AppLocalizations.supportedLocales,
+        onGenerateRoute: appRouter.onGenerateRoute,
         home: BlocBuilder<AuthBloc, AuthState>(
           builder: (context, state) {
             if (state is AuthUninitialized) {
               return const Scaffold(body: CircularProgressIndicator());
             } else if (state is AuthUnauthenticated) {
               return const LoginPage();
-              // return const RegisterPage();
             } else if (state is AuthAuthenticated) {
               return const CounterPage();
             }
