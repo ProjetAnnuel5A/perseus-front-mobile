@@ -7,4 +7,10 @@ abstract class RegisterEvent extends Equatable {
   List<Object> get props => [];
 }
 
-class ValidateForm extends RegisterEvent {}
+class RegisterValidateFormEvent extends RegisterEvent {
+  const RegisterValidateFormEvent(this.username, this.email, this.password);
+
+  final String username;
+  final String email;
+  final String password;
+}

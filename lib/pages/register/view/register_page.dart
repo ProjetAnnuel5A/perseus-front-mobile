@@ -18,34 +18,53 @@ class RegisterPage extends StatelessWidget {
   Widget build(BuildContext context) {
     return BlocProvider(
       create: (_) => RegisterBloc(context.read<AuthRepository>()),
-      child: const RegisterView(),
+      child: RegisterView(),
     );
   }
 }
 
 class RegisterView extends StatelessWidget {
-  const RegisterView({Key? key}) : super(key: key);
+  RegisterView({Key? key}) : super(key: key);
+
+  final _formKey = GlobalKey<FormState>();
+
+  final _usernameController = TextEditingController();
+  final _emailController = TextEditingController();
+  final _passwordController = TextEditingController();
+  final _confirmationController = TextEditingController();
 
   @override
   Widget build(BuildContext context) {
     final l10n = context.l10n;
     return Scaffold(
       appBar: AppBar(title: Text(l10n.registerAppBarTitle)),
-      body: Center(
-        child: Padding(
-          padding: const EdgeInsets.all(20),
-          child: Column(
-            children: [
-              const Spacer(),
-              _headerText(),
-              const Spacer(),
-              _usernameField(),
-              _emailField(),
-              _passwordField(),
-              _registerButton(context),
-              _loginText(context),
-              const Spacer(),
-            ],
+      body: BlocProvider(
+        create: (context) => RegisterBloc(context.read<AuthRepository>()),
+        child: Center(
+          child: Padding(
+            padding: const EdgeInsets.all(20),
+            child: Column(
+              children: [
+                const Spacer(),
+                _headerText(),
+                const Spacer(),
+                Form(
+                  key: _formKey,
+                  onChanged: () {},
+                  child: Column(
+                    children: [
+                      _usernameField(),
+                      _emailField(),
+                      _passwordField(),
+                      _confirmationField(),
+                    ],
+                  ),
+                ),
+                _registerButton(context),
+                _loginText(context),
+                const Spacer(),
+              ],
+            ),
           ),
         ),
       ),
@@ -56,10 +75,20 @@ class RegisterView extends StatelessWidget {
     return Padding(
       padding: const EdgeInsets.all(8),
       child: TextFormField(
-        initialValue: 'username@mail.com',
+        controller: _emailController,
+        autovalidateMode: AutovalidateMode.onUserInteraction,
+        validator: (value) {
+          const pattern = r'^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$';
+          final regex = RegExp(pattern);
+
+          if (value == null || !regex.hasMatch(value)) {
+            return 'Please enter a valid Email';
+          }
+          return null;
+        },
         decoration: const InputDecoration(
           border: OutlineInputBorder(),
-          labelText: 'email',
+          labelText: 'Email',
         ),
       ),
     );
@@ -69,10 +98,23 @@ class RegisterView extends StatelessWidget {
     return Padding(
       padding: const EdgeInsets.all(8),
       child: TextFormField(
-        initialValue: 'username',
+        controller: _usernameController,
+        autovalidateMode: AutovalidateMode.onUserInteraction,
+        validator: (value) {
+          if (value == null ||
+              value.isEmpty ||
+              value.length < 6 ||
+              value.length > 30) {
+            return 'Please enter a valid Username'
+                '\n- must not exist'
+                '\n- must have more than 5 characters and less than 29 characters';
+          }
+          return null;
+        },
+        // @Size(min = 6, max = 30) + unique
         decoration: const InputDecoration(
           border: OutlineInputBorder(),
-          labelText: 'username',
+          labelText: 'Username',
         ),
       ),
     );
@@ -82,11 +124,46 @@ class RegisterView extends StatelessWidget {
     return Padding(
       padding: const EdgeInsets.all(8),
       child: TextFormField(
-        initialValue: 'azerA123+',
+        controller: _passwordController,
         obscureText: true,
+        autovalidateMode: AutovalidateMode.onUserInteraction,
+        validator: (value) {
+          const pattern =
+              r'^(?=.*?[A-Z])(?=.*?[a-z])(?=.*?[0-9])(?=.*?[!@#\$&*~]).{8,}$';
+          final regex = RegExp(pattern);
+
+          if (value == null || value.isEmpty || !regex.hasMatch(value)) {
+            return 'Please enter a valid Password'
+                '\n- must have more than 8 characters or more and contains both digits and letters';
+          }
+          return null;
+        },
         decoration: const InputDecoration(
           border: OutlineInputBorder(),
           labelText: 'Password',
+        ),
+      ),
+    );
+  }
+
+  Widget _confirmationField() {
+    return Padding(
+      padding: const EdgeInsets.all(8),
+      child: TextFormField(
+        controller: _confirmationController,
+        obscureText: true,
+        autovalidateMode: AutovalidateMode.onUserInteraction,
+        validator: (value) {
+          if (value == null ||
+              _passwordController.value.text !=
+                  _confirmationController.value.text) {
+            return 'Please confirm your password';
+          }
+          return null;
+        },
+        decoration: const InputDecoration(
+          border: OutlineInputBorder(),
+          labelText: 'Confirmation',
         ),
       ),
     );
@@ -96,12 +173,14 @@ class RegisterView extends StatelessWidget {
     return Padding(
       padding: const EdgeInsets.all(8),
       child: ElevatedButton(
-        style: ButtonStyle(
-          backgroundColor: MaterialStateProperty.all<Color>(
-              const Color.fromARGB(255, 197, 70, 101)),
-        ),
         onPressed: () {
-          context.read<RegisterBloc>().add(ValidateForm());
+          final username = _usernameController.value.text;
+          final email = _emailController.value.text;
+          final password = _passwordController.value.text;
+
+          context.read<RegisterBloc>().add(
+                RegisterValidateFormEvent(username, email, password),
+              );
         },
         child: const Text('Register'),
       ),
@@ -111,7 +190,7 @@ class RegisterView extends StatelessWidget {
   Widget _loginText(BuildContext context) {
     return TextButton(
       onPressed: () {
-        Navigator.pushReplacementNamed(context, '/login');
+        Navigator.pushNamedAndRemoveUntil(context, '/login', (route) => false);
       },
       child: const Text('Do you already have an account ?'),
     );

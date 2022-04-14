@@ -10,6 +10,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:perseus_front_mobile/app_router.dart';
 import 'package:perseus_front_mobile/common/auth/bloc/auth_bloc.dart';
+import 'package:perseus_front_mobile/common/theme/app_theme.dart';
 import 'package:perseus_front_mobile/l10n/l10n.dart';
 import 'package:perseus_front_mobile/pages/counter/counter.dart';
 import 'package:perseus_front_mobile/pages/login/view/login_page.dart';
@@ -26,13 +27,7 @@ class App extends StatelessWidget {
       // Provide repositories
       providers: [RepositoryProvider.value(value: AuthRepository())],
       child: MaterialApp(
-        theme: ThemeData(
-          appBarTheme:
-              const AppBarTheme(color: Color.fromARGB(255, 45, 53, 137)),
-          colorScheme: ColorScheme.fromSwatch(
-            accentColor: const Color.fromARGB(255, 197, 70, 101),
-          ),
-        ),
+        theme: appThemeData[AppTheme.light],
         localizationsDelegates: const [
           AppLocalizations.delegate,
           GlobalMaterialLocalizations.delegate,

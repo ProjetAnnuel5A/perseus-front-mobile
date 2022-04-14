@@ -2,21 +2,21 @@ import 'dart:convert';
 
 import 'package:dio/dio.dart';
 import 'package:jwt_decoder/jwt_decoder.dart';
-import 'package:perseus_front_mobile/model/dao/register_dao.dart';
+import 'package:perseus_front_mobile/model/dao/register_dto.dart';
 
 class AuthRepository {
-
   static const server = 'http://localhost:9090';
 
-  Future<String?> register() async {
-    final data =
-        RegisterDao('username14', 'username14@email.com', 'azerA123!').toJson();
+  Future<String?> register(RegisterDto registerDto) async {
+    final data = registerDto.toJson();
+
+    print(data);
 
     final dio = Dio();
     dio.options.headers['content-Type'] = 'application/json';
 
     try {
-      final response = await dio.post<RegisterDao>(
+      final response = await dio.post<String>(
         '$server/auth/register',
         data: jsonEncode(data),
       );
@@ -58,7 +58,7 @@ class AuthRepository {
 
           final isTokenExpired = JwtDecoder.isExpired(token);
 
-          if(isTokenExpired) {
+          if (isTokenExpired) {
             // TODO handle use case
           }
 
