@@ -20,13 +20,16 @@ class LoginPage extends StatelessWidget {
     return BlocProvider(
       create: (_) =>
           LoginBloc(context.read<AuthRepository>(), context.read<AuthBloc>()),
-      child: const LoginView(),
+      child: LoginView(),
     );
   }
 }
 
 class LoginView extends StatelessWidget {
-  const LoginView({Key? key}) : super(key: key);
+  LoginView({Key? key}) : super(key: key);
+
+  final _usernameController = TextEditingController();
+  final _passwordController = TextEditingController();
 
   @override
   Widget build(BuildContext context) {
@@ -42,7 +45,7 @@ class LoginView extends StatelessWidget {
               const Spacer(),
               _headerText(),
               const Spacer(),
-              _usernameField(),
+              _usernameField(context),
               _passwordField(),
               _loginButton(context),
               _registerText(context),
@@ -66,15 +69,26 @@ class LoginView extends StatelessWidget {
     );
   }
 
-  Widget _usernameField() {
+  Widget _usernameField(BuildContext context) {
     return Padding(
       padding: const EdgeInsets.all(8),
       child: TextFormField(
-        initialValue: 'username',
+        controller: _usernameController,
         decoration: const InputDecoration(
           border: OutlineInputBorder(),
-          labelText: 'username',
+          labelText: 'Username',
         ),
+        autovalidateMode: AutovalidateMode.onUserInteraction,
+        validator: (value) {
+          if (value == null || value.isEmpty || value.length < 4) {
+            return 'Please enter a valid Username'
+                '\n- must have more than 4 characters';
+          }
+          return null;
+        },
+        onChanged: (value) {
+          context.read<LoginBloc>().add(LoginUsernameChangedEvent(value));
+        },
       ),
     );
   }
@@ -83,8 +97,8 @@ class LoginView extends StatelessWidget {
     return Padding(
       padding: const EdgeInsets.all(8),
       child: TextFormField(
-        initialValue: 'azerA123+',
         obscureText: true,
+        controller: _passwordController,
         enableSuggestions: false,
         autocorrect: false,
         decoration: const InputDecoration(
@@ -99,12 +113,13 @@ class LoginView extends StatelessWidget {
     return Padding(
       padding: const EdgeInsets.all(8),
       child: ElevatedButton(
-        style: ButtonStyle(
-          backgroundColor: MaterialStateProperty.all<Color>(
-              const Color.fromARGB(255, 197, 70, 101)),
-        ),
         onPressed: () {
-          context.read<LoginBloc>().add(ValidateForm());
+          final username = _usernameController.value.text;
+          final password = _passwordController.value.text;
+
+          context
+              .read<LoginBloc>()
+              .add(LoginValidateFormEvent(username, password));
         },
         child: const Text('Login'),
       ),
@@ -114,7 +129,7 @@ class LoginView extends StatelessWidget {
   Widget _registerText(BuildContext context) {
     return TextButton(
       onPressed: () {
-        Navigator.pushReplacementNamed(context, '/register');
+        Navigator.pushNamed(context, '/register');
       },
       child: const Text('Register and create an account'),
     );
