@@ -13,6 +13,7 @@ import 'package:perseus_front_mobile/common/auth/bloc/auth_bloc.dart';
 import 'package:perseus_front_mobile/common/theme/app_theme.dart';
 import 'package:perseus_front_mobile/l10n/l10n.dart';
 import 'package:perseus_front_mobile/pages/counter/counter.dart';
+import 'package:perseus_front_mobile/pages/home/view/home_page.dart';
 import 'package:perseus_front_mobile/pages/login/view/login_page.dart';
 import 'package:perseus_front_mobile/repositories/auth_repository.dart';
 
@@ -39,9 +40,11 @@ class App extends StatelessWidget {
             if (state is AuthUninitialized) {
               return const Scaffold(body: CircularProgressIndicator());
             } else if (state is AuthUnauthenticated) {
-              return const LoginPage();
+              // return const LoginPage();
+              return const HomePage();
             } else if (state is AuthAuthenticated) {
-              return const CounterPage();
+              // return const CounterPage();
+              return const HomePage();
             }
 
             // TODO add default SplashScreen
