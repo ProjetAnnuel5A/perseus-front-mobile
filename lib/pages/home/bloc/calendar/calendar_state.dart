@@ -8,9 +8,13 @@ abstract class CalendarState extends Equatable {
 }
 
 class CalendarInitial extends CalendarState {
-  const CalendarInitial({this.format = CalendarFormat.week});
+  const CalendarInitial({
+    this.format = CalendarFormat.week,
+    required this.selectDay,
+  });
   final CalendarFormat format;
+  final DateTime selectDay;
 
   @override
-  List<Object> get props => [format];
+  List<Object> get props => [format, selectDay];
 }

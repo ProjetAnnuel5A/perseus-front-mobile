@@ -1,7 +1,11 @@
+import 'dart:collection';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:perseus_front_mobile/common/extensions.dart';
 import 'package:perseus_front_mobile/common/theme/colors.dart';
 import 'package:perseus_front_mobile/l10n/l10n.dart';
+import 'package:perseus_front_mobile/model/workout.dart';
 import 'package:perseus_front_mobile/pages/counter/counter.dart';
 import 'package:perseus_front_mobile/pages/home/bloc/bottom_navigation/bottom_navigation_bloc.dart';
 import 'package:perseus_front_mobile/pages/home/bloc/calendar/calendar_bloc.dart';
@@ -21,13 +25,15 @@ class HomePage extends StatelessWidget {
           create: (BuildContext context) => CalendarBloc(),
         ),
       ],
-      child: const HomeView(),
+      child: HomeView(),
     );
   }
 }
 
 class HomeView extends StatelessWidget {
-  const HomeView({Key? key}) : super(key: key);
+  HomeView({Key? key}) : super(key: key);
+
+  Map<DateTime, List<Workout>> selectedWorkouts = {};
 
   @override
   Widget build(BuildContext context) {
@@ -86,18 +92,22 @@ class HomeView extends StatelessWidget {
 
   Widget _getHomeCalendar(BuildContext context) {
     final _calendarBloc = BlocProvider.of<CalendarBloc>(context);
-    DateTime? _selectedDay;
 
-    print(_calendarBloc.focusedDay.subtract(const Duration(days: 3)));
+    final _now = _calendarBloc.focusedDay;
+    final _firstDay = _now.subtract(const Duration(days: 365));
+    final _lastDay = _now.add(const Duration(days: 365));
+
+    selectedWorkouts = _calendarBloc.selectedWorkouts;
+
     return BlocBuilder<CalendarBloc, CalendarState>(
       builder: (BuildContext context, CalendarState state) {
         if (state is CalendarInitial) {
-          return TableCalendar<dynamic>(
-            firstDay:
-                _calendarBloc.focusedDay.subtract(const Duration(days: 3)),
-            lastDay: _calendarBloc.focusedDay.add(const Duration(days: 3)),
-            focusedDay: _calendarBloc.focusedDay,
+          return TableCalendar<Workout>(
+            firstDay: _firstDay,
+            lastDay: _lastDay,
+            focusedDay: _now,
             calendarFormat: _calendarBloc.calendarFormat,
+            eventLoader: _getEventsfromDay,
             headerStyle: HeaderStyle(
               formatButtonDecoration: BoxDecoration(
                 color: ColorPerseus.pink,
@@ -106,22 +116,13 @@ class HomeView extends StatelessWidget {
               formatButtonTextStyle: const TextStyle(color: Colors.white),
               formatButtonShowsNext: false,
             ),
-            selectedDayPredicate: (day) {
-              // Use `selectedDayPredicate` to determine which day is currently selected.
-              // If this returns true, then `day` will be marked as selected.
-
-              // Using `isSameDay` is recommended to disregard
-              // the time-part of compared DateTime objects.
-              return isSameDay(_selectedDay, day);
+            selectedDayPredicate: (DateTime date) {
+              return isSameDay(_calendarBloc.selectedDay, date);
             },
             onDaySelected: (selectedDay, focusedDay) {
-              print('onDaySelected');
-              if (!isSameDay(_selectedDay, selectedDay)) {
-                // Call `setState()` when updating the selected day
-                // setState(() {
-                //   _selectedDay = selectedDay;
-                //   _focusedDay = focusedDay;
-                // });
+              if (!isSameDay(_calendarBloc.selectedDay, selectedDay)) {
+                print('calendar --> onDaySelected $selectedDay');
+                _calendarBloc.add(SelectDay(selectedDay: selectedDay));
               }
             },
             onFormatChanged: (format) {
@@ -130,16 +131,23 @@ class HomeView extends StatelessWidget {
                 _calendarBloc.add(UpdateFormat(calendarFormat: format));
               }
             },
-            onPageChanged: (focusedDay) {
-              print('onPageChanged');
-              // No need to call `setState()` here
-              // _calendarBloc.focusedDay = _focusedDay = focusedDay;
-            },
           );
         }
 
         return const CircularProgressIndicator();
       },
     );
+  }
+
+  List<Workout> _getEventsfromDay(DateTime date) {
+    var result = <Workout>[];
+
+    selectedWorkouts.forEach((key, workout) {
+      if (key.isSameDate(date) && selectedWorkouts[key] != null) {
+        result = selectedWorkouts[key]!;
+      }
+    });
+
+    return result;
   }
 }

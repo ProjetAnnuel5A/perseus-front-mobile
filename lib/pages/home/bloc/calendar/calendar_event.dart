@@ -14,3 +14,11 @@ class UpdateFormat extends CalendarEvent {
   @override
   List<Object> get props => [calendarFormat];
 }
+
+class SelectDay extends CalendarEvent {
+  const SelectDay({required this.selectedDay});
+  final DateTime selectedDay;
+
+  @override
+  List<Object> get props => [selectedDay];
+}
