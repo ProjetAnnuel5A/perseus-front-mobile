@@ -17,5 +17,6 @@ class BottomNavigationBloc
     });
   }
 
-  int currentIndex = 0;
+  // default to 1 for home page
+  int currentIndex = 1;
 }
