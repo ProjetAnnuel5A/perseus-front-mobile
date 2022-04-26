@@ -1,5 +1,3 @@
-import 'dart:collection';
-
 import 'package:badges/badges.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -10,6 +8,7 @@ import 'package:perseus_front_mobile/model/workout.dart';
 import 'package:perseus_front_mobile/pages/counter/counter.dart';
 import 'package:perseus_front_mobile/pages/home/bloc/bottom_navigation/bottom_navigation_bloc.dart';
 import 'package:perseus_front_mobile/pages/home/bloc/calendar/calendar_bloc.dart';
+import 'package:perseus_front_mobile/repositories/workout_repository.dart';
 import 'package:table_calendar/table_calendar.dart';
 
 class HomePage extends StatelessWidget {
@@ -23,7 +22,8 @@ class HomePage extends StatelessWidget {
           create: (BuildContext context) => BottomNavigationBloc(),
         ),
         BlocProvider<CalendarBloc>(
-          create: (BuildContext context) => CalendarBloc(),
+          create: (BuildContext context) =>
+              CalendarBloc(context.read<WorkoutRepository>()),
         ),
       ],
       child: HomeView(),
@@ -62,6 +62,7 @@ class HomeView extends StatelessWidget {
         builder: (BuildContext context, BottomNavigationState state) {
           return BottomNavigationBar(
             currentIndex: context.read<BottomNavigationBloc>().currentIndex,
+            type: BottomNavigationBarType.fixed,
             items: <BottomNavigationBarItem>[
               const BottomNavigationBarItem(
                 icon: Icon(Icons.verified_user),
@@ -73,12 +74,15 @@ class HomeView extends StatelessWidget {
               ),
               BottomNavigationBarItem(
                 icon: Badge(
-                  badgeContent: const Text('3'),
+                  badgeContent:
+                      const Text('3', style: TextStyle(color: Colors.white)),
                   child: const Icon(Icons.notifications),
                 ),
-
-                // Icon(Icons.notifications),
                 label: 'Notification',
+              ),
+              const BottomNavigationBarItem(
+                icon: Icon(Icons.settings),
+                label: 'Reglage',
               ),
             ],
             onTap: (index) => context.read<BottomNavigationBloc>().add(
@@ -103,11 +107,12 @@ class HomeView extends StatelessWidget {
     final _firstDay = _now.subtract(const Duration(days: 365));
     final _lastDay = _now.add(const Duration(days: 365));
 
-    selectedWorkouts = _calendarBloc.selectedWorkouts;
-
     return BlocBuilder<CalendarBloc, CalendarState>(
       builder: (BuildContext context, CalendarState state) {
-        if (state is CalendarInitial) {
+        if (state is CalendarLoaded) {
+          //TODO change it with workout Date
+          selectedWorkouts = {_now: _calendarBloc.workouts};
+
           return TableCalendar<Workout>(
             firstDay: _firstDay,
             lastDay: _lastDay,
@@ -141,7 +146,9 @@ class HomeView extends StatelessWidget {
           );
         }
 
-        return const CircularProgressIndicator();
+        return const Center(
+          child: CircularProgressIndicator(),
+        );
       },
     );
   }
@@ -159,54 +166,64 @@ class HomeView extends StatelessWidget {
   }
 
   Widget _getWorkouts() {
+    return BlocBuilder<CalendarBloc, CalendarState>(
+      builder: (BuildContext context, CalendarState state) {
+        if (state is CalendarLoaded) {
+          return Text('Workouts: ${state.workouts}');
+        }
+
+        return const CircularProgressIndicator();
+      },
+    );
     // return Card(
     //   child:
     //       SizedBox(height: 200, width: double.infinity, child: Text('fezrf')),
     // );
 
-    return Card(
-      clipBehavior: Clip.antiAlias,
-      child: Column(
-        children: [
-          ListTile(
-            leading: Icon(Icons.arrow_drop_down_circle),
-            title: const Text('Card title 1'),
-            subtitle: Text(
-              'Secondary Text',
-              style: TextStyle(color: Colors.black.withOpacity(0.6)),
-            ),
-          ),
-          Padding(
-            padding: const EdgeInsets.all(16.0),
-            child: Text(
-              'Greyhound divisively hello coldly wonderfully marginally far upon excluding.',
-              style: TextStyle(color: Colors.black.withOpacity(0.6)),
-            ),
-          ),
-          ButtonBar(
-            alignment: MainAxisAlignment.start,
-            children: [
-              FlatButton(
-                textColor: const Color(0xFF6200EE),
-                onPressed: () {
-                  // Perform some action
-                },
-                child: const Text('ACTION 1'),
-              ),
-              FlatButton(
-                textColor: const Color(0xFF6200EE),
-                onPressed: () {
-                  // Perform some action
-                },
-                child: const Text('ACTION 2'),
-              ),
-            ],
-          ),
-          // Image.network('http://via.placeholder.com/640x360'),
-          Image.asset('/images/640x360.png'),
-          // Image.asset('http://via.placeholder.com/640x360'),
-        ],
-      ),
-    );
+    //   return Card(
+    //     clipBehavior: Clip.antiAlias,
+    //     child: Column(
+    //       children: [
+    //         ListTile(
+    //           leading: Icon(Icons.arrow_drop_down_circle),
+    //           title: const Text('Card title 1'),
+    //           subtitle: Text(
+    //             'Secondary Text',
+    //             style: TextStyle(color: Colors.black.withOpacity(0.6)),
+    //           ),
+    //         ),
+    //         Padding(
+    //           padding: const EdgeInsets.all(16.0),
+    //           child: Text(
+    //             'Greyhound divisively hello coldly wonderfully marginally far upon excluding.',
+    //             style: TextStyle(color: Colors.black.withOpacity(0.6)),
+    //           ),
+    //         ),
+    //         ButtonBar(
+    //           alignment: MainAxisAlignment.start,
+    //           children: [
+    //             FlatButton(
+    //               textColor: const Color(0xFF6200EE),
+    //               onPressed: () {
+    //                 // Perform some action
+    //               },
+    //               child: const Text('ACTION 1'),
+    //             ),
+    //             FlatButton(
+    //               textColor: const Color(0xFF6200EE),
+    //               onPressed: () {
+    //                 // Perform some action
+    //               },
+    //               child: const Text('ACTION 2'),
+    //             ),
+    //           ],
+    //         ),
+    //         // Image.network('http://via.placeholder.com/640x360'),
+    //         Image.asset('/images/640x360.png'),
+    //         // Image.asset('http://via.placeholder.com/640x360'),
+    //       ],
+    //     ),
+    //   );
+    // }
   }
 }

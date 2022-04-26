@@ -7,6 +7,8 @@ abstract class CalendarEvent extends Equatable {
   List<Object> get props => [];
 }
 
+class CalendarStarted extends CalendarEvent {}
+
 class UpdateFormat extends CalendarEvent {
   const UpdateFormat({required this.calendarFormat});
   final CalendarFormat calendarFormat;
