@@ -1,5 +1,6 @@
 import 'dart:collection';
 
+import 'package:badges/badges.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:perseus_front_mobile/common/extensions.dart';
@@ -61,18 +62,23 @@ class HomeView extends StatelessWidget {
         builder: (BuildContext context, BottomNavigationState state) {
           return BottomNavigationBar(
             currentIndex: context.read<BottomNavigationBloc>().currentIndex,
-            items: const <BottomNavigationBarItem>[
-              BottomNavigationBarItem(
+            items: <BottomNavigationBarItem>[
+              const BottomNavigationBarItem(
                 icon: Icon(Icons.verified_user),
                 label: 'Profile',
               ),
-              BottomNavigationBarItem(
+              const BottomNavigationBarItem(
                 icon: Icon(Icons.home),
                 label: 'Home',
               ),
               BottomNavigationBarItem(
-                icon: Icon(Icons.query_stats),
-                label: 'Counter',
+                icon: Badge(
+                  badgeContent: const Text('3'),
+                  child: const Icon(Icons.notifications),
+                ),
+
+                // Icon(Icons.notifications),
+                label: 'Notification',
               ),
             ],
             onTap: (index) => context.read<BottomNavigationBloc>().add(
@@ -86,7 +92,7 @@ class HomeView extends StatelessWidget {
 
   Widget _getHomePageContent(BuildContext context) {
     return Column(
-      children: [_getHomeCalendar(context)],
+      children: [_getHomeCalendar(context), _getWorkouts()],
     );
   }
 
@@ -122,6 +128,7 @@ class HomeView extends StatelessWidget {
             onDaySelected: (selectedDay, focusedDay) {
               if (!isSameDay(_calendarBloc.selectedDay, selectedDay)) {
                 print('calendar --> onDaySelected $selectedDay');
+                print(_getEventsfromDay(selectedDay));
                 _calendarBloc.add(SelectDay(selectedDay: selectedDay));
               }
             },
@@ -149,5 +156,57 @@ class HomeView extends StatelessWidget {
     });
 
     return result;
+  }
+
+  Widget _getWorkouts() {
+    // return Card(
+    //   child:
+    //       SizedBox(height: 200, width: double.infinity, child: Text('fezrf')),
+    // );
+
+    return Card(
+      clipBehavior: Clip.antiAlias,
+      child: Column(
+        children: [
+          ListTile(
+            leading: Icon(Icons.arrow_drop_down_circle),
+            title: const Text('Card title 1'),
+            subtitle: Text(
+              'Secondary Text',
+              style: TextStyle(color: Colors.black.withOpacity(0.6)),
+            ),
+          ),
+          Padding(
+            padding: const EdgeInsets.all(16.0),
+            child: Text(
+              'Greyhound divisively hello coldly wonderfully marginally far upon excluding.',
+              style: TextStyle(color: Colors.black.withOpacity(0.6)),
+            ),
+          ),
+          ButtonBar(
+            alignment: MainAxisAlignment.start,
+            children: [
+              FlatButton(
+                textColor: const Color(0xFF6200EE),
+                onPressed: () {
+                  // Perform some action
+                },
+                child: const Text('ACTION 1'),
+              ),
+              FlatButton(
+                textColor: const Color(0xFF6200EE),
+                onPressed: () {
+                  // Perform some action
+                },
+                child: const Text('ACTION 2'),
+              ),
+            ],
+          ),
+          // Image.network('http://via.placeholder.com/640x360'),
+          Image.asset('/images/640x360.png'),
+          // Image.asset('http://via.placeholder.com/640x360'),
+        ],
+      ),
+    );
   }
 }
