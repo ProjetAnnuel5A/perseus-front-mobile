@@ -26,6 +26,8 @@ class CalendarBloc extends Bloc<CalendarEvent, CalendarState> {
 
     on<SelectDay>((event, emit) {
       selectedDay = event.selectedDay;
+      focusedDay = event.selectedDay;
+      
       emit(
         CalendarLoaded(
           workouts: workouts,
@@ -43,6 +45,15 @@ class CalendarBloc extends Bloc<CalendarEvent, CalendarState> {
     Emitter<CalendarState> emit,
   ) async {
     emit(CalendarLoading());
+
+    // Initialize calendar values
+    final _now = DateTime.now();
+
+    focusedDay = _now;
+    selectedDay = _now;
+    firstDay = _now.subtract(const Duration(days: 365));
+    lastDay = _now.add(const Duration(days: 365));
+
     try {
       workouts = await _workoutRepository.getAll();
       emit(CalendarLoaded(workouts: workouts, selectDay: DateTime.now()));
@@ -54,8 +65,19 @@ class CalendarBloc extends Bloc<CalendarEvent, CalendarState> {
   final WorkoutRepository _workoutRepository;
 
   CalendarFormat calendarFormat = CalendarFormat.week;
-  final DateTime focusedDay = DateTime.now();
-  DateTime selectedDay = DateTime.now();
+
+  /// DateTime that determines which days are currently visible and focused.
+  DateTime focusedDay = DateTime.fromMillisecondsSinceEpoch(0);
+
+  /// Signature for `onDaySelected` callback.
+  /// Contains the selected day and focused day.
+  DateTime selectedDay = DateTime.fromMillisecondsSinceEpoch(0);
+
+  /// The first active day of `TableCalendar`.
+  DateTime firstDay = DateTime.fromMillisecondsSinceEpoch(0);
+
+  /// The last active day of `TableCalendar`.
+  DateTime lastDay = DateTime.fromMillisecondsSinceEpoch(0);
 
   List<Workout> workouts = [];
 }

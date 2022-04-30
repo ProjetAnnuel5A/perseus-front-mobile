@@ -1,5 +1,5 @@
 extension DateOnlyCompare on DateTime {
-  bool isSameDate(DateTime other) {
+  bool isSameDay(DateTime other) {
     return year == other.year && month == other.month
            && day == other.day;
   }

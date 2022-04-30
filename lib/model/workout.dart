@@ -5,19 +5,19 @@ class Workout extends Equatable {
 
   Workout.fromMap(Map<String, dynamic> _map)
       : name = _map['name'] as String,
-        date = _map['date'] as String;
+        date = DateTime.parse(_map['date'] as String);
 
   final String name;
-  final String date;
+  final DateTime date;
 
-  Map<String, String> toMap() {
-    return {'name': name, 'date': date};
+  Map<String, dynamic> toMap() {
+    return <String, dynamic>{'name': name, 'date': date};
   }
 
   @override
   List<Object?> get props => [name, date];
 
-  Workout copyWith({String? name, String? date}) {
+  Workout copyWith({String? name, DateTime? date}) {
     return Workout(name ?? this.name, date ?? this.date);
   }
 }
