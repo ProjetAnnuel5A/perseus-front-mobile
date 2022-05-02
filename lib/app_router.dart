@@ -1,4 +1,5 @@
 import 'package:flutter/cupertino.dart';
+import 'package:perseus_front_mobile/pages/exercise_details/view/exercise_detail_page.dart';
 import 'package:perseus_front_mobile/pages/home/view/home_page.dart';
 import 'package:perseus_front_mobile/pages/login/view/login_page.dart';
 import 'package:perseus_front_mobile/pages/register/view/register_page.dart';
@@ -21,6 +22,14 @@ class AppRouter {
       case '/home':
         return CupertinoPageRoute<dynamic>(
           builder: (_) => const HomePage(),
+        );
+      case '/workout':
+        return CupertinoPageRoute<dynamic>(
+          builder: (_) => const HomePage(),
+        );
+      case '/exercise':
+        return CupertinoPageRoute<dynamic>(
+          builder: (_) => const ExerciseDetailPage(),
         );
       default:
         return null;

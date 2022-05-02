@@ -66,12 +66,16 @@ class HomeView extends StatelessWidget {
             type: BottomNavigationBarType.fixed,
             items: <BottomNavigationBarItem>[
               const BottomNavigationBarItem(
-                icon: Icon(Icons.verified_user),
+                icon: Icon(Icons.person),
                 label: 'Profile',
               ),
               const BottomNavigationBarItem(
-                icon: Icon(Icons.home),
-                label: 'Home',
+                icon: Icon(Icons.calendar_month),
+                label: 'Board',
+              ),
+              const BottomNavigationBarItem(
+                icon: Icon(Icons.run_circle),
+                label: 'Running',
               ),
               BottomNavigationBarItem(
                 icon: Badge(
@@ -97,7 +101,7 @@ class HomeView extends StatelessWidget {
 
   Widget _getHomePageContent(BuildContext context) {
     return Column(
-      children: [_getHomeCalendar(context), _getWorkouts()],
+      children: [_getHomeCalendar(context), _getWorkouts(context)],
     );
   }
 
@@ -160,7 +164,7 @@ class HomeView extends StatelessWidget {
     return result;
   }
 
-  Widget _getWorkouts() {
+  Widget _getWorkouts(BuildContext context) {
     return BlocBuilder<CalendarBloc, CalendarState>(
       builder: (BuildContext context, CalendarState state) {
         final selectedDay = context.read<CalendarBloc>().selectedDay;
@@ -171,52 +175,7 @@ class HomeView extends StatelessWidget {
           );
 
           if (workoutOfSelectedDay != null) {
-            return Card(
-              clipBehavior: Clip.antiAlias,
-              child: Column(
-                children: [
-                  ListTile(
-                    leading: const Icon(Icons.fitness_center),
-                    title: Text(workoutOfSelectedDay.name),
-                    subtitle: Text(
-                      'Workout description...',
-                      style: TextStyle(color: Colors.black.withOpacity(0.6)),
-                    ),
-                  ),
-                  Padding(
-                    padding: const EdgeInsets.all(16),
-                    child: Text(
-                      'Greyhound divisively hello coldly wonderfully marginally far upon excluding.',
-                      style: TextStyle(color: Colors.black.withOpacity(0.6)),
-                    ),
-                  ),
-
-                  // Image.network('http://via.placeholder.com/640x360'),
-                  Image.asset('/images/640x360.png'),
-                  // Image.asset('http://via.placeholder.com/640x360'),
-
-                  ButtonBar(
-                    alignment: MainAxisAlignment.start,
-                    children: [
-                      FlatButton(
-                        textColor: const Color(0xFF6200EE),
-                        onPressed: () {
-                          // Perform some action
-                        },
-                        child: const Text('ACTION 1'),
-                      ),
-                      FlatButton(
-                        textColor: const Color(0xFF6200EE),
-                        onPressed: () {
-                          // Perform some action
-                        },
-                        child: const Text('ACTION 2'),
-                      ),
-                    ],
-                  ),
-                ],
-              ),
-            );
+            return workoutCard(context, workoutOfSelectedDay);
           }
 
           return const Text('No data');
@@ -224,6 +183,135 @@ class HomeView extends StatelessWidget {
 
         return const CircularProgressIndicator();
       },
+    );
+  }
+
+  Widget workoutCard(BuildContext context, Workout workout) {
+    return Padding(
+      padding: const EdgeInsets.only(left: 24, right: 24, top: 16, bottom: 18),
+      child: Container(
+        decoration: BoxDecoration(
+          gradient: const LinearGradient(
+              colors: [Colors.blueAccent, Color(0xFF6F56E8)],
+              begin: Alignment.topLeft,
+              end: Alignment.bottomRight),
+          borderRadius: const BorderRadius.only(
+              topLeft: Radius.circular(8.0),
+              bottomLeft: Radius.circular(8.0),
+              bottomRight: Radius.circular(8.0),
+              topRight: Radius.circular(68.0)),
+          boxShadow: <BoxShadow>[
+            BoxShadow(
+              color: Colors.grey.withOpacity(0.6),
+              offset: const Offset(1.1, 1.1),
+              blurRadius: 10,
+            ),
+          ],
+        ),
+        child: Padding(
+          padding: const EdgeInsets.all(16),
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: <Widget>[
+              Text(
+                workout.name,
+                textAlign: TextAlign.left,
+                style: TextStyle(
+                  fontWeight: FontWeight.normal,
+                  fontSize: 14,
+                  letterSpacing: 0.0,
+                  color: Colors.white,
+                ),
+              ),
+              Padding(
+                padding: const EdgeInsets.only(top: 8.0),
+                child: const Text(
+                  'Legs Toning and\nGlutes Workout at Home',
+                  textAlign: TextAlign.left,
+                  style: TextStyle(
+                    fontWeight: FontWeight.normal,
+                    fontSize: 20,
+                    letterSpacing: 0.0,
+                    color: Colors.white,
+                  ),
+                ),
+              ),
+              ListView(
+                scrollDirection: Axis.vertical,
+                shrinkWrap: true,
+                children: [
+                  Card(
+                    child: ListTile(
+                      leading: FlutterLogo(),
+                      title: Text('One-line with both widgets'),
+                      trailing: Icon(Icons.navigate_next),
+                    ),
+                  ),
+                ],
+              ),
+              const SizedBox(
+                height: 32,
+              ),
+              Padding(
+                padding: const EdgeInsets.only(right: 4),
+                child: Row(
+                  crossAxisAlignment: CrossAxisAlignment.end,
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: <Widget>[
+                    Padding(
+                      padding: const EdgeInsets.only(left: 4),
+                      child: Icon(
+                        Icons.timer,
+                        color: Colors.white,
+                        size: 16,
+                      ),
+                    ),
+                    Padding(
+                      padding: EdgeInsets.only(left: 4),
+                      child: Text(
+                        '${workout.time} min',
+                        textAlign: TextAlign.center,
+                        style: TextStyle(
+                          fontWeight: FontWeight.w500,
+                          fontSize: 14,
+                          letterSpacing: 0.0,
+                          color: Colors.white,
+                        ),
+                      ),
+                    ),
+                    const Expanded(
+                      child: SizedBox(),
+                    ),
+                    Container(
+                      decoration: BoxDecoration(
+                        color: Colors.white70,
+                        shape: BoxShape.circle,
+                        boxShadow: <BoxShadow>[
+                          BoxShadow(
+                              color: Colors.black.withOpacity(0.4),
+                              offset: Offset(8.0, 8.0),
+                              blurRadius: 8.0),
+                        ],
+                      ),
+                      child: IconButton(
+                        onPressed: () => Navigator.pushNamed(
+                          context,
+                          '/exercise',
+                        ),
+                        icon: Icon(
+                          Icons.arrow_right,
+                          color: Color(0xFF6F56E8),
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
+              )
+            ],
+          ),
+        ),
+      ),
     );
   }
 }

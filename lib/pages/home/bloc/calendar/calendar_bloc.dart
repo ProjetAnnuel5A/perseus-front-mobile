@@ -56,6 +56,8 @@ class CalendarBloc extends Bloc<CalendarEvent, CalendarState> {
 
     try {
       workouts = await _workoutRepository.getAll();
+      print(workouts);
+      
       emit(CalendarLoaded(workouts: workouts, selectDay: DateTime.now()));
     } catch (_) {
       // error case emit(CalendarError());
