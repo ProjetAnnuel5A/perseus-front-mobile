@@ -14,8 +14,8 @@ class ExerciseDetailView extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final double infoHeight = 364.0;
-    final double tempHeight = MediaQuery.of(context).size.height -
+    const infoHeight = 364.0;
+    final tempHeight = MediaQuery.of(context).size.height -
         (MediaQuery.of(context).size.width / 1.2) +
         24.0;
     return Container(
@@ -41,13 +41,15 @@ class ExerciseDetailView extends StatelessWidget {
                 decoration: BoxDecoration(
                   color: Colors.white,
                   borderRadius: const BorderRadius.only(
-                      topLeft: Radius.circular(32.0),
-                      topRight: Radius.circular(32.0)),
+                    topLeft: Radius.circular(32),
+                    topRight: Radius.circular(32),
+                  ),
                   boxShadow: <BoxShadow>[
                     BoxShadow(
-                        color: Colors.grey.withOpacity(0.2),
-                        offset: const Offset(1.1, 1.1),
-                        blurRadius: 10.0),
+                      color: Colors.grey.withOpacity(0.2),
+                      offset: const Offset(1.1, 1.1),
+                      blurRadius: 10,
+                    ),
                   ],
                 ),
                 child: Padding(
@@ -55,17 +57,17 @@ class ExerciseDetailView extends StatelessWidget {
                   child: SingleChildScrollView(
                     child: Container(
                       constraints: BoxConstraints(
-                          minHeight: infoHeight,
-                          maxHeight: tempHeight > infoHeight
-                              ? tempHeight
-                              : infoHeight),
+                        minHeight: infoHeight,
+                        maxHeight:
+                            tempHeight > infoHeight ? tempHeight : infoHeight,
+                      ),
                       child: Column(
                         mainAxisAlignment: MainAxisAlignment.center,
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: <Widget>[
-                          Padding(
-                            padding: const EdgeInsets.only(
-                                top: 32.0, left: 18, right: 16),
+                          const Padding(
+                            padding:
+                                EdgeInsets.only(top: 32, left: 18, right: 16),
                             child: Text(
                               'Web Design\nCouriise',
                               textAlign: TextAlign.left,
@@ -82,9 +84,8 @@ class ExerciseDetailView extends StatelessWidget {
                                 left: 16, right: 16, bottom: 8, top: 16),
                             child: Row(
                               mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                              crossAxisAlignment: CrossAxisAlignment.center,
                               children: <Widget>[
-                                Text(
+                                const Text(
                                   '\$28.99',
                                   textAlign: TextAlign.left,
                                   style: TextStyle(
@@ -94,26 +95,24 @@ class ExerciseDetailView extends StatelessWidget {
                                     color: Colors.blue,
                                   ),
                                 ),
-                                Container(
-                                  child: Row(
-                                    children: <Widget>[
-                                      Text(
-                                        '4.3',
-                                        textAlign: TextAlign.left,
-                                        style: TextStyle(
-                                          fontWeight: FontWeight.w200,
-                                          fontSize: 22,
-                                          letterSpacing: 0.27,
-                                          color: Colors.grey,
-                                        ),
+                                Row(
+                                  children: const <Widget>[
+                                    Text(
+                                      '4.3',
+                                      textAlign: TextAlign.left,
+                                      style: TextStyle(
+                                        fontWeight: FontWeight.w200,
+                                        fontSize: 22,
+                                        letterSpacing: 0.27,
+                                        color: Colors.grey,
                                       ),
-                                      Icon(
-                                        Icons.star,
-                                        color: Colors.blue,
-                                        size: 24,
-                                      ),
-                                    ],
-                                  ),
+                                    ),
+                                    Icon(
+                                      Icons.star,
+                                      color: Colors.blue,
+                                      size: 24,
+                                    ),
+                                  ],
                                 )
                               ],
                             ),
@@ -128,10 +127,14 @@ class ExerciseDetailView extends StatelessWidget {
                               ],
                             ),
                           ),
-                          Expanded(
+                          const Expanded(
                             child: Padding(
-                              padding: const EdgeInsets.only(
-                                  left: 16, right: 16, top: 8, bottom: 8),
+                              padding: EdgeInsets.only(
+                                left: 16,
+                                right: 16,
+                                top: 8,
+                                bottom: 8,
+                              ),
                               child: Text(
                                 'Lorem ipsum is simply dummy text of printing & typesetting industry, Lorem ipsum is simply dummy text of printing & typesetting industry.',
                                 textAlign: TextAlign.justify,
@@ -148,10 +151,12 @@ class ExerciseDetailView extends StatelessWidget {
                           ),
                           Padding(
                             padding: const EdgeInsets.only(
-                                left: 16, bottom: 16, right: 16),
+                              left: 16,
+                              bottom: 16,
+                              right: 16,
+                            ),
                             child: Row(
                               mainAxisAlignment: MainAxisAlignment.center,
-                              crossAxisAlignment: CrossAxisAlignment.center,
                               children: <Widget>[
                                 Container(
                                   width: 48,
@@ -160,12 +165,13 @@ class ExerciseDetailView extends StatelessWidget {
                                     decoration: BoxDecoration(
                                       color: Colors.white,
                                       borderRadius: const BorderRadius.all(
-                                        Radius.circular(16.0),
+                                        Radius.circular(16),
                                       ),
                                       border: Border.all(
-                                          color: Colors.grey.withOpacity(0.2)),
+                                        color: Colors.grey.withOpacity(0.2),
+                                      ),
                                     ),
-                                    child: Icon(
+                                    child: const Icon(
                                       Icons.add,
                                       color: Colors.blue,
                                       size: 28,
@@ -181,23 +187,24 @@ class ExerciseDetailView extends StatelessWidget {
                                     decoration: BoxDecoration(
                                       color: Colors.blue,
                                       borderRadius: const BorderRadius.all(
-                                        Radius.circular(16.0),
+                                        Radius.circular(16),
                                       ),
                                       boxShadow: <BoxShadow>[
                                         BoxShadow(
-                                            color: Colors.blue.withOpacity(0.5),
-                                            offset: const Offset(1.1, 1.1),
-                                            blurRadius: 10.0),
+                                          color: Colors.blue.withOpacity(0.5),
+                                          offset: const Offset(1.1, 1.1),
+                                          blurRadius: 10,
+                                        ),
                                       ],
                                     ),
-                                    child: Center(
+                                    child: const Center(
                                       child: Text(
                                         'Join Course',
                                         textAlign: TextAlign.left,
                                         style: TextStyle(
                                           fontWeight: FontWeight.w600,
                                           fontSize: 18,
-                                          letterSpacing: 0.0,
+                                          letterSpacing: 0,
                                           color: Colors.white,
                                         ),
                                       ),
@@ -223,9 +230,10 @@ class ExerciseDetailView extends StatelessWidget {
               child: Card(
                 color: Colors.blue,
                 shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(50.0)),
-                elevation: 10.0,
-                child: Container(
+                  borderRadius: BorderRadius.circular(50),
+                ),
+                elevation: 10,
+                child: const SizedBox(
                   width: 60,
                   height: 60,
                   child: Center(
@@ -248,7 +256,7 @@ class ExerciseDetailView extends StatelessWidget {
                   child: InkWell(
                     borderRadius:
                         BorderRadius.circular(AppBar().preferredSize.height),
-                    child: Icon(
+                    child: const Icon(
                       Icons.arrow_back_ios,
                       color: Colors.black,
                     ),
@@ -267,29 +275,33 @@ class ExerciseDetailView extends StatelessWidget {
 
   Widget getTimeBoxUI(String text1, String txt2) {
     return Padding(
-      padding: const EdgeInsets.all(8.0),
+      padding: const EdgeInsets.all(8),
       child: Container(
         decoration: BoxDecoration(
           color: Colors.white,
-          borderRadius: const BorderRadius.all(Radius.circular(16.0)),
+          borderRadius: const BorderRadius.all(Radius.circular(16)),
           boxShadow: <BoxShadow>[
             BoxShadow(
-                color: Colors.grey.withOpacity(0.2),
-                offset: const Offset(1.1, 1.1),
-                blurRadius: 8.0),
+              color: Colors.grey.withOpacity(0.2),
+              offset: const Offset(1.1, 1.1),
+              blurRadius: 8,
+            ),
           ],
         ),
         child: Padding(
           padding: const EdgeInsets.only(
-              left: 18.0, right: 18.0, top: 12.0, bottom: 12.0),
+            left: 18,
+            right: 18,
+            top: 12,
+            bottom: 12,
+          ),
           child: Column(
             mainAxisAlignment: MainAxisAlignment.center,
-            crossAxisAlignment: CrossAxisAlignment.center,
             children: <Widget>[
               Text(
                 text1,
                 textAlign: TextAlign.center,
-                style: TextStyle(
+                style: const TextStyle(
                   fontWeight: FontWeight.w600,
                   fontSize: 14,
                   letterSpacing: 0.27,
@@ -299,7 +311,7 @@ class ExerciseDetailView extends StatelessWidget {
               Text(
                 txt2,
                 textAlign: TextAlign.center,
-                style: TextStyle(
+                style: const TextStyle(
                   fontWeight: FontWeight.w200,
                   fontSize: 14,
                   letterSpacing: 0.27,
