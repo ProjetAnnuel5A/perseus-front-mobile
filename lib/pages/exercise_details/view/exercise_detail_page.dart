@@ -25,10 +25,10 @@ class ExerciseDetailView extends StatelessWidget {
         body: Stack(
           children: <Widget>[
             Column(
-              children: <Widget>[
+              children: const <Widget>[
                 AspectRatio(
                   aspectRatio: 1.2,
-                  child: Image.asset('images/push_up.png'),
+                  child: Text('Image'), // Image.asset('images/push_up.png'),
                 ),
               ],
             ),

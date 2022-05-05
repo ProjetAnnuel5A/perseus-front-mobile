@@ -41,5 +41,13 @@ final appThemeData = {
       // The overall brightness of this color scheme
       brightness: Brightness.light,
     ),
+    textTheme: const TextTheme(
+      titleLarge: TextStyle(
+        fontSize: 20,
+        fontWeight: FontWeight.bold,
+        letterSpacing: 0,
+        color: Colors.white,
+      ),
+    ),
   ),
 };
