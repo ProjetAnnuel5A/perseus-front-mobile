@@ -16,6 +16,7 @@ import 'package:perseus_front_mobile/pages/counter/counter.dart';
 import 'package:perseus_front_mobile/pages/home/view/home_page.dart';
 import 'package:perseus_front_mobile/pages/login/view/login_page.dart';
 import 'package:perseus_front_mobile/repositories/auth_repository.dart';
+import 'package:perseus_front_mobile/repositories/workout_repository.dart';
 
 class App extends StatelessWidget {
   const App({Key? key, required this.appRouter}) : super(key: key);
@@ -26,7 +27,10 @@ class App extends StatelessWidget {
   Widget build(BuildContext context) {
     return MultiRepositoryProvider(
       // Provide repositories
-      providers: [RepositoryProvider.value(value: AuthRepository())],
+      providers: [
+        RepositoryProvider.value(value: AuthRepository()),
+        RepositoryProvider.value(value: WorkoutRepository()),
+      ],
       child: MaterialApp(
         theme: appThemeData[AppTheme.light],
         localizationsDelegates: const [

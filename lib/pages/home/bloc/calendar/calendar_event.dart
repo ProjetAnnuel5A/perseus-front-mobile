@@ -7,10 +7,20 @@ abstract class CalendarEvent extends Equatable {
   List<Object> get props => [];
 }
 
+class CalendarStarted extends CalendarEvent {}
+
 class UpdateFormat extends CalendarEvent {
   const UpdateFormat({required this.calendarFormat});
   final CalendarFormat calendarFormat;
 
   @override
   List<Object> get props => [calendarFormat];
+}
+
+class SelectDay extends CalendarEvent {
+  const SelectDay({required this.selectedDay});
+  final DateTime selectedDay;
+
+  @override
+  List<Object> get props => [selectedDay];
 }

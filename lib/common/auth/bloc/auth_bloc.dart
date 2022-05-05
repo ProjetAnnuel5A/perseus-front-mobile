@@ -15,9 +15,10 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
 
   final _storage = SecureStorage();
 
-  void _appStarted(AuthEvent event, Emitter<AuthState> emit) {
-    _cleanUpStorage();
-    _initStartup(emit);
+  // ignore: avoid_void_async
+  void _appStarted(AuthEvent event, Emitter<AuthState> emit) async {
+    await _cleanUpStorage();
+    await _initStartup(emit);
   }
 
   void _loggedIn(LoggedIn event, Emitter<AuthState> emit) {
