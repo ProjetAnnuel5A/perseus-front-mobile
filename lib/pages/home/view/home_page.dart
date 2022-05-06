@@ -337,7 +337,16 @@ class HomeView extends StatelessWidget {
               // leading: FlutterLogo(),
               leading: const Icon(Icons.fitness_center),
               title: Text(exercises[index].name),
-              trailing: const Icon(Icons.navigate_next),
+              trailing: IconButton(
+                icon: const Icon(Icons.navigate_next),
+                onPressed: () {
+                  Navigator.pushNamed(
+                    context,
+                    '/exercise',
+                    arguments: exercises[index],
+                  );
+                },
+              ),
             ),
           );
         },
