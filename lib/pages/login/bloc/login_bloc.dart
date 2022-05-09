@@ -22,6 +22,8 @@ class LoginBloc extends Bloc<LoginEvent, LoginState> {
       final result =
           await _authRepository.login(event.username, event.password);
 
+      print('result $result');
+
       if (result != null && result != '') {
         _authenticationBloc.add(LoggedIn('username', result));
       }

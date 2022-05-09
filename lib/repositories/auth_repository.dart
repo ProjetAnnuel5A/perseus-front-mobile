@@ -51,18 +51,19 @@ class AuthRepository {
         // TODO Check token validity
         if (header != null) {
           final token = header[0].substring(7);
-          print(token);
+          print('token --> $token');
 
           final decodedToken = JwtDecoder.decode(token);
-          print(decodedToken);
+          print('token decoded --> $decodedToken');
 
           final isTokenExpired = JwtDecoder.isExpired(token);
+          print('isTokenExpired --> $isTokenExpired');
 
           if (isTokenExpired) {
             // TODO handle use case
           }
 
-          return 'token';
+          return token;
         }
       } else {
         print('Request failed with status: ${response.statusCode}.');

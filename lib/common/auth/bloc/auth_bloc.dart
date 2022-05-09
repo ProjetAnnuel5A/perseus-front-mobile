@@ -31,7 +31,6 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
 
   void _logout(Logout event, Emitter<AuthState> emit) {
     _storage.deleteAll();
-
     emit(AuthUnauthenticated());
   }
 
@@ -55,6 +54,7 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
   }
 
   Future<void> _cleanUpStorage() async {
+    print('_cleanUpStorage');
     final prefs = await SharedPreferences.getInstance();
 
     if (prefs.getBool('first_run') ?? true) {
