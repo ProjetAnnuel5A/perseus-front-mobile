@@ -31,7 +31,6 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
 
   void _logout(Logout event, Emitter<AuthState> emit) {
     _storage.deleteAll();
-
     emit(AuthUnauthenticated());
   }
 

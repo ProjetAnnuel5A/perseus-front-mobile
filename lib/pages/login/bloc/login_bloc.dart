@@ -9,9 +9,9 @@ part 'login_state.dart';
 class LoginBloc extends Bloc<LoginEvent, LoginState> {
   LoginBloc(this._authRepository, this._authenticationBloc)
       : super(LoginInitial()) {
-    on<LoginUsernameChangedEvent>((event, emit) async {
-      print(event.username);
-    });
+    // on<LoginUsernameChangedEvent>((event, emit) async {
+    //   print(event.username);
+    // });
 
     on<LoginValidateFormEvent>((event, emit) async {
       print(event.username);

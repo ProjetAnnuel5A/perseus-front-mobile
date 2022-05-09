@@ -7,8 +7,8 @@ class SettingsPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return BlocProvider(
-      create: (_) => AuthBloc(),
+    return BlocProvider.value(
+      value: BlocProvider.of<AuthBloc>(context),
       child: const SettingsView(),
     );
   }
@@ -30,11 +30,6 @@ class SettingsView extends StatelessWidget {
             ElevatedButton(
               onPressed: () {
                 context.read<AuthBloc>().add(Logout());
-                Navigator.pushNamedAndRemoveUntil(
-                  context,
-                  '/login',
-                  (route) => false,
-                );
               },
               child: const Text('Disconnect'),
             ),
