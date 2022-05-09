@@ -12,7 +12,16 @@ class SecureStorage {
   }
 
   Future<bool> hasToken() async {
-    return _storage.containsKey(key: _tokenKey);
+    var containsToken = await _storage.containsKey(key: _tokenKey);
+
+    if (containsToken && await getToken() != null) {
+      print("contains token ${await getToken()}");
+
+      return true;
+    }
+
+    return false;
+    // return _storage.containsKey(key: _tokenKey);
     // final value = await _storage.read(key: _tokenKey);
     // return value != null;
   }

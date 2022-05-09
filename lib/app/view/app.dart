@@ -44,8 +44,8 @@ class App extends StatelessWidget {
             if (state is AuthUninitialized) {
               return const Scaffold(body: CircularProgressIndicator());
             } else if (state is AuthUnauthenticated) {
-              // return const LoginPage();
-              return const HomePage();
+              return const LoginPage();
+              // return const HomePage();
             } else if (state is AuthAuthenticated) {
               // return const CounterPage();
               return const HomePage();
