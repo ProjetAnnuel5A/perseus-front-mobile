@@ -9,27 +9,23 @@ class SecureStorage {
   Future<void> saveUsernameAndToken(String username, String token) async {
     await _storage.write(key: _usernameKey, value: username);
     await _storage.write(key: _tokenKey, value: token);
+
+    // TODO Save UserId in decodedToken ?
+    // final decodedToken = JwtDecoder.decode(token)
   }
 
   Future<bool> hasToken() async {
-    var containsToken = await _storage.containsKey(key: _tokenKey);
+    final containsToken = await _storage.containsKey(key: _tokenKey);
 
     if (containsToken && await getToken() != null) {
-      print("contains token ${await getToken()}");
-
       return true;
     }
 
     return false;
-    // return _storage.containsKey(key: _tokenKey);
-    // final value = await _storage.read(key: _tokenKey);
-    // return value != null;
   }
 
   Future<bool> hasUsername() async {
     return _storage.containsKey(key: _usernameKey);
-    // final value = _storage.read(key: _usernameKey);
-    // return value != null;
   }
 
   Future<void> deleteToken() async {
