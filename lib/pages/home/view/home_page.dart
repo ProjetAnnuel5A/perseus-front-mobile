@@ -5,10 +5,14 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:perseus_front_mobile/common/extensions.dart';
 import 'package:perseus_front_mobile/common/theme/colors.dart';
 import 'package:perseus_front_mobile/l10n/l10n.dart';
+import 'package:perseus_front_mobile/model/exercises.dart';
 import 'package:perseus_front_mobile/model/workout.dart';
 import 'package:perseus_front_mobile/pages/counter/counter.dart';
 import 'package:perseus_front_mobile/pages/home/bloc/bottom_navigation/bottom_navigation_bloc.dart';
 import 'package:perseus_front_mobile/pages/home/bloc/calendar/calendar_bloc.dart';
+import 'package:perseus_front_mobile/pages/notification/view/notification_page.dart';
+import 'package:perseus_front_mobile/pages/profile/view/profile_page.dart';
+import 'package:perseus_front_mobile/pages/settings/view/settings_page.dart';
 import 'package:perseus_front_mobile/repositories/workout_repository.dart';
 import 'package:table_calendar/table_calendar.dart';
 
@@ -41,60 +45,71 @@ class HomeView extends StatelessWidget {
   Widget build(BuildContext context) {
     final l10n = context.l10n;
 
-    return Scaffold(
-      body: BlocBuilder<BottomNavigationBloc, BottomNavigationState>(
-        builder: (BuildContext context, BottomNavigationState state) {
-          if (state is PageLoading) {
-            return const Center(child: CircularProgressIndicator());
-          } else if (state is BottomNavigationInitial) {
-            return _getHomePageContent(context);
-          } else if (state is PageLoaded) {
-            if (state.currentIndex == 1) {
+    return SafeArea(
+      left: false,
+      right: false,
+      bottom: false,
+      child: Scaffold(
+        body: BlocBuilder<BottomNavigationBloc, BottomNavigationState>(
+          builder: (BuildContext context, BottomNavigationState state) {
+            if (state is PageLoading) {
+              return const Center(child: CircularProgressIndicator());
+            } else if (state is BottomNavigationInitial) {
               return _getHomePageContent(context);
-            } else {
-              return const CounterPage();
+            } else if (state is PageLoaded) {
+              if (state.currentIndex == 0) {
+                return const ProfilePage();
+              } else if (state.currentIndex == 1) {
+                return _getHomePageContent(context);
+              } else if (state.currentIndex == 3) {
+                return const NotificationPage();
+              } else if (state.currentIndex == 4) {
+                return const SettingsPage();
+              } else {
+                return const CounterPage();
+              }
             }
-          }
-          return Container();
-        },
-      ),
-      bottomNavigationBar:
-          BlocBuilder<BottomNavigationBloc, BottomNavigationState>(
-        builder: (BuildContext context, BottomNavigationState state) {
-          return BottomNavigationBar(
-            currentIndex: context.read<BottomNavigationBloc>().currentIndex,
-            type: BottomNavigationBarType.fixed,
-            items: <BottomNavigationBarItem>[
-              const BottomNavigationBarItem(
-                icon: Icon(Icons.person),
-                label: 'Profile',
-              ),
-              const BottomNavigationBarItem(
-                icon: Icon(Icons.calendar_month),
-                label: 'Board',
-              ),
-              const BottomNavigationBarItem(
-                icon: Icon(Icons.run_circle),
-                label: 'Running',
-              ),
-              BottomNavigationBarItem(
-                icon: Badge(
-                  badgeContent:
-                      const Text('3', style: TextStyle(color: Colors.white)),
-                  child: const Icon(Icons.notifications),
+            return Container();
+          },
+        ),
+        bottomNavigationBar:
+            BlocBuilder<BottomNavigationBloc, BottomNavigationState>(
+          builder: (BuildContext context, BottomNavigationState state) {
+            return BottomNavigationBar(
+              currentIndex: context.read<BottomNavigationBloc>().currentIndex,
+              type: BottomNavigationBarType.fixed,
+              items: <BottomNavigationBarItem>[
+                const BottomNavigationBarItem(
+                  icon: Icon(Icons.person),
+                  label: 'Profile',
                 ),
-                label: 'Notification',
-              ),
-              const BottomNavigationBarItem(
-                icon: Icon(Icons.settings),
-                label: 'Reglage',
-              ),
-            ],
-            onTap: (index) => context.read<BottomNavigationBloc>().add(
-                  PageTapped(index: index),
+                const BottomNavigationBarItem(
+                  icon: Icon(Icons.calendar_month),
+                  label: 'Board',
                 ),
-          );
-        },
+                const BottomNavigationBarItem(
+                  icon: Icon(Icons.run_circle),
+                  label: 'Running',
+                ),
+                BottomNavigationBarItem(
+                  icon: Badge(
+                    badgeContent:
+                        const Text('3', style: TextStyle(color: Colors.white)),
+                    child: const Icon(Icons.notifications),
+                  ),
+                  label: 'Notification',
+                ),
+                const BottomNavigationBarItem(
+                  icon: Icon(Icons.settings),
+                  label: 'Réglage',
+                ),
+              ],
+              onTap: (index) => context.read<BottomNavigationBloc>().add(
+                    PageTapped(index: index),
+                  ),
+            );
+          },
+        ),
       ),
     );
   }
@@ -168,7 +183,6 @@ class HomeView extends StatelessWidget {
     return BlocBuilder<CalendarBloc, CalendarState>(
       builder: (BuildContext context, CalendarState state) {
         final selectedDay = context.read<CalendarBloc>().selectedDay;
-        final size = MediaQuery.of(context).size;
 
         if (state is CalendarLoaded) {
           // TODO One workout /day ?
@@ -176,23 +190,25 @@ class HomeView extends StatelessWidget {
             (Workout workout) => workout.date.isSameDay(selectedDay),
           );
 
-          return Expanded(
-              child: Column(
-            children: [
-              sample(),
-              workoutCard(
-                  context, Workout("id", "Pull", 120, DateTime.now(), []))
-            ],
-          ));
-
-          return workoutCard(
-              context, Workout("id", "Pull", 120, DateTime.now(), []));
-
           if (workoutOfSelectedDay != null) {
-            return workoutCard(context, workoutOfSelectedDay);
+            return Expanded(
+              child: Column(
+                children: [
+                  keepItUpBanner(),
+                  workoutCard(context, workoutOfSelectedDay)
+                ],
+              ),
+            );
           }
 
-          return const Text('No data');
+          return Expanded(
+            child: Column(
+              children: [
+                const Text('No workout for this day. Get some rest.'),
+                Image.asset('assets/images/yoga.png')
+              ],
+            ),
+          );
         }
 
         return const CircularProgressIndicator();
@@ -233,29 +249,19 @@ class HomeView extends StatelessWidget {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: <Widget>[
                 Text(
-                  workout.name,
+                  'Workout: ${workout.name}',
                   textAlign: TextAlign.left,
-                  style: const TextStyle(
-                    fontWeight: FontWeight.normal,
-                    fontSize: 14,
-                    letterSpacing: 0,
-                    color: Colors.white,
-                  ),
+                  style: Theme.of(context).textTheme.titleLarge,
                 ),
                 const Padding(
-                  padding: EdgeInsets.only(top: 8),
+                  padding: EdgeInsets.symmetric(vertical: 12),
                   child: Text(
-                    'Legs Toning and\nGlutes Workout at Home',
+                    'exercises: ',
                     textAlign: TextAlign.left,
-                    style: TextStyle(
-                      fontWeight: FontWeight.normal,
-                      fontSize: 20,
-                      letterSpacing: 0,
-                      color: Colors.white,
-                    ),
+                    style: TextStyle(color: Colors.white),
                   ),
                 ),
-                exercisesSample(),
+                exercisesSample(workout.exercises),
                 const SizedBox(
                   height: 32,
                 ),
@@ -323,43 +329,42 @@ class HomeView extends StatelessWidget {
     );
   }
 
-  Widget exercisesSample() {
+  Widget exercisesSample(List<Exercise> exercises) {
+    if (exercises.isEmpty) {
+      return const SizedBox.shrink();
+    }
+
     return Expanded(
-      child: ListView(
-        shrinkWrap: true,
-        children: const [
-          Card(
+      child: ListView.builder(
+        itemCount: exercises.length,
+        itemBuilder: (context, index) {
+          return Card(
             child: ListTile(
-              leading: FlutterLogo(),
-              title: Text('One-line with both widgets'),
-              trailing: Icon(Icons.navigate_next),
+              // leading: FlutterLogo(),
+              leading: const Icon(Icons.fitness_center),
+              title: Text(exercises[index].name),
+              trailing: IconButton(
+                icon: const Icon(Icons.navigate_next),
+                onPressed: () {
+                  Navigator.pushNamed(
+                    context,
+                    '/exercise',
+                    arguments: exercises[index],
+                  );
+                },
+              ),
             ),
-          ),
-          Card(
-            child: ListTile(
-              leading: FlutterLogo(),
-              title: Text('One-line with both widgets'),
-              trailing: Icon(Icons.navigate_next),
-            ),
-          ),
-          Card(
-            child: ListTile(
-              leading: FlutterLogo(),
-              title: Text('One-line with both widgets'),
-              trailing: Icon(Icons.navigate_next),
-            ),
-          ),
-        ],
+          );
+        },
       ),
     );
   }
 
-  Widget sample() {
+  Widget keepItUpBanner() {
     return Column(
       children: <Widget>[
         Padding(
-          padding:
-              const EdgeInsets.only(left: 24, right: 24),
+          padding: const EdgeInsets.only(left: 24, right: 24),
           child: Stack(
             clipBehavior: Clip.none,
             children: <Widget>[
@@ -369,27 +374,30 @@ class HomeView extends StatelessWidget {
                   decoration: BoxDecoration(
                     color: Colors.white,
                     borderRadius: const BorderRadius.only(
-                        topLeft: Radius.circular(8),
-                        bottomLeft: Radius.circular(8),
-                        bottomRight: Radius.circular(8),
-                        topRight: Radius.circular(8),),
+                      topLeft: Radius.circular(8),
+                      bottomLeft: Radius.circular(8),
+                      bottomRight: Radius.circular(8),
+                      topRight: Radius.circular(8),
+                    ),
                     boxShadow: <BoxShadow>[
                       BoxShadow(
-                          color: Colors.grey.withOpacity(0.4),
-                          offset: const Offset(1.1, 1.1),
-                          blurRadius: 10),
+                        color: Colors.grey.withOpacity(0.4),
+                        offset: const Offset(1.1, 1.1),
+                        blurRadius: 10,
+                      ),
                     ],
                   ),
                   child: Stack(
                     alignment: Alignment.topLeft,
                     children: <Widget>[
                       ClipRRect(
-                        borderRadius: const BorderRadius.all(Radius.circular(8)),
+                        borderRadius:
+                            const BorderRadius.all(Radius.circular(8)),
                         child: SizedBox(
                           height: 74,
                           child: AspectRatio(
                             aspectRatio: 1.714,
-                            child: Image.asset('images/back.png'),
+                            child: Image.asset('assets/images/back.png'),
                           ),
                         ),
                       ),
@@ -447,7 +455,7 @@ class HomeView extends StatelessWidget {
                 child: SizedBox(
                   width: 110,
                   height: 110,
-                  child: Image.asset('images/runner.png'),
+                  child: Image.asset('assets/images/runner.png'),
                 ),
               )
             ],
