@@ -3,6 +3,7 @@ import 'package:perseus_front_mobile/model/exercises.dart';
 import 'package:perseus_front_mobile/pages/exercise_details/view/exercise_detail_page.dart';
 import 'package:perseus_front_mobile/pages/home/view/home_page.dart';
 import 'package:perseus_front_mobile/pages/login/view/login_page.dart';
+import 'package:perseus_front_mobile/pages/notification/view/notification_page.dart';
 import 'package:perseus_front_mobile/pages/profile/view/profile_page.dart';
 import 'package:perseus_front_mobile/pages/register/view/register_page.dart';
 
@@ -42,8 +43,13 @@ class AppRouter {
         return CupertinoPageRoute<dynamic>(
           builder: (_) => const ProfilePage(),
         );
+      case '/notification':
+        return CupertinoPageRoute<dynamic>(
+          builder: (_) => const NotificationPage(),
+        );
       default:
         return null;
     }
+    return null;
   }
 }

@@ -12,8 +12,13 @@ class Workout extends Equatable {
       exercises.add(Exercise.fromMap(exercise as Map<String, dynamic>));
     }
 
-    return Workout(_map['id'] as String, _map['name'] as String,
-        _map['time'] as int, DateTime.parse(_map['date'] as String), exercises);
+    return Workout(
+      _map['id'] as String,
+      _map['name'] as String,
+      _map['time'] as int,
+      DateTime.parse(_map['date'] as String),
+      exercises,
+    );
   }
 
   final String id;

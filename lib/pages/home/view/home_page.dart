@@ -10,7 +10,9 @@ import 'package:perseus_front_mobile/model/workout.dart';
 import 'package:perseus_front_mobile/pages/counter/counter.dart';
 import 'package:perseus_front_mobile/pages/home/bloc/bottom_navigation/bottom_navigation_bloc.dart';
 import 'package:perseus_front_mobile/pages/home/bloc/calendar/calendar_bloc.dart';
+import 'package:perseus_front_mobile/pages/notification/view/notification_page.dart';
 import 'package:perseus_front_mobile/pages/profile/view/profile_page.dart';
+import 'package:perseus_front_mobile/pages/settings/view/settings_page.dart';
 import 'package:perseus_front_mobile/repositories/workout_repository.dart';
 import 'package:table_calendar/table_calendar.dart';
 
@@ -59,6 +61,10 @@ class HomeView extends StatelessWidget {
                 return const ProfilePage();
               } else if (state.currentIndex == 1) {
                 return _getHomePageContent(context);
+              } else if (state.currentIndex == 3) {
+                return const NotificationPage();
+              } else if (state.currentIndex == 4) {
+                return const SettingsPage();
               } else {
                 return const CounterPage();
               }
