@@ -87,7 +87,7 @@ class LoginView extends StatelessWidget {
           return null;
         },
         onChanged: (value) {
-          context.read<LoginBloc>().add(LoginUsernameChangedEvent(value));
+          // context.read<LoginBloc>().add(LoginUsernameChangedEvent(value));
         },
       ),
     );

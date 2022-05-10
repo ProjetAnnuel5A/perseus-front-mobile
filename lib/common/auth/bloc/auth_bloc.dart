@@ -44,9 +44,15 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
 
     final token = await _storage.getToken();
 
-    if (token == null || JwtDecoder.isExpired(token)) {
-      // TODO decode and save userId ?
+    if (token == null) {
       emit(AuthUnauthenticated());
+      return;
+    }
+
+    if (JwtDecoder.tryDecode(token) == null || JwtDecoder.isExpired(token)) {
+      emit(AuthUnauthenticated());
+      await _storage.deleteAll();
+
       return;
     }
 

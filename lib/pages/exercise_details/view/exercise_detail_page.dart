@@ -35,11 +35,14 @@ class ExerciseDetailView extends StatelessWidget {
                 children: <Widget>[
                   Container(
                     alignment: Alignment.center,
-                    child: Image.asset(
-                      'assets/images/surentrainement.jpeg',
-                      fit: BoxFit.cover,
-                      width: double.infinity,
+                    child: Container(
+                      color: Colors.grey,
                     ),
+                    // Image.asset(
+                    //   'assets/images/surentrainement.jpeg',
+                    //   fit: BoxFit.cover,
+                    //   width: double.infinity,
+                    // ),
                   ),
                   Align(
                     alignment: Alignment.topLeft,
