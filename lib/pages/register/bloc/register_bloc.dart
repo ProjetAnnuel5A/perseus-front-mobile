@@ -1,6 +1,6 @@
 import 'package:bloc/bloc.dart';
 import 'package:equatable/equatable.dart';
-import 'package:perseus_front_mobile/model/dao/register_dto.dart';
+import 'package:perseus_front_mobile/model/dto/register_dto.dart';
 import 'package:perseus_front_mobile/repositories/auth_repository.dart';
 
 part 'register_event.dart';

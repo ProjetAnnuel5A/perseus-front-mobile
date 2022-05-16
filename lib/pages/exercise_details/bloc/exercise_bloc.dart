@@ -1,18 +1,21 @@
 import 'package:bloc/bloc.dart';
 import 'package:equatable/equatable.dart';
 import 'package:perseus_front_mobile/model/exercise.dart';
+import 'package:perseus_front_mobile/model/exercise_data.dart';
+import 'package:perseus_front_mobile/repositories/exercise_data_repository.dart';
 
 part 'exercise_event.dart';
 part 'exercise_state.dart';
 
 class ExerciseBloc extends Bloc<ExerciseEvent, ExerciseState> {
-  ExerciseBloc(Exercise exercise) : super(ExerciseInitial()) {
+  ExerciseBloc(this._exerciseDataRepository, Exercise exercise)
+      : super(ExerciseInitial()) {
     on<ExerciseStarted>((event, emit) {
       emit(ExerciseLoaded(exercise));
     });
 
-    on<ExerciseEvent>((event, emit) {
-      // TODO: implement event handler
+    on<ValidateExercisesData>((event, emit) {
+      _exerciseDataRepository.updateExercisesData(event.exercisesData);
     });
 
     on<IncrementRepetition>((event, emit) {
@@ -31,4 +34,6 @@ class ExerciseBloc extends Bloc<ExerciseEvent, ExerciseState> {
 
     add(ExerciseStarted());
   }
+
+  final ExerciseDataRepository _exerciseDataRepository;
 }

@@ -4,6 +4,7 @@ import 'package:perseus_front_mobile/common/theme/colors.dart';
 import 'package:perseus_front_mobile/model/exercise.dart';
 import 'package:perseus_front_mobile/model/exercise_data.dart';
 import 'package:perseus_front_mobile/pages/exercise_details/bloc/exercise_bloc.dart';
+import 'package:perseus_front_mobile/repositories/exercise_data_repository.dart';
 
 class ExerciseDetailPage extends StatelessWidget {
   const ExerciseDetailPage({Key? key, required this.exercise})
@@ -14,7 +15,8 @@ class ExerciseDetailPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return BlocProvider(
-      create: (_) => ExerciseBloc(exercise),
+      create: (_) =>
+          ExerciseBloc(context.read<ExerciseDataRepository>(), exercise),
       child: ExerciseDetailView(exercise: exercise),
     );
   }
@@ -187,17 +189,25 @@ class ExerciseDetailView extends StatelessWidget {
                 ),
               ],
             ),
-            child: const Center(
-              child: Text(
-                'Validate exercise',
-                textAlign: TextAlign.left,
-                style: TextStyle(
-                  fontWeight: FontWeight.w600,
-                  fontSize: 18,
-                  letterSpacing: 0,
-                  color: Colors.white,
+            child: InkWell(
+              child: const Center(
+                child: Text(
+                  'Validate exercise',
+                  textAlign: TextAlign.left,
+                  style: TextStyle(
+                    fontWeight: FontWeight.w600,
+                    fontSize: 18,
+                    letterSpacing: 0,
+                    color: Colors.white,
+                  ),
                 ),
               ),
+              onTap: () {
+                context.read<ExerciseBloc>().add(ValidateExercisesData(
+                      exercise.exercisesData,
+                      exercise.exerciseDataIds,
+                    ));
+              },
             ),
           ),
         )

@@ -28,3 +28,10 @@ class DecrementRepetition extends ExerciseEvent {
   @override
   List<Object> get props => [exercise];
 }
+
+class ValidateExercisesData extends ExerciseEvent {
+  const ValidateExercisesData(this.exercisesData, this.exerciseIds);
+
+  final List<ExerciseData> exercisesData;
+  final List<String> exerciseIds;
+}
