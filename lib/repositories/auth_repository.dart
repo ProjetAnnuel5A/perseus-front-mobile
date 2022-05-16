@@ -1,8 +1,7 @@
 import 'dart:convert';
 
 import 'package:dio/dio.dart';
-import 'package:jwt_decoder/jwt_decoder.dart';
-import 'package:perseus_front_mobile/model/dao/register_dto.dart';
+import 'package:perseus_front_mobile/model/dto/register_dto.dart';
 
 class AuthRepository {
   static const server = 'http://localhost:9090';

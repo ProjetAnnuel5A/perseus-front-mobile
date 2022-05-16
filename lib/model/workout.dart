@@ -1,5 +1,5 @@
 import 'package:equatable/equatable.dart';
-import 'package:perseus_front_mobile/model/exercises.dart';
+import 'package:perseus_front_mobile/model/exercise.dart';
 
 class Workout extends Equatable {
   const Workout(this.id, this.name, this.time, this.date, this.exercises);

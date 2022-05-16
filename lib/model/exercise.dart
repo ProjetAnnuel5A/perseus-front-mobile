@@ -1,4 +1,6 @@
+// ignore_for_file: public_member_api_docs, sort_constructors_first
 import 'package:equatable/equatable.dart';
+
 import 'package:perseus_front_mobile/model/exercise_data.dart';
 
 class Exercise extends Equatable {
@@ -12,6 +14,8 @@ class Exercise extends Equatable {
       exercisesData
           .add(ExerciseData.fromMap(exerciseData as Map<String, dynamic>));
     }
+
+    print('exdata: $exercisesData');
     return Exercise(
       _map['id'] as String,
       _map['name'] as String,
@@ -27,4 +31,18 @@ class Exercise extends Equatable {
 
   @override
   List<Object?> get props => [id, name, exerciseDataIds, exercisesData];
+
+  Exercise copyWith({
+    String? id,
+    String? name,
+    List<String>? exerciseDataIds,
+    List<ExerciseData>? exercisesData,
+  }) {
+    return Exercise(
+      id ?? this.id,
+      name ?? this.name,
+      exerciseDataIds ?? this.exerciseDataIds,
+      exercisesData ?? this.exercisesData,
+    );
+  }
 }
