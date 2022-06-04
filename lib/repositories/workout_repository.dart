@@ -12,7 +12,7 @@ class WorkoutRepository {
 
     try {
       final response = await dio.get<String>(
-        '$server/workouts/',
+        '$server/v1/workouts/',
       );
 
       if (response.statusCode == 200 && response.data != null) {
