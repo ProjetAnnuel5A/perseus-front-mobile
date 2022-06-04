@@ -5,7 +5,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:perseus_front_mobile/common/extensions.dart';
 import 'package:perseus_front_mobile/common/theme/colors.dart';
 import 'package:perseus_front_mobile/l10n/l10n.dart';
-import 'package:perseus_front_mobile/model/exercise.dart';
+import 'package:perseus_front_mobile/model/set.dart';
 import 'package:perseus_front_mobile/model/workout.dart';
 import 'package:perseus_front_mobile/pages/counter/counter.dart';
 import 'package:perseus_front_mobile/pages/home/bloc/bottom_navigation/bottom_navigation_bloc.dart';
@@ -256,12 +256,12 @@ class HomeView extends StatelessWidget {
                 const Padding(
                   padding: EdgeInsets.symmetric(vertical: 12),
                   child: Text(
-                    'exercises: ',
+                    'Sets: ',
                     textAlign: TextAlign.left,
                     style: TextStyle(color: Colors.white),
                   ),
                 ),
-                exercisesSample(workout.exercises),
+                exercisesSample(workout.sets),
                 const SizedBox(
                   height: 32,
                 ),
@@ -282,7 +282,7 @@ class HomeView extends StatelessWidget {
                       Padding(
                         padding: const EdgeInsets.only(left: 4),
                         child: Text(
-                          '${workout.time} min',
+                          '${workout.estimatedTime} min',
                           textAlign: TextAlign.center,
                           style: const TextStyle(
                             fontWeight: FontWeight.w500,
@@ -310,10 +310,10 @@ class HomeView extends StatelessWidget {
                         child: IconButton(
                           onPressed: () => Navigator.pushNamed(
                             context,
-                            '/exercise',
+                            '/set',
                           ),
                           icon: const Icon(
-                            Icons.arrow_right,
+                            Icons.check,
                             color: Color(0xFF6F56E8),
                           ),
                         ),
@@ -329,27 +329,29 @@ class HomeView extends StatelessWidget {
     );
   }
 
-  Widget exercisesSample(List<Exercise> exercises) {
-    if (exercises.isEmpty) {
+  Widget exercisesSample(List<Set> sets) {
+    if (sets.isEmpty) {
       return const SizedBox.shrink();
     }
 
     return Expanded(
       child: ListView.builder(
-        itemCount: exercises.length,
+        itemCount: sets.length,
         itemBuilder: (context, index) {
           return Card(
             child: ListTile(
-              // leading: FlutterLogo(),
-              leading: const Icon(Icons.fitness_center),
-              title: Text(exercises[index].name),
+              leading: Icon(
+                Icons.fitness_center,
+                color: sets[index].isValided ? Colors.green : Colors.orange,
+              ),
+              title: Text(sets[index].name),
               trailing: IconButton(
                 icon: const Icon(Icons.navigate_next),
                 onPressed: () {
                   Navigator.pushNamed(
                     context,
-                    '/exercise',
-                    arguments: exercises[index],
+                    '/set',
+                    arguments: sets[index].id,
                   );
                 },
               ),

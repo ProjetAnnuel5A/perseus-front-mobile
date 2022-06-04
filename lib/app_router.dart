@@ -1,11 +1,10 @@
 import 'package:flutter/cupertino.dart';
-import 'package:perseus_front_mobile/model/exercise.dart';
-import 'package:perseus_front_mobile/pages/exercise_details/view/exercise_detail_page.dart';
 import 'package:perseus_front_mobile/pages/home/view/home_page.dart';
 import 'package:perseus_front_mobile/pages/login/view/login_page.dart';
 import 'package:perseus_front_mobile/pages/notification/view/notification_page.dart';
 import 'package:perseus_front_mobile/pages/profile/view/profile_page.dart';
 import 'package:perseus_front_mobile/pages/register/view/register_page.dart';
+import 'package:perseus_front_mobile/pages/set_details/view/set_detail_page.dart';
 
 class AppRouter {
   Route? onGenerateRoute(RouteSettings settings) {
@@ -30,12 +29,12 @@ class AppRouter {
         return CupertinoPageRoute<dynamic>(
           builder: (_) => const HomePage(),
         );
-      case '/exercise':
-        final arg = settings.arguments as Exercise?;
+      case '/set':
+        final arg = settings.arguments as String?;
 
         if (arg != null) {
           return CupertinoPageRoute<dynamic>(
-            builder: (_) => ExerciseDetailPage(exercise: arg),
+            builder: (_) => SetDetailPage(setId: arg),
           );
         }
         break;
