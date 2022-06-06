@@ -40,30 +40,37 @@ class RegisterView extends StatelessWidget {
       appBar: AppBar(title: Text(l10n.registerAppBarTitle)),
       body: BlocProvider(
         create: (context) => RegisterBloc(context.read<AuthRepository>()),
-        child: Center(
-          child: Padding(
-            padding: const EdgeInsets.all(20),
-            child: Column(
-              children: [
-                const Spacer(),
-                _headerText(),
-                const Spacer(),
-                Form(
-                  key: _formKey,
-                  onChanged: () {},
-                  child: Column(
-                    children: [
-                      _usernameField(),
-                      _emailField(),
-                      _passwordField(),
-                      _confirmationField(),
-                    ],
+        child: BlocListener<RegisterBloc, RegisterState>(
+          listener: (context, state) {
+            if (state is RegisterSuccess) {
+              Navigator.pop(context);
+            }
+          },
+          child: Center(
+            child: Padding(
+              padding: const EdgeInsets.all(20),
+              child: Column(
+                children: [
+                  const Spacer(),
+                  _headerText(),
+                  const Spacer(),
+                  Form(
+                    key: _formKey,
+                    onChanged: () {},
+                    child: Column(
+                      children: [
+                        _usernameField(),
+                        _emailField(),
+                        _passwordField(),
+                        _confirmationField(),
+                      ],
+                    ),
                   ),
-                ),
-                _registerButton(context),
-                _loginText(context),
-                const Spacer(),
-              ],
+                  _registerButton(context),
+                  _loginText(context),
+                  const Spacer(),
+                ],
+              ),
             ),
           ),
         ),
@@ -170,20 +177,28 @@ class RegisterView extends StatelessWidget {
   }
 
   Widget _registerButton(BuildContext context) {
-    return Padding(
-      padding: const EdgeInsets.all(8),
-      child: ElevatedButton(
-        onPressed: () {
-          final username = _usernameController.value.text;
-          final email = _emailController.value.text;
-          final password = _passwordController.value.text;
+    return BlocBuilder<RegisterBloc, RegisterState>(
+      builder: (context, state) {
+        if (state is RegisterLoading) {
+          return const CircularProgressIndicator();
+        }
 
-          context.read<RegisterBloc>().add(
-                RegisterValidateFormEvent(username, email, password),
-              );
-        },
-        child: const Text('Register'),
-      ),
+        return Padding(
+          padding: const EdgeInsets.all(8),
+          child: ElevatedButton(
+            onPressed: () {
+              final username = _usernameController.value.text;
+              final email = _emailController.value.text;
+              final password = _passwordController.value.text;
+
+              context.read<RegisterBloc>().add(
+                    RegisterValidateFormEvent(username, email, password),
+                  );
+            },
+            child: const Text('Register'),
+          ),
+        );
+      },
     );
   }
 

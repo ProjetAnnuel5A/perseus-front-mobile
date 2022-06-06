@@ -8,3 +8,4 @@ abstract class LoginState extends Equatable {
 }
 
 class LoginInitial extends LoginState {}
+class LoginError extends LoginState {}

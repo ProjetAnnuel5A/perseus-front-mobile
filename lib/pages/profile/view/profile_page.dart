@@ -1,12 +1,19 @@
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:perseus_front_mobile/common/theme/colors.dart';
+import 'package:perseus_front_mobile/common/widget/gradient_progress_indicator_widget.dart';
+import 'package:perseus_front_mobile/pages/profile/bloc/profile_bloc.dart';
+import 'package:perseus_front_mobile/repositories/profile_repository.dart';
 
 class ProfilePage extends StatelessWidget {
   const ProfilePage({Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
-    return const ProfileView();
+    return BlocProvider(
+      create: (_) => ProfileBloc(context.read<ProfileRepository>()),
+      child: const ProfileView(),
+    );
   }
 }
 
@@ -16,19 +23,63 @@ class ProfileView extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: Center(
-        child: Column(
-          children: const [
-            Padding(
-              padding: EdgeInsets.all(8),
-              child: CircleAvatar(
-                radius: 120,
-                backgroundImage: AssetImage('assets/images/runner.png'),
+      body: BlocBuilder<ProfileBloc, ProfileState>(
+        builder: (context, state) {
+          if (state is ProfileLoaded) {
+            final profile = state.profile;
+
+            return Center(
+              child: Column(
+                children: [
+                  const Padding(
+                    padding: EdgeInsets.all(8),
+                    child: CircleAvatar(
+                      radius: 120,
+                      backgroundImage: AssetImage('assets/images/runner.png'),
+                    ),
+                  ),
+                  const Spacer(),
+                  Column(
+                    children: [
+                      Padding(
+                        padding: const EdgeInsets.symmetric(vertical: 20),
+                        child: Text(
+                          'Profile informations',
+                          style: Theme.of(context)
+                              .textTheme
+                              .titleLarge
+                              ?.copyWith(color: Colors.black),
+                        ),
+                      ),
+                      Text('Username: ${profile.username}'),
+                      Text('Email: ${profile.email}')
+                    ],
+                  ),
+                  const Spacer(),
+                ],
               ),
-            ),
-            Text('Connected as: ')
-          ],
-        ),
+            );
+          }
+          return customLoader();
+        },
+      ),
+    );
+  }
+
+  GradientProgressIndicator customLoader() {
+    return GradientProgressIndicator(
+      gradientColors: [
+        Colors.white,
+        ColorPerseus.pink,
+      ],
+      child: Column(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: const [
+          Text(
+            'Loading...',
+            style: TextStyle(color: Colors.black, fontSize: 18),
+          ),
+        ],
       ),
     );
   }

@@ -1,6 +1,5 @@
 import 'package:bloc/bloc.dart';
 import 'package:equatable/equatable.dart';
-import 'package:perseus_front_mobile/model/dto/validate_set_dto.dart';
 import 'package:perseus_front_mobile/model/exercise.dart';
 import 'package:perseus_front_mobile/model/set.dart';
 import 'package:perseus_front_mobile/repositories/set_repository.dart';
