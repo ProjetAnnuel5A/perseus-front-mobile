@@ -9,8 +9,6 @@ class AuthRepository {
   Future<String?> register(RegisterDto registerDto) async {
     final data = registerDto.toJson();
 
-    print(data);
-
     final dio = Dio();
     dio.options.headers['content-Type'] = 'application/json';
 
@@ -22,6 +20,7 @@ class AuthRepository {
 
       if (response.statusCode == 201) {
         print(response.data);
+        return 'ok';
       } else {
         print('Request failed with status: ${response.statusCode}.');
       }
@@ -57,6 +56,12 @@ class AuthRepository {
       }
     } catch (e) {
       print(e);
+
+      if (e is DioError) {
+        if (e.response != null && e.response!.statusCode == 404) {
+          return null;
+        }
+      }
     }
 
     return '';

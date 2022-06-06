@@ -28,8 +28,8 @@ class SetRepository {
       } else {
         print('Request failed with status: ${response.statusCode}.');
       }
-    } catch (e) {
-      print(e);
+    } catch (e, stacktrace) {
+      print('$e\n$stacktrace');
     }
 
     return null;

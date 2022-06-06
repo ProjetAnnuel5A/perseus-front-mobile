@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:perseus_front_mobile/common/theme/colors.dart';
 import 'package:perseus_front_mobile/model/exercise.dart';
 import 'package:perseus_front_mobile/model/set.dart';
 import 'package:perseus_front_mobile/pages/set_details/bloc/set_bloc.dart';
@@ -123,7 +122,7 @@ class SetDetailView extends StatelessWidget {
               padding: const EdgeInsets.all(15),
               child: Row(
                 children: [
-                  Text('Repetitions n°${index + 1}'),
+                  Text('${index + 1}) ${exercise.name}'),
                   const Spacer(),
                   ElevatedButton(
                     onPressed:
@@ -168,6 +167,31 @@ class SetDetailView extends StatelessWidget {
     return Row(
       mainAxisAlignment: MainAxisAlignment.center,
       children: <Widget>[
+        Padding(
+          padding: const EdgeInsets.only(right: 10),
+          child: SizedBox(
+            width: 48,
+            height: 48,
+            child: Container(
+              decoration: BoxDecoration(
+                color: Colors.white,
+                borderRadius: const BorderRadius.all(
+                  Radius.circular(16),
+                ),
+                border: Border.all(
+                  color: Colors.grey.withOpacity(0.2),
+                ),
+              ),
+              child: IconButton(
+                icon: const Icon(
+                  Icons.edit,
+                  size: 28,
+                ),
+                onPressed: set.isValided ? null : () {},
+              ),
+            ),
+          ),
+        ),
         SizedBox(
           width: 48,
           height: 48,
@@ -181,10 +205,12 @@ class SetDetailView extends StatelessWidget {
                 color: Colors.grey.withOpacity(0.2),
               ),
             ),
-            child: Icon(
-              Icons.add,
-              color: ColorPerseus.pink,
-              size: 28,
+            child: IconButton(
+              icon: const Icon(
+                Icons.history_outlined,
+                size: 28,
+              ),
+              onPressed: set.isValided ? null : () {},
             ),
           ),
         ),
@@ -216,44 +242,6 @@ class SetDetailView extends StatelessWidget {
             ),
           ),
         ),
-        // child: Container(
-        //   height: 48,
-        //   decoration: BoxDecoration(
-        //     color: ColorPerseus.pink,
-        //     borderRadius: const BorderRadius.all(
-        //       Radius.circular(16),
-        //     ),
-        //     boxShadow: <BoxShadow>[
-        //       BoxShadow(
-        //         color: ColorPerseus.pink.withOpacity(0.5),
-        //         offset: const Offset(1.1, 1.1),
-        //         blurRadius: 10,
-        //       ),
-        //     ],
-        //   ),
-        //   child: InkWell(
-        //     child: const Center(
-        //       child: Text(
-        //         'Validate exercise',
-        //         textAlign: TextAlign.left,
-        //         style: TextStyle(
-        //           fontWeight: FontWeight.w600,
-        //           fontSize: 18,
-        //           letterSpacing: 0,
-        //           color: Colors.white,
-        //         ),
-        //       ),
-        //     ),
-        //     onTap: () {
-        //       context.read<ExerciseBloc>().add(
-        //             ValidateExercisesData(
-        //               exercise.exercisesData,
-        //               exercise.exerciseDataIds,
-        //             ),
-        //           );
-        //     },
-        //   ),
-        // ),
       ],
     );
   }

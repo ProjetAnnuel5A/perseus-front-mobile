@@ -24,6 +24,8 @@ class LoginBloc extends Bloc<LoginEvent, LoginState> {
 
       if (result != null && result != '') {
         _authenticationBloc.add(LoggedIn('username', result));
+      } else {
+        emit(LoginError());
       }
     });
   }

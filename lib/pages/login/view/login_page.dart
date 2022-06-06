@@ -34,29 +34,44 @@ class LoginView extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final l10n = context.l10n;
-    return Scaffold(
-      appBar: AppBar(title: Text(l10n.loginAppBarTitle)),
-      body: Center(
-        child: Padding(
-          padding: const EdgeInsets.all(20),
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              const Spacer(),
-              _headerText(),
-              const Spacer(),
-              _usernameField(context),
-              _passwordField(),
-              _loginButton(context),
-              _registerText(context),
-              _passwordForgotten(context),
-              _legalMentionsText(),
-              const Spacer(),
-            ],
+
+    return BlocListener<LoginBloc, LoginState>(
+        listener: (context, state) {
+          if (state is LoginError) {
+            final snackBar = SnackBar(
+              content: const Text('Login incorrect !'),
+              action: SnackBarAction(
+                label: 'Close',
+                onPressed: () {},
+              ),
+            );
+
+            ScaffoldMessenger.of(context).showSnackBar(snackBar);
+          }
+        },
+        child: Scaffold(
+          appBar: AppBar(title: Text(l10n.loginAppBarTitle)),
+          body: Center(
+            child: Padding(
+              padding: const EdgeInsets.all(20),
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  const Spacer(),
+                  _headerText(),
+                  const Spacer(),
+                  _usernameField(context),
+                  _passwordField(),
+                  _loginButton(context),
+                  _registerText(context),
+                  _passwordForgotten(context),
+                  _legalMentionsText(),
+                  const Spacer(),
+                ],
+              ),
+            ),
           ),
-        ),
-      ),
-    );
+        ));
   }
 
   Widget _headerText() {

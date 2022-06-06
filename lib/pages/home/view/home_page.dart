@@ -342,7 +342,7 @@ class HomeView extends StatelessWidget {
             child: ListTile(
               leading: Icon(
                 Icons.fitness_center,
-                color: sets[index].isValided ? Colors.green : Colors.orange,
+                color: sets[index].isValided ? Colors.green : Colors.red,
               ),
               title: Text(sets[index].name),
               trailing: IconButton(

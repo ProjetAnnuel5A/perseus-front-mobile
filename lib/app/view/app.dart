@@ -15,6 +15,7 @@ import 'package:perseus_front_mobile/l10n/l10n.dart';
 import 'package:perseus_front_mobile/pages/home/view/home_page.dart';
 import 'package:perseus_front_mobile/pages/login/view/login_page.dart';
 import 'package:perseus_front_mobile/repositories/auth_repository.dart';
+import 'package:perseus_front_mobile/repositories/profile_repository.dart';
 import 'package:perseus_front_mobile/repositories/set_repository.dart';
 import 'package:perseus_front_mobile/repositories/workout_repository.dart';
 
@@ -29,6 +30,7 @@ class App extends StatelessWidget {
       // Provide repositories
       providers: [
         RepositoryProvider.value(value: AuthRepository()),
+        RepositoryProvider.value(value: ProfileRepository()),
         RepositoryProvider.value(value: WorkoutRepository()),
         RepositoryProvider.value(value: SetRepository()),
       ],
