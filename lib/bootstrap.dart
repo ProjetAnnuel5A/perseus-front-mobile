@@ -11,6 +11,7 @@ import 'dart:developer';
 import 'package:flutter/widgets.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:perseus_front_mobile/common/auth/bloc/auth_bloc.dart';
+import 'package:sentry_flutter/sentry_flutter.dart';
 
 class AppBlocObserver extends BlocObserver {
   @override
@@ -33,6 +34,13 @@ Future<void> bootstrap(FutureOr<Widget> Function() builder) async {
 
   await runZonedGuarded(
     () async {
+      await SentryFlutter.init(
+        (options) {
+          options.dsn =
+              'https://f656efd95372491f8761f1827232fa0a@o1278976.ingest.sentry.io/6479094';
+        },
+      );
+
       await BlocOverrides.runZoned(
         () async => runApp(
           BlocProvider<AuthBloc>(
@@ -46,6 +54,9 @@ Future<void> bootstrap(FutureOr<Widget> Function() builder) async {
         blocObserver: AppBlocObserver(),
       );
     },
-    (error, stackTrace) => log(error.toString(), stackTrace: stackTrace),
+    (error, stackTrace) async {
+      await Sentry.captureException(error, stackTrace: stackTrace);
+      log(error.toString(), stackTrace: stackTrace);
+    },
   );
 }
