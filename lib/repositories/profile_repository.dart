@@ -4,7 +4,7 @@ import 'package:dio/dio.dart';
 import 'package:perseus_front_mobile/model/profile.dart';
 
 class ProfileRepository {
-  static const server = 'http://localhost:9090';
+  static const server = 'https://pa5a.herokuapp.com';
 
   Future<Profile?> getById(String profileId, String jwt) async {
     final dio = Dio();

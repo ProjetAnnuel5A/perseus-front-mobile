@@ -4,7 +4,7 @@ import 'package:dio/dio.dart';
 import 'package:perseus_front_mobile/model/dto/register_dto.dart';
 
 class AuthRepository {
-  static const server = 'http://localhost:9090';
+  static const server = 'https://pa5a.herokuapp.com';
 
   Future<String?> register(RegisterDto registerDto) async {
     final data = registerDto.toJson();

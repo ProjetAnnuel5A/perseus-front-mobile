@@ -14,6 +14,8 @@ class LoginBloc extends Bloc<LoginEvent, LoginState> {
     // });
 
     on<LoginValidateFormEvent>((event, emit) async {
+      emit(LoginLoading());
+
       print(event.username);
       print(event.password);
 

@@ -125,19 +125,27 @@ class LoginView extends StatelessWidget {
   }
 
   Widget _loginButton(BuildContext context) {
-    return Padding(
-      padding: const EdgeInsets.all(8),
-      child: ElevatedButton(
-        onPressed: () {
-          final username = _usernameController.value.text;
-          final password = _passwordController.value.text;
+    return BlocBuilder<LoginBloc, LoginState>(
+      builder: (context, state) {
+        if (state is LoginLoading) {
+          return const CircularProgressIndicator();
+        }
 
-          context
-              .read<LoginBloc>()
-              .add(LoginValidateFormEvent(username, password));
-        },
-        child: const Text('Login'),
-      ),
+        return Padding(
+          padding: const EdgeInsets.all(8),
+          child: ElevatedButton(
+            onPressed: () {
+              final username = _usernameController.value.text;
+              final password = _passwordController.value.text;
+
+              context
+                  .read<LoginBloc>()
+                  .add(LoginValidateFormEvent(username, password));
+            },
+            child: const Text('Login'),
+          ),
+        );
+      },
     );
   }
 

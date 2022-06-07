@@ -20,6 +20,8 @@ class SetBloc extends Bloc<SetEvent, SetState> {
     });
 
     on<ValidateSet>((event, emit) async {
+      emit(SetLoading());
+
       final set =
           await _setRepository.validateSet(event.setId, event.exercises);
 

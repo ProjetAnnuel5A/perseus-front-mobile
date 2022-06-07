@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:perseus_front_mobile/common/theme/colors.dart';
+import 'package:perseus_front_mobile/common/widget/gradient_progress_indicator_widget.dart';
 import 'package:perseus_front_mobile/model/exercise.dart';
 import 'package:perseus_front_mobile/model/set.dart';
 import 'package:perseus_front_mobile/pages/set_details/bloc/set_bloc.dart';
@@ -63,9 +65,18 @@ class SetDetailView extends StatelessWidget {
                   ),
                 ],
               );
-            } else {
-              return const CircularProgressIndicator();
             }
+
+            return GradientProgressIndicator(
+              gradientColors: [
+                Colors.white,
+                ColorPerseus.pink,
+              ],
+              child: const Text(
+                'Loading...',
+                style: TextStyle(color: Colors.black, fontSize: 18),
+              ),
+            );
           },
         ),
       ),

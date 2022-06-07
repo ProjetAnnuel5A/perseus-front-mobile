@@ -72,14 +72,9 @@ class ProfileView extends StatelessWidget {
         Colors.white,
         ColorPerseus.pink,
       ],
-      child: Column(
-        mainAxisAlignment: MainAxisAlignment.center,
-        children: const [
-          Text(
-            'Loading...',
-            style: TextStyle(color: Colors.black, fontSize: 18),
-          ),
-        ],
+      child: const Text(
+        'Loading...',
+        style: TextStyle(color: Colors.black, fontSize: 18),
       ),
     );
   }
