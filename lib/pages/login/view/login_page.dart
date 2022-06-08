@@ -5,6 +5,7 @@
 // license that can be found in the LICENSE file or at
 // https://opensource.org/licenses/MIT.
 
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:perseus_front_mobile/common/auth/bloc/auth_bloc.dart';
@@ -36,42 +37,43 @@ class LoginView extends StatelessWidget {
     final l10n = context.l10n;
 
     return BlocListener<LoginBloc, LoginState>(
-        listener: (context, state) {
-          if (state is LoginError) {
-            final snackBar = SnackBar(
-              content: const Text('Login incorrect !'),
-              action: SnackBarAction(
-                label: 'Close',
-                onPressed: () {},
-              ),
-            );
+      listener: (context, state) {
+        if (state is LoginError) {
+          final snackBar = SnackBar(
+            content: const Text('Login incorrect !'),
+            action: SnackBarAction(
+              label: 'Close',
+              onPressed: () {},
+            ),
+          );
 
-            ScaffoldMessenger.of(context).showSnackBar(snackBar);
-          }
-        },
-        child: Scaffold(
-          appBar: AppBar(title: Text(l10n.loginAppBarTitle)),
-          body: Center(
-            child: Padding(
-              padding: const EdgeInsets.all(20),
-              child: Column(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  const Spacer(),
-                  _headerText(),
-                  const Spacer(),
-                  _usernameField(context),
-                  _passwordField(),
-                  _loginButton(context),
-                  _registerText(context),
-                  _passwordForgotten(context),
-                  _legalMentionsText(),
-                  const Spacer(),
-                ],
-              ),
+          ScaffoldMessenger.of(context).showSnackBar(snackBar);
+        }
+      },
+      child: Scaffold(
+        appBar: AppBar(title: Text(l10n.loginAppBarTitle)),
+        body: Center(
+          child: Padding(
+            padding: const EdgeInsets.all(20),
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                const Spacer(),
+                _headerText(),
+                const Spacer(),
+                _usernameField(context),
+                _passwordField(),
+                _loginButton(context),
+                _registerText(context),
+                _passwordForgotten(context),
+                _legalMentionsText(),
+                const Spacer(),
+              ],
             ),
           ),
-        ));
+        ),
+      ),
+    );
   }
 
   Widget _headerText() {
@@ -133,7 +135,8 @@ class LoginView extends StatelessWidget {
 
         return Padding(
           padding: const EdgeInsets.all(8),
-          child: ElevatedButton(
+          child: CupertinoButton.filled(
+            disabledColor: CupertinoColors.inactiveGray,
             onPressed: () {
               final username = _usernameController.value.text;
               final password = _passwordController.value.text;
