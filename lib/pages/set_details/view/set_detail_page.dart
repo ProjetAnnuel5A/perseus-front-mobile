@@ -1,3 +1,4 @@
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:perseus_front_mobile/common/theme/colors.dart';
@@ -49,11 +50,23 @@ class SetDetailView extends StatelessWidget {
                             child: ListView.builder(
                               itemCount: set.exercises.length,
                               itemBuilder: (context, index) {
-                                return repetitionsSet(
-                                  context,
-                                  set,
-                                  set.exercises[index],
-                                  index,
+                                final children = <Widget>[
+                                  repetitionsSet(
+                                    context,
+                                    set,
+                                    set.exercises[index],
+                                    index,
+                                  ),
+                                ];
+
+                                if (index != set.exercises.length - 1) {
+                                  children.add(
+                                    waitingTime(),
+                                  );
+                                }
+
+                                return Column(
+                                  children: children,
                                 );
                               },
                             ),
@@ -135,7 +148,8 @@ class SetDetailView extends StatelessWidget {
                 children: [
                   Text('${index + 1}) ${exercise.name}'),
                   const Spacer(),
-                  ElevatedButton(
+                  CupertinoButton(
+                    padding: EdgeInsets.zero,
                     onPressed:
                         set.exercises[index].repetition <= 0 || set.isValided
                             ? null
@@ -144,7 +158,10 @@ class SetDetailView extends StatelessWidget {
                                     .read<SetBloc>()
                                     .add(DecrementRepetition(set, index));
                               },
-                    child: const Text('-'),
+                    child: const Icon(
+                      CupertinoIcons.minus_circle_fill,
+                      size: 35,
+                    ),
                   ),
                   SizedBox(
                     width: 40,
@@ -154,7 +171,8 @@ class SetDetailView extends StatelessWidget {
                       ),
                     ),
                   ),
-                  ElevatedButton(
+                  CupertinoButton(
+                    padding: EdgeInsets.zero,
                     onPressed: set.isValided
                         ? null
                         : () {
@@ -162,7 +180,10 @@ class SetDetailView extends StatelessWidget {
                                 .read<SetBloc>()
                                 .add(IncrementRepetition(set, index));
                           },
-                    child: const Text('+'),
+                    child: const Icon(
+                      CupertinoIcons.plus_circle_fill,
+                      size: 35,
+                    ),
                   ),
                 ],
               ),
@@ -250,6 +271,36 @@ class SetDetailView extends StatelessWidget {
               style: TextStyle(
                 fontSize: 18,
               ),
+            ),
+          ),
+        ),
+      ],
+    );
+  }
+
+  Widget waitingTime() {
+    return Column(
+      children: [
+        Align(
+          alignment: Alignment.topCenter,
+          child: Container(
+            height: 20,
+            padding: const EdgeInsets.all(5),
+            child: const VerticalDivider(
+              color: Colors.black,
+              thickness: 1,
+            ),
+          ),
+        ),
+        const Icon(Icons.access_time),
+        Align(
+          alignment: Alignment.topCenter,
+          child: Container(
+            height: 20,
+            padding: const EdgeInsets.all(5),
+            child: const VerticalDivider(
+              color: Colors.black,
+              thickness: 1,
             ),
           ),
         ),

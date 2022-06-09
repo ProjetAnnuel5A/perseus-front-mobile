@@ -2,7 +2,6 @@
 import 'dart:convert';
 
 import 'package:equatable/equatable.dart';
-import 'package:perseus_front_mobile/common/extensions.dart';
 
 import 'package:perseus_front_mobile/model/difficulty.dart';
 
@@ -21,7 +20,7 @@ class Exercise extends Equatable {
       _map['id'] as String,
       _map['name'] as String,
       _map['repetition'] as int,
-      Difficulty.values.byName(_map['difficulty'] as String),
+      Difficulty.values[_map['difficulty'] as int],
       DateTime.parse(_map['createdAt'] as String),
       DateTime.parse(_map['updatedAt'] as String),
     );
@@ -69,11 +68,20 @@ class Exercise extends Equatable {
       'id': id,
       'name': name,
       'repetition': repetition,
-      'difficulty': difficulty.toShortString(),
+      'difficulty': difficulty.index,
+      'createdAt': createdAt,
+      'updatedAt': updatedAt,
     };
   }
 
-  String toJson() => json.encode(toMap());
+  String toJson() => json.encode(toMap(), toEncodable: datetimeEncode);
+
+  dynamic datetimeEncode(dynamic item) {
+    if (item is DateTime) {
+      return item.toIso8601String();
+    }
+    return item;
+  }
 
   factory Exercise.fromJson(String source) =>
       Exercise.fromMap(json.decode(source) as Map<String, dynamic>);

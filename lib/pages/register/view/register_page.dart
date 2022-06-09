@@ -5,6 +5,7 @@
 // license that can be found in the LICENSE file or at
 // https://opensource.org/licenses/MIT.
 
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:perseus_front_mobile/l10n/l10n.dart';
@@ -185,7 +186,8 @@ class RegisterView extends StatelessWidget {
 
         return Padding(
           padding: const EdgeInsets.all(8),
-          child: ElevatedButton(
+          child: CupertinoButton.filled(
+            disabledColor: CupertinoColors.inactiveGray,
             onPressed: () {
               final username = _usernameController.value.text;
               final email = _emailController.value.text;

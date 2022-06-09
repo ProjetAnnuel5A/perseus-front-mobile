@@ -11,5 +11,12 @@ class ValidateSetDto {
         'exercises': exercises.map((exercise) => exercise.toMap()).toList(),
       };
 
-  String toJson() => json.encode(toMap());
+  String toJson() => json.encode(toMap(), toEncodable: datetimeEncode);
+
+  dynamic datetimeEncode(dynamic item) {
+    if (item is DateTime) {
+      return item.toIso8601String();
+    }
+    return item;
+  }
 }
