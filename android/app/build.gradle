@@ -85,7 +85,7 @@ android {
         production {
             dimension "default"
             applicationIdSuffix ""
-            manifestPlaceholders = [appName: "Perseus Front Mobile"]
+            manifestPlaceholders = [appName: "Perseus"]
         }
         staging {
             dimension "default"
