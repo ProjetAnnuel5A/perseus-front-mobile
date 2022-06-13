@@ -11,6 +11,8 @@ import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:perseus_front_mobile/app_router.dart';
 import 'package:perseus_front_mobile/common/auth/bloc/auth_bloc.dart';
 import 'package:perseus_front_mobile/common/theme/app_theme.dart';
+import 'package:perseus_front_mobile/common/theme/colors.dart';
+import 'package:perseus_front_mobile/common/widget/gradient_progress_indicator_widget.dart';
 import 'package:perseus_front_mobile/l10n/l10n.dart';
 import 'package:perseus_front_mobile/pages/home/view/home_page.dart';
 import 'package:perseus_front_mobile/pages/login/view/login_page.dart';
@@ -45,12 +47,21 @@ class App extends StatelessWidget {
         home: BlocBuilder<AuthBloc, AuthState>(
           builder: (context, state) {
             if (state is AuthUninitialized) {
-              return const Scaffold(body: CircularProgressIndicator());
+              return Scaffold(
+                body: GradientProgressIndicator(
+                  gradientColors: [
+                    Colors.white,
+                    ColorPerseus.pink,
+                  ],
+                  child: const Text(
+                    'Application is starting...',
+                    style: TextStyle(color: Colors.black, fontSize: 18),
+                  ),
+                ),
+              );
             } else if (state is AuthUnauthenticated) {
               return const LoginPage();
-              // return const HomePage();
             } else if (state is AuthAuthenticated) {
-              // return const CounterPage();
               return const HomePage();
             }
 
