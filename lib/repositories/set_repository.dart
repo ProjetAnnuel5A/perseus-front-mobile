@@ -1,12 +1,16 @@
 import 'dart:convert';
 
 import 'package:dio/dio.dart';
+import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:perseus_front_mobile/model/dto/validate_set_dto.dart';
 import 'package:perseus_front_mobile/model/exercise.dart';
 import 'package:perseus_front_mobile/model/set.dart';
 
 class SetRepository {
-  static const server = 'http://localhost:3000';
+  SetRepository() {
+    server = dotenv.env['sport_api'] ?? 'locahost:3000';
+  }
+  String? server;
 
   Future<Set?> validateSet(String setId, List<Exercise> exercises) async {
     final dio = Dio();

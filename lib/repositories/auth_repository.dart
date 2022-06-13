@@ -1,10 +1,15 @@
 import 'dart:convert';
 
 import 'package:dio/dio.dart';
+import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:perseus_front_mobile/model/dto/register_dto.dart';
 
 class AuthRepository {
-  static const server = 'https://pa5a.herokuapp.com';
+  AuthRepository() {
+    server = dotenv.env['login_api'] ?? 'locahost:9090';
+  }
+
+  String? server;
 
   Future<String?> register(RegisterDto registerDto) async {
     final data = registerDto.toJson();

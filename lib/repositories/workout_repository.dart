@@ -1,10 +1,14 @@
 import 'dart:convert';
 
 import 'package:dio/dio.dart';
+import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:perseus_front_mobile/model/workout.dart';
 
 class WorkoutRepository {
-  static const server = 'http://localhost:3000';
+  WorkoutRepository() {
+    server = dotenv.env['sport_api'] ?? 'locahost:3000';
+  }
+  String? server;
 
   Future<List<Workout>> getAll() async {
     final dio = Dio();
