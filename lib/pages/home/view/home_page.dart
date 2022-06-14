@@ -204,8 +204,10 @@ class HomeView extends StatelessWidget {
           return Expanded(
             child: Column(
               children: [
+                const Spacer(),
                 const Text('No workout for this day. Get some rest.'),
-                Image.asset('assets/images/yoga.png')
+                Image.asset('assets/images/rest.png'),
+                const Spacer(),
               ],
             ),
           );

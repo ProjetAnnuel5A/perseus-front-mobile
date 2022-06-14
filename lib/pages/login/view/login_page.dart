@@ -54,12 +54,12 @@ class LoginView extends StatelessWidget {
         appBar: AppBar(title: Text(l10n.loginAppBarTitle)),
         body: Center(
           child: Padding(
-            padding: const EdgeInsets.all(20),
+            padding: const EdgeInsets.only(right: 20, left: 20),
             child: Column(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
                 const Spacer(),
-                _headerText(),
+                _headerImage(),
                 const Spacer(),
                 _usernameField(context),
                 _passwordField(),
@@ -76,13 +76,11 @@ class LoginView extends StatelessWidget {
     );
   }
 
-  Widget _headerText() {
-    return const Padding(
-      padding: EdgeInsets.all(8),
-      child: Text(
-        'Get started in a couple of minutes !',
-        style: TextStyle(fontWeight: FontWeight.bold, fontSize: 20),
-      ),
+  Widget _headerImage() {
+    return SizedBox(
+      height: 250,
+      width: 250,
+      child: Image.asset('assets/images/login_lock.png'),
     );
   }
 
@@ -169,11 +167,8 @@ class LoginView extends StatelessWidget {
   }
 
   Widget _legalMentionsText() {
-    return const Padding(
-      padding: EdgeInsets.all(8),
-      child: Text(
-        'By continuing, you agree to the Terms, Conditions and Privacy Policy.',
-      ),
+    return const Text(
+      'By continuing, you agree to the Terms, Conditions and Privacy Policy.',
     );
   }
 }

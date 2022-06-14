@@ -53,7 +53,7 @@ class RegisterView extends StatelessWidget {
               child: Column(
                 children: [
                   const Spacer(),
-                  _headerText(),
+                  _headerImage(),
                   const Spacer(),
                   Form(
                     key: _formKey,
@@ -213,13 +213,7 @@ class RegisterView extends StatelessWidget {
     );
   }
 
-  Widget _headerText() {
-    return const Padding(
-      padding: EdgeInsets.all(8),
-      child: Text(
-        'Get started in a couple of minutes !',
-        style: TextStyle(fontWeight: FontWeight.bold, fontSize: 20),
-      ),
-    );
+  Widget _headerImage() {
+    return Image.asset('assets/images/register.png');
   }
 }
