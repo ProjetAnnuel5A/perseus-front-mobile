@@ -1,5 +1,6 @@
 import 'package:bloc/bloc.dart';
 import 'package:equatable/equatable.dart';
+import 'package:perseus_front_mobile/common/error/exceptions.dart';
 import 'package:perseus_front_mobile/model/dto/register_dto.dart';
 import 'package:perseus_front_mobile/repositories/auth_repository.dart';
 
@@ -11,17 +12,21 @@ class RegisterBloc extends Bloc<RegisterEvent, RegisterState> {
     on<RegisterValidateFormEvent>((event, emit) async {
       emit(RegisterLoading());
 
-      print(event.username);
-      print(event.email);
-      print(event.password);
+      try {
+        final _ = await _authRepository
+            .register(RegisterDto(event.username, event.email, event.password));
 
-      final result = await _authRepository
-          .register(RegisterDto(event.username, event.email, event.password));
-
-      if (result != null || result != '') {
         emit(RegisterSuccess());
-      } else {
-        emit(RegisterInitial());
+      } catch (e) {
+        print(e.toString());
+
+        if (e is NotFoundException) {
+          emit(RegisterError(e.message));
+        } else if (e is ConflictException) {
+          emit(RegisterError(e.message));
+        } else {
+          emit(RegisterError(ExceptionUnknow().message));
+        }
       }
     });
   }

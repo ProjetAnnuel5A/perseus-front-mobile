@@ -2,38 +2,43 @@ import 'dart:convert';
 
 import 'package:dio/dio.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
+import 'package:perseus_front_mobile/common/error/exceptions.dart';
 import 'package:perseus_front_mobile/model/dto/register_dto.dart';
 
 class AuthRepository {
   AuthRepository() {
-    server = dotenv.env['login_api'] ?? 'locahost:9090';
+    _dio.options.headers['content-Type'] = 'application/json';
+
+    _baseUrl = dotenv.env['login_api'] ?? 'locahost:9090';
   }
 
-  String? server;
+  final Dio _dio = Dio();
+  String? _baseUrl;
 
   Future<String?> register(RegisterDto registerDto) async {
     final data = registerDto.toJson();
 
-    final dio = Dio();
-    dio.options.headers['content-Type'] = 'application/json';
-
     try {
-      final response = await dio.post<String>(
-        '$server/auth/register',
+      final response = await _dio.post<String>(
+        '$_baseUrl/auth/register',
         data: jsonEncode(data),
       );
 
       if (response.statusCode == 201) {
-        print(response.data);
         return 'ok';
-      } else {
-        print('Request failed with status: ${response.statusCode}.');
       }
-    } catch (e) {
-      print(e);
+    } catch (e, stackTrace) {
+      if (e is DioError && e.response != null) {
+        switch (e.response!.statusCode) {
+          case 404:
+            throw NotFoundException(stackTrace);
+          case 409:
+            throw ConflictException(stackTrace);
+        }
+      }
     }
 
-    return '';
+    throw InternalServerException(StackTrace.current);
   }
 
   Future<String?> login(String username, String password) async {
@@ -41,12 +46,9 @@ class AuthRepository {
       <String, String>{'username': username, 'password': password},
     );
 
-    final dio = Dio();
-    dio.options.headers['Content-Type'] = 'application/json';
-
     try {
       final response =
-          await dio.post<dynamic>('$server/auth/login', data: body);
+          await _dio.post<dynamic>('$_baseUrl/auth/login', data: body);
 
       if (response.statusCode == 201) {
         final header = response.headers['authorization'];
@@ -56,19 +58,16 @@ class AuthRepository {
 
           return token;
         }
-      } else {
-        print('Request failed with status: ${response.statusCode}.');
       }
-    } catch (e) {
-      print(e);
-
-      if (e is DioError) {
-        if (e.response != null && e.response!.statusCode == 404) {
-          return null;
+    } catch (e, stackTrace) {
+      if (e is DioError && e.response != null) {
+        switch (e.response!.statusCode) {
+          case 404:
+            throw NotFoundException(stackTrace);
         }
       }
     }
 
-    return '';
+    throw InternalServerException(StackTrace.current);
   }
 }

@@ -9,6 +9,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:perseus_front_mobile/common/auth/bloc/auth_bloc.dart';
+import 'package:perseus_front_mobile/common/theme/colors.dart';
 import 'package:perseus_front_mobile/l10n/l10n.dart';
 import 'package:perseus_front_mobile/pages/login/bloc/login_bloc.dart';
 import 'package:perseus_front_mobile/repositories/auth_repository.dart';
@@ -40,9 +41,11 @@ class LoginView extends StatelessWidget {
       listener: (context, state) {
         if (state is LoginError) {
           final snackBar = SnackBar(
-            content: const Text('Login incorrect !'),
+            backgroundColor: ColorPerseus.blue,
+            content: Text(state.message),
             action: SnackBarAction(
               label: 'Close',
+              textColor: ColorPerseus.pink,
               onPressed: () {},
             ),
           );
