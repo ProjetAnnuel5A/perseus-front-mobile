@@ -40,7 +40,7 @@ class ProfileView extends StatelessWidget {
                         backgroundColor: Colors.white,
                         backgroundImage:
                             AssetImage('assets/images/woman_running.png'),
-                        radius: 118,
+                        radius: 119,
                       ),
                     ),
                   ),

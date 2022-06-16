@@ -2,22 +2,28 @@ import 'dart:convert';
 
 import 'package:dio/dio.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
+import 'package:perseus_front_mobile/common/interceptor/jwt_interceptor.dart';
+import 'package:perseus_front_mobile/common/secure_storage.dart';
 import 'package:perseus_front_mobile/model/workout.dart';
 
 class WorkoutRepository {
   WorkoutRepository() {
-    server = dotenv.env['sport_api'] ?? 'locahost:3000';
+    _baseUrl = dotenv.env['sport_api'] ?? 'locahost:3000';
+    _dio.options.headers['content-Type'] = 'application/json';
   }
-  String? server;
 
-  Future<List<Workout>> getAllByUserId(String userId) async {
+  String? _baseUrl;
+  final Dio _dio = Dio();
+  final _storage = SecureStorage();
 
-    final dio = Dio();
-    dio.options.headers['content-Type'] = 'application/json';
-
+  Future<List<Workout>> getAllByUserId() async {
     try {
-      final response = await dio.get<String>(
-        '$server/v1/workouts/',
+      await checkToken();
+
+      final userId = await _storage.getUserId();
+
+      final response = await _dio.get<String>(
+        '$_baseUrl/v1/workouts/byUserId/$userId',
       );
 
       if (response.statusCode == 200 && response.data != null) {
@@ -40,5 +46,15 @@ class WorkoutRepository {
     }
 
     return [];
+  }
+
+  Future<void> checkToken() async {
+    if (_dio.interceptors.isEmpty) {
+      final token = await _storage.getToken();
+
+      if (token != null) {
+        _dio.interceptors.add(CustomInterceptors(token));
+      }
+    }
   }
 }

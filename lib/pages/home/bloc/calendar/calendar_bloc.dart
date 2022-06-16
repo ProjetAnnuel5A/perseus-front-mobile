@@ -1,6 +1,5 @@
 import 'package:bloc/bloc.dart';
 import 'package:equatable/equatable.dart';
-import 'package:perseus_front_mobile/common/secure_storage.dart';
 import 'package:perseus_front_mobile/model/workout.dart';
 import 'package:perseus_front_mobile/repositories/workout_repository.dart';
 import 'package:table_calendar/table_calendar.dart';
@@ -56,18 +55,12 @@ class CalendarBloc extends Bloc<CalendarEvent, CalendarState> {
     lastDay = _now.add(const Duration(days: 365));
 
     try {
-      final userId = await _storage.getUserId();
-
-      if (userId != null) {
-        workouts = await _workoutRepository.getAllByUserId(userId);
-        emit(CalendarLoaded(workouts: workouts, selectDay: DateTime.now()));
-      }
+      workouts = await _workoutRepository.getAllByUserId();
+      emit(CalendarLoaded(workouts: workouts, selectDay: DateTime.now()));
     } catch (_) {
       // error case emit(CalendarError());
     }
   }
-
-  final _storage = SecureStorage();
 
   final WorkoutRepository _workoutRepository;
 
