@@ -35,10 +35,15 @@ class ProfileView extends StatelessWidget {
                     padding: EdgeInsets.all(8),
                     child: CircleAvatar(
                       radius: 120,
-                      backgroundImage: AssetImage('assets/images/runner.png'),
+                      backgroundColor: Colors.black,
+                      child: CircleAvatar(
+                        backgroundColor: Colors.white,
+                        backgroundImage:
+                            AssetImage('assets/images/woman_running.png'),
+                        radius: 118,
+                      ),
                     ),
                   ),
-                  const Spacer(),
                   Column(
                     children: [
                       Padding(

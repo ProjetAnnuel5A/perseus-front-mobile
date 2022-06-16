@@ -5,8 +5,10 @@ class Workout extends Equatable {
   const Workout(
     this.id,
     this.name,
+    this.description,
     this.estimatedTime,
     this.date,
+    this.userId,
     this.sets,
     this.validedAt,
     this.createdAt,
@@ -25,8 +27,10 @@ class Workout extends Equatable {
     return Workout(
       _map['id'] as String,
       _map['name'] as String,
+      _map['description'] as String,
       _map['estimatedTime'] as int,
       DateTime.parse(_map['date'] as String),
+      _map['userId'] as String,
       sets,
       _map['validedAt'] != null
           ? DateTime.parse(_map['validedAt'] as String)
@@ -39,8 +43,10 @@ class Workout extends Equatable {
 
   final String id;
   final String name;
+  final String description;
   final int estimatedTime;
   final DateTime date;
+  final String userId;
   final bool isValided;
   final List<Set> sets;
 
@@ -51,8 +57,10 @@ class Workout extends Equatable {
   Workout copyWith({
     String? id,
     String? name,
+    String? description,
     int? estimatedTime,
     DateTime? date,
+    String? userId,
     bool? isValided,
     List<Set>? sets,
     DateTime? validedAt,
@@ -62,8 +70,10 @@ class Workout extends Equatable {
     return Workout(
       id ?? this.id,
       name ?? this.name,
+      description ?? this.description,
       estimatedTime ?? this.estimatedTime,
       date ?? this.date,
+      userId ?? this.userId,
       sets ?? this.sets,
       validedAt ?? this.validedAt,
       createdAt ?? this.createdAt,
@@ -76,8 +86,10 @@ class Workout extends Equatable {
     return <String, dynamic>{
       'id': id,
       'name': name,
+      'description': description,
       'estimatedTime': estimatedTime,
       'date': date.millisecondsSinceEpoch,
+      'userId': userId,
       'isValided': isValided,
       'sets': sets,
       'validedAt': validedAt?.millisecondsSinceEpoch,
@@ -91,8 +103,10 @@ class Workout extends Equatable {
     return [
       id,
       name,
+      description,
       estimatedTime,
       date,
+      userId,
       isValided,
       sets,
       createdAt,

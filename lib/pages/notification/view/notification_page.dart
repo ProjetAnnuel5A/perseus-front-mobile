@@ -20,7 +20,13 @@ class NotificationView extends StatelessWidget {
       right: false,
       child: Scaffold(
         body: Column(
-          children: const [Text('Notifications')],
+          children: [
+            const Spacer(),
+            Image.asset(
+              'assets/images/notifications.png',
+            ),
+            const Spacer(),
+          ],
         ),
       ),
     );

@@ -103,14 +103,17 @@ class SetDetailView extends StatelessWidget {
         children: <Widget>[
           Container(
             alignment: Alignment.center,
-            child: Container(
-              color: Colors.grey,
+            decoration: const BoxDecoration(
+              color: Colors.white,
+              borderRadius: BorderRadius.only(
+                bottomLeft: Radius.circular(20),
+                bottomRight: Radius.circular(20),
+              ),
             ),
-            // Image.asset(
-            //   'assets/images/surentrainement.jpeg',
-            //   fit: BoxFit.cover,
-            //   width: double.infinity,
-            // ),
+            width: double.infinity,
+            child: Image.asset(
+              'assets/images/gym_people.png',
+            ),
           ),
           Align(
             alignment: Alignment.topLeft,

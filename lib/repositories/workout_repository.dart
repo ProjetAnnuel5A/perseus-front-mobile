@@ -10,7 +10,8 @@ class WorkoutRepository {
   }
   String? server;
 
-  Future<List<Workout>> getAll() async {
+  Future<List<Workout>> getAllByUserId(String userId) async {
+
     final dio = Dio();
     dio.options.headers['content-Type'] = 'application/json';
 
