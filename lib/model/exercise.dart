@@ -85,7 +85,7 @@ class Exercise extends Equatable {
     return <String, dynamic>{
       'id': id,
       'name': name,
-      'descritpion': description,
+      'description': description,
       'repetition': repetition,
       'weight': weight,
       'calorie': calorie,
