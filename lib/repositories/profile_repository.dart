@@ -13,7 +13,7 @@ class ProfileRepository {
 
     try {
       final response = await dio.get<String>(
-        '$server/api/profiles/$profileId',
+        '$server/v1/api/profiles/$profileId',
       );
 
       if (response.statusCode == 200 && response.data != null) {

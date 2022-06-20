@@ -1,3 +1,16 @@
+class ForbiddenException implements Exception {
+  ForbiddenException(this.stackTrace);
+
+  String message = 'Forbidden';
+  String reason = 'Forbidden';
+  int codeStatus = 403;
+  StackTrace stackTrace;
+
+  @override
+  String toString() {
+    return '[$codeStatus]: $reason\nstacktrace --> $stackTrace';
+  }
+}
 class NotFoundException implements Exception {
   NotFoundException(this.stackTrace);
 

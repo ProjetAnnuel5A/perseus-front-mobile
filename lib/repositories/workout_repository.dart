@@ -49,11 +49,14 @@ class WorkoutRepository {
   }
 
   Future<void> checkToken() async {
+    print('checkToken');
+
     if (_dio.interceptors.isEmpty) {
       final token = await _storage.getToken();
 
       if (token != null) {
         _dio.interceptors.add(CustomInterceptors(token));
+        print('add token');
       }
     }
   }

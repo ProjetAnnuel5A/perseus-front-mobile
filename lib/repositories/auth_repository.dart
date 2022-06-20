@@ -20,7 +20,7 @@ class AuthRepository {
 
     try {
       final response = await _dio.post<String>(
-        '$_baseUrl/auth/register',
+        '$_baseUrl/v1/auth/register',
         data: jsonEncode(data),
       );
 
@@ -48,7 +48,7 @@ class AuthRepository {
 
     try {
       final response =
-          await _dio.post<dynamic>('$_baseUrl/auth/login', data: body);
+          await _dio.post<dynamic>('$_baseUrl/v1/auth/login', data: body);
 
       if (response.statusCode == 201) {
         final header = response.headers['authorization'];
@@ -62,6 +62,8 @@ class AuthRepository {
     } catch (e, stackTrace) {
       if (e is DioError && e.response != null) {
         switch (e.response!.statusCode) {
+          case 403:
+            throw ForbiddenException(stackTrace);
           case 404:
             throw NotFoundException(stackTrace);
         }
