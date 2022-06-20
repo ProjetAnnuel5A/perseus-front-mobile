@@ -16,6 +16,8 @@ import 'package:perseus_front_mobile/pages/settings/view/settings_page.dart';
 import 'package:perseus_front_mobile/repositories/workout_repository.dart';
 import 'package:table_calendar/table_calendar.dart';
 
+import '../../../common/widget/gradient_progress_indicator_widget.dart';
+
 class HomePage extends StatelessWidget {
   const HomePage({Key? key}) : super(key: key);
 
@@ -53,7 +55,7 @@ class HomeView extends StatelessWidget {
         body: BlocBuilder<BottomNavigationBloc, BottomNavigationState>(
           builder: (BuildContext context, BottomNavigationState state) {
             if (state is PageLoading) {
-              return const Center(child: CircularProgressIndicator());
+              return customLoader();
             } else if (state is BottomNavigationInitial) {
               return _getHomePageContent(context);
             } else if (state is PageLoaded) {
@@ -115,54 +117,57 @@ class HomeView extends StatelessWidget {
   }
 
   Widget _getHomePageContent(BuildContext context) {
-    return Column(
-      children: [_getHomeCalendar(context), _getWorkouts(context)],
+    return BlocBuilder<CalendarBloc, CalendarState>(
+      builder: (BuildContext context, CalendarState state) {
+        if (state is CalendarLoaded) {
+          return Column(
+            children: [
+              _getHomeCalendar(context),
+              _getWorkouts(context, state.workouts)
+            ],
+          );
+        }
+
+        return customLoader();
+      },
     );
+
+    //!! TODO => 1 bloc builder et pas 2?
   }
 
   Widget _getHomeCalendar(BuildContext context) {
     final _calendarBloc = BlocProvider.of<CalendarBloc>(context);
 
-    return BlocBuilder<CalendarBloc, CalendarState>(
-      builder: (BuildContext context, CalendarState state) {
-        if (state is CalendarLoaded) {
-          for (final workout in _calendarBloc.workouts) {
-            selectedWorkouts[workout.date] = [workout];
-          }
+    for (final workout in _calendarBloc.workouts) {
+      selectedWorkouts[workout.date] = [workout];
+    }
 
-          return TableCalendar<Workout>(
-            firstDay: _calendarBloc.firstDay,
-            lastDay: _calendarBloc.lastDay,
-            focusedDay: _calendarBloc.focusedDay,
-            calendarFormat: _calendarBloc.calendarFormat,
-            eventLoader: _getEventsfromDay,
-            headerStyle: HeaderStyle(
-              formatButtonDecoration: BoxDecoration(
-                color: ColorPerseus.pink,
-                borderRadius: BorderRadius.circular(20),
-              ),
-              formatButtonTextStyle: const TextStyle(color: Colors.white),
-              formatButtonShowsNext: false,
-            ),
-            selectedDayPredicate: (DateTime date) {
-              return isSameDay(_calendarBloc.selectedDay, date);
-            },
-            onDaySelected: (selectedDay, focusedDay) {
-              if (!isSameDay(_calendarBloc.selectedDay, selectedDay)) {
-                _calendarBloc.add(SelectDay(selectedDay: selectedDay));
-              }
-            },
-            onFormatChanged: (format) {
-              if (_calendarBloc.calendarFormat != format) {
-                _calendarBloc.add(UpdateFormat(calendarFormat: format));
-              }
-            },
-          );
+    return TableCalendar<Workout>(
+      firstDay: _calendarBloc.firstDay,
+      lastDay: _calendarBloc.lastDay,
+      focusedDay: _calendarBloc.focusedDay,
+      calendarFormat: _calendarBloc.calendarFormat,
+      eventLoader: _getEventsfromDay,
+      headerStyle: HeaderStyle(
+        formatButtonDecoration: BoxDecoration(
+          color: ColorPerseus.pink,
+          borderRadius: BorderRadius.circular(20),
+        ),
+        formatButtonTextStyle: const TextStyle(color: Colors.white),
+        formatButtonShowsNext: false,
+      ),
+      selectedDayPredicate: (DateTime date) {
+        return isSameDay(_calendarBloc.selectedDay, date);
+      },
+      onDaySelected: (selectedDay, focusedDay) {
+        if (!isSameDay(_calendarBloc.selectedDay, selectedDay)) {
+          _calendarBloc.add(SelectDay(selectedDay: selectedDay));
         }
-
-        return const Center(
-          child: CircularProgressIndicator(),
-        );
+      },
+      onFormatChanged: (format) {
+        if (_calendarBloc.calendarFormat != format) {
+          _calendarBloc.add(UpdateFormat(calendarFormat: format));
+        }
       },
     );
   }
@@ -179,42 +184,34 @@ class HomeView extends StatelessWidget {
     return result;
   }
 
-  Widget _getWorkouts(BuildContext context) {
-    return BlocBuilder<CalendarBloc, CalendarState>(
-      builder: (BuildContext context, CalendarState state) {
-        final selectedDay = context.read<CalendarBloc>().selectedDay;
+  Widget _getWorkouts(BuildContext context, List<Workout> workouts) {
+    final selectedDay = context.read<CalendarBloc>().selectedDay;
 
-        if (state is CalendarLoaded) {
-          // TODO One workout /day ?
-          final workoutOfSelectedDay = state.workouts.firstWhereOrNull(
-            (Workout workout) => workout.date.isSameDay(selectedDay),
-          );
+    // TODO One workout /day ?
+    final workoutOfSelectedDay = workouts.firstWhereOrNull(
+      (Workout workout) => workout.date.isSameDay(selectedDay),
+    );
 
-          if (workoutOfSelectedDay != null) {
-            return Expanded(
-              child: Column(
-                children: [
-                  keepItUpBanner(),
-                  workoutCard(context, workoutOfSelectedDay)
-                ],
-              ),
-            );
-          }
+    if (workoutOfSelectedDay != null) {
+      return Expanded(
+        child: Column(
+          children: [
+            keepItUpBanner(),
+            workoutCard(context, workoutOfSelectedDay)
+          ],
+        ),
+      );
+    }
 
-          return Expanded(
-            child: Column(
-              children: [
-                const Spacer(),
-                const Text('No workout for this day. Get some rest.'),
-                Image.asset('assets/images/rest.png'),
-                const Spacer(),
-              ],
-            ),
-          );
-        }
-
-        return const CircularProgressIndicator();
-      },
+    return Expanded(
+      child: Column(
+        children: [
+          const Spacer(),
+          const Text('No workout for this day. Get some rest.'),
+          Image.asset('assets/images/rest.png'),
+          const Spacer(),
+        ],
+      ),
     );
   }
 
@@ -466,6 +463,19 @@ class HomeView extends StatelessWidget {
           ),
         ),
       ],
+    );
+  }
+
+  GradientProgressIndicator customLoader() {
+    return GradientProgressIndicator(
+      gradientColors: [
+        Colors.white,
+        ColorPerseus.pink,
+      ],
+      child: const Text(
+        'Loading...',
+        style: TextStyle(color: Colors.black, fontSize: 18),
+      ),
     );
   }
 }
