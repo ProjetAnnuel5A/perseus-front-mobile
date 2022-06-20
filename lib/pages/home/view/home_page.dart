@@ -65,7 +65,7 @@ class HomeView extends StatelessWidget {
                 return _getHomePageContent(context);
               } else if (state.currentIndex == 3) {
                 return const NotificationPage();
-              } else if (state.currentIndex == 4) {
+              } else if (state.currentIndex == 2) {
                 return const SettingsPage();
               } else {
                 return const CounterPage();
@@ -80,30 +80,30 @@ class HomeView extends StatelessWidget {
             return BottomNavigationBar(
               currentIndex: context.read<BottomNavigationBloc>().currentIndex,
               type: BottomNavigationBarType.fixed,
-              items: <BottomNavigationBarItem>[
-                const BottomNavigationBarItem(
+              items: const <BottomNavigationBarItem>[
+                BottomNavigationBarItem(
                   icon: Icon(Icons.person),
                   label: 'Profile',
                 ),
-                const BottomNavigationBarItem(
+                BottomNavigationBarItem(
                   icon: Icon(Icons.calendar_month),
                   label: 'Board',
                 ),
-                const BottomNavigationBarItem(
-                  icon: Icon(Icons.run_circle),
-                  label: 'Running',
-                ),
+                // const BottomNavigationBarItem(
+                //   icon: Icon(Icons.run_circle),
+                //   label: 'Running',
+                // ),
+                // BottomNavigationBarItem(
+                //   icon: Badge(
+                //     badgeContent:
+                //         const Text('3', style: TextStyle(color: Colors.white)),
+                //     child: const Icon(Icons.notifications),
+                //   ),
+                //   label: 'Notification',
+                // ),
                 BottomNavigationBarItem(
-                  icon: Badge(
-                    badgeContent:
-                        const Text('3', style: TextStyle(color: Colors.white)),
-                    child: const Icon(Icons.notifications),
-                  ),
-                  label: 'Notification',
-                ),
-                const BottomNavigationBarItem(
                   icon: Icon(Icons.settings),
-                  label: 'Réglage',
+                  label: 'Settings',
                 ),
               ],
               onTap: (index) => context.read<BottomNavigationBloc>().add(

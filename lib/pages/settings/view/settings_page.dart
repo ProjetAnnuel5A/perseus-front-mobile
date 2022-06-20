@@ -31,17 +31,18 @@ class SettingsView extends StatelessWidget {
           padding: const EdgeInsets.all(20),
           child: Column(
             children: [
-              _categoryContainer(
-                _cardContainer(Column(
-                  children: [
-                    _notificationsActivate(),
-                    _notificationsActivate(),
-                    _notificationsActivate(),
-                  ],
-                )),
-                'Notifications',
-              ),
-
+              // _categoryContainer(
+              //   _cardContainer(
+              //     Column(
+              //       children: [
+              //         _notificationsActivate(),
+              //         _notificationsActivate(),
+              //         _notificationsActivate(),
+              //       ],
+              //     ),
+              //   ),
+              //   'Notifications',
+              // ),
               const Spacer(),
               _categoryContainer(
                 _cardContainer(

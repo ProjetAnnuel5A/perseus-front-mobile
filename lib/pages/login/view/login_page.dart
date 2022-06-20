@@ -68,7 +68,7 @@ class LoginView extends StatelessWidget {
                 _passwordField(),
                 _loginButton(context),
                 _registerText(context),
-                _passwordForgotten(context),
+                // _passwordForgotten(context),
                 _legalMentionsText(),
                 const Spacer(),
               ],

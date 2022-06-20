@@ -9,7 +9,10 @@ class Exercise extends Equatable {
   Exercise(
     this.id,
     this.name,
+    this.description,
     this.repetition,
+    this.weight,
+    this.calorie,
     this.difficulty,
     this.createdAt,
     this.updatedAt,
@@ -19,7 +22,10 @@ class Exercise extends Equatable {
     return Exercise(
       _map['id'] as String,
       _map['name'] as String,
+      _map['description'] as String,
       _map['repetition'] as int,
+      _map['weight'] as int,
+      _map['calorie'] as int,
       Difficulty.values[_map['difficulty'] as int],
       DateTime.parse(_map['createdAt'] as String),
       DateTime.parse(_map['updatedAt'] as String),
@@ -28,7 +34,10 @@ class Exercise extends Equatable {
 
   final String id;
   final String name;
+  final String description;
   int repetition;
+  final int weight;
+  final int calorie;
   final Difficulty difficulty;
   final DateTime createdAt;
   final DateTime updatedAt;
@@ -36,7 +45,10 @@ class Exercise extends Equatable {
   Exercise copyWith({
     String? id,
     String? name,
+    String? description,
     int? repetition,
+    int? weight,
+    int? calorie,
     Difficulty? difficulty,
     DateTime? createdAt,
     DateTime? updatedAt,
@@ -44,7 +56,10 @@ class Exercise extends Equatable {
     return Exercise(
       id ?? this.id,
       name ?? this.name,
+      description ?? this.description,
       repetition ?? this.repetition,
+      weight ?? this.weight,
+      calorie ?? this.calorie,
       difficulty ?? this.difficulty,
       createdAt ?? this.createdAt,
       updatedAt ?? this.updatedAt,
@@ -56,7 +71,10 @@ class Exercise extends Equatable {
     return [
       id,
       name,
+      description,
       repetition,
+      weight,
+      calorie,
       difficulty,
       createdAt,
       updatedAt,
@@ -67,7 +85,10 @@ class Exercise extends Equatable {
     return <String, dynamic>{
       'id': id,
       'name': name,
+      'descritpion': description,
       'repetition': repetition,
+      'weight': weight,
+      'calorie': calorie,
       'difficulty': difficulty.index,
       'createdAt': createdAt,
       'updatedAt': updatedAt,
