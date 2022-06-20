@@ -23,8 +23,8 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
     await _initStartup(emit);
   }
 
-  void _loggedIn(LoggedIn event, Emitter<AuthState> emit) {
-    _storage.saveUsernameAndToken(event.username, event.token);
+  Future<void> _loggedIn(LoggedIn event, Emitter<AuthState> emit) async {
+    await _storage.saveUsernameAndToken(event.username, event.token);
 
     emit(AuthAuthenticated());
   }

@@ -59,11 +59,11 @@ class SetDetailView extends StatelessWidget {
                                   ),
                                 ];
 
-                                if (index != set.exercises.length - 1) {
-                                  children.add(
-                                    waitingTime(),
-                                  );
-                                }
+                                // if (index != set.exercises.length - 1) {
+                                //   children.add(
+                                //     waitingTime(),
+                                //   );
+                                // }
 
                                 return Column(
                                   children: children,
@@ -71,7 +71,7 @@ class SetDetailView extends StatelessWidget {
                               },
                             ),
                           ),
-                          _validateSet(context, set)
+                          _bottomRow(context, set)
                         ],
                       ),
                     ),
@@ -144,51 +144,54 @@ class SetDetailView extends StatelessWidget {
     return BlocBuilder<SetBloc, SetState>(
       builder: (BuildContext context, SetState state) {
         if (state is SetLoaded) {
-          return Card(
-            child: Padding(
-              padding: const EdgeInsets.all(15),
-              child: Row(
-                children: [
-                  Text('${index + 1}) ${exercise.name}'),
-                  const Spacer(),
-                  CupertinoButton(
-                    padding: EdgeInsets.zero,
-                    onPressed:
-                        set.exercises[index].repetition <= 0 || set.isValided
-                            ? null
-                            : () {
-                                context
-                                    .read<SetBloc>()
-                                    .add(DecrementRepetition(set, index));
-                              },
-                    child: const Icon(
-                      CupertinoIcons.minus_circle_fill,
-                      size: 35,
-                    ),
-                  ),
-                  SizedBox(
-                    width: 40,
-                    child: Center(
-                      child: Text(
-                        '${state.set.exercises[index].repetition}',
+          return Padding(
+            padding: const EdgeInsets.only(bottom: 10),
+            child: Card(
+              child: Padding(
+                padding: const EdgeInsets.all(15),
+                child: Row(
+                  children: [
+                    Text('${index + 1}) ${exercise.name}'),
+                    const Spacer(),
+                    CupertinoButton(
+                      padding: EdgeInsets.zero,
+                      onPressed:
+                          set.exercises[index].repetition <= 0 || set.isValided
+                              ? null
+                              : () {
+                                  context
+                                      .read<SetBloc>()
+                                      .add(DecrementRepetition(set, index));
+                                },
+                      child: const Icon(
+                        CupertinoIcons.minus_circle_fill,
+                        size: 35,
                       ),
                     ),
-                  ),
-                  CupertinoButton(
-                    padding: EdgeInsets.zero,
-                    onPressed: set.isValided
-                        ? null
-                        : () {
-                            context
-                                .read<SetBloc>()
-                                .add(IncrementRepetition(set, index));
-                          },
-                    child: const Icon(
-                      CupertinoIcons.plus_circle_fill,
-                      size: 35,
+                    SizedBox(
+                      width: 40,
+                      child: Center(
+                        child: Text(
+                          '${state.set.exercises[index].repetition}',
+                        ),
+                      ),
                     ),
-                  ),
-                ],
+                    CupertinoButton(
+                      padding: EdgeInsets.zero,
+                      onPressed: set.isValided
+                          ? null
+                          : () {
+                              context
+                                  .read<SetBloc>()
+                                  .add(IncrementRepetition(set, index));
+                            },
+                      child: const Icon(
+                        CupertinoIcons.plus_circle_fill,
+                        size: 35,
+                      ),
+                    ),
+                  ],
+                ),
               ),
             ),
           );
@@ -198,35 +201,35 @@ class SetDetailView extends StatelessWidget {
     );
   }
 
-  Widget _validateSet(BuildContext context, Set set) {
+  Widget _bottomRow(BuildContext context, Set set) {
     return Row(
       mainAxisAlignment: MainAxisAlignment.center,
       children: <Widget>[
-        Padding(
-          padding: const EdgeInsets.only(right: 10),
-          child: SizedBox(
-            width: 48,
-            height: 48,
-            child: Container(
-              decoration: BoxDecoration(
-                color: Colors.white,
-                borderRadius: const BorderRadius.all(
-                  Radius.circular(16),
-                ),
-                border: Border.all(
-                  color: Colors.grey.withOpacity(0.2),
-                ),
-              ),
-              child: IconButton(
-                icon: const Icon(
-                  Icons.edit,
-                  size: 28,
-                ),
-                onPressed: set.isValided ? null : () {},
-              ),
-            ),
-          ),
-        ),
+        // Padding(
+        //   padding: const EdgeInsets.only(right: 10),
+        //   child: SizedBox(
+        //     width: 48,
+        //     height: 48,
+        //     child: Container(
+        //       decoration: BoxDecoration(
+        //         color: Colors.white,
+        //         borderRadius: const BorderRadius.all(
+        //           Radius.circular(16),
+        //         ),
+        //         border: Border.all(
+        //           color: Colors.grey.withOpacity(0.2),
+        //         ),
+        //       ),
+        //       child: IconButton(
+        //         icon: const Icon(
+        //           Icons.edit,
+        //           size: 28,
+        //         ),
+        //         onPressed: set.isValided ? null : () {},
+        //       ),
+        //     ),
+        //   ),
+        // ),
         SizedBox(
           width: 48,
           height: 48,
@@ -245,7 +248,9 @@ class SetDetailView extends StatelessWidget {
                 Icons.history_outlined,
                 size: 28,
               ),
-              onPressed: set.isValided ? null : () {},
+              onPressed: set.isValided ? null : () {
+                
+              },
             ),
           ),
         ),
