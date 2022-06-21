@@ -9,7 +9,7 @@ part 'language_state.dart';
 class LanguageCubit extends Cubit<Locale> {
   LanguageCubit() : super(const Locale('en'));
 
-  Future<void> changeStartLang() async {
+  Future<void> getStartingLanguage() async {
     final prefs = await SharedPreferences.getInstance();
     final langCode = prefs.getString('lang');
 
@@ -19,8 +19,11 @@ class LanguageCubit extends Cubit<Locale> {
   }
 
   Future<void> changeLang(String data) async {
-    emit(Locale(data));
     final prefs = await SharedPreferences.getInstance();
     await prefs.setString('lang', data);
+
+    print('changeLang --> $data');
+
+    emit(Locale(data));
   }
 }

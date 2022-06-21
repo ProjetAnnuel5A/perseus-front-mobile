@@ -42,10 +42,12 @@ class App extends StatelessWidget {
         create: (context) => LanguageCubit(),
         child: BlocBuilder<LanguageCubit, Locale>(
           builder: (context, lang) {
+            context.read<LanguageCubit>().getStartingLanguage();
+
             return MaterialApp(
               theme: appThemeData[AppTheme.light],
               locale: lang,
-              title: 'Localizations Sample App',
+              title: 'Perseus',
               localizationsDelegates: const [
                 AppLocalizations.delegate,
                 GlobalMaterialLocalizations.delegate,

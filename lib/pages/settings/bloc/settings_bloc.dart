@@ -11,10 +11,12 @@ class SettingsBloc extends Bloc<SettingsEvent, SettingsState> {
       final prefs = await SharedPreferences.getInstance();
       final langCode = prefs.getString('lang');
 
+      print('Lang code --> $langCode');
+
       if (langCode != null) {
         emit(SettingsLoaded(langCode));
       } else {
-        emit(const SettingsLoaded('fr'));
+        emit(const SettingsLoaded('en'));
       }
     });
 

@@ -14,5 +14,13 @@
     "disconnect": "Déconnexion",
     "profileInformations": "Informations du profil",
     "username": "Pseudo",
-    "email": "Adresse mail"
+    "email": "Adresse mail",
+    "noWorkoutToday": "Pas d'entrainement aujourd'hui, essayez de vous reposer.",
+    "workout": "Entraînement",
+    "sets": "Série d'exercises",
+    "youAreDoingGreat": "Vous vous en sortez bien !",
+    "keepItUp": "Continuez comme ça\net gardez la motivation !",
+    "month": "Mois",
+    "twoWeeks": "2 semaines",
+    "week": "Semaine"
 }

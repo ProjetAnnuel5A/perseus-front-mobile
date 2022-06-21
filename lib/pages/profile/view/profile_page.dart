@@ -81,7 +81,7 @@ class ProfileView extends StatelessWidget {
         ColorPerseus.pink,
       ],
       child: Text(
-        context.l10n.loading,
+        '${context.l10n.loading}...',
         style: const TextStyle(color: Colors.black, fontSize: 18),
       ),
     );

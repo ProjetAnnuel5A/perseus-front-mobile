@@ -14,5 +14,13 @@
     "disconnect": "Disconnect",
     "profileInformations": "Profile informations",
     "username": "Usernamme",
-    "email": "Email"
+    "email": "Email",
+    "noWorkoutToday": "No workout for this day, try to get some rest.",
+    "workout": "Workout",
+    "sets": "Set(s)",
+    "youAreDoingGreat": "You're doing great !",
+    "keepItUp": "Keep it up\nand stick to your plan !",
+    "month": "Month",
+    "twoWeeks": "2 weeks",
+    "week": "Week"
 }

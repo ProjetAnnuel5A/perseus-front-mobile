@@ -1,9 +1,9 @@
-import 'package:badges/badges.dart';
 import 'package:collection/collection.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:perseus_front_mobile/common/extensions.dart';
 import 'package:perseus_front_mobile/common/theme/colors.dart';
+import 'package:perseus_front_mobile/common/widget/gradient_progress_indicator_widget.dart';
 import 'package:perseus_front_mobile/l10n/l10n.dart';
 import 'package:perseus_front_mobile/model/set.dart';
 import 'package:perseus_front_mobile/model/workout.dart';
@@ -15,8 +15,6 @@ import 'package:perseus_front_mobile/pages/profile/view/profile_page.dart';
 import 'package:perseus_front_mobile/pages/settings/view/settings_page.dart';
 import 'package:perseus_front_mobile/repositories/workout_repository.dart';
 import 'package:table_calendar/table_calendar.dart';
-
-import '../../../common/widget/gradient_progress_indicator_widget.dart';
 
 class HomePage extends StatelessWidget {
   const HomePage({Key? key}) : super(key: key);
@@ -55,7 +53,7 @@ class HomeView extends StatelessWidget {
         body: BlocBuilder<BottomNavigationBloc, BottomNavigationState>(
           builder: (BuildContext context, BottomNavigationState state) {
             if (state is PageLoading) {
-              return customLoader();
+              return customLoader(context);
             } else if (state is BottomNavigationInitial) {
               return _getHomePageContent(context);
             } else if (state is PageLoaded) {
@@ -128,7 +126,7 @@ class HomeView extends StatelessWidget {
           );
         }
 
-        return customLoader();
+        return customLoader(context);
       },
     );
 
@@ -136,6 +134,7 @@ class HomeView extends StatelessWidget {
   }
 
   Widget _getHomeCalendar(BuildContext context) {
+    final l10n = context.l10n;
     final _calendarBloc = BlocProvider.of<CalendarBloc>(context);
 
     for (final workout in _calendarBloc.workouts) {
@@ -143,6 +142,12 @@ class HomeView extends StatelessWidget {
     }
 
     return TableCalendar<Workout>(
+      availableCalendarFormats: {
+        CalendarFormat.month: l10n.month,
+        CalendarFormat.twoWeeks: l10n.twoWeeks,
+        CalendarFormat.week: l10n.week,
+      },
+      locale: Localizations.localeOf(context).languageCode,
       firstDay: _calendarBloc.firstDay,
       lastDay: _calendarBloc.lastDay,
       focusedDay: _calendarBloc.focusedDay,
@@ -196,7 +201,7 @@ class HomeView extends StatelessWidget {
       return Expanded(
         child: Column(
           children: [
-            keepItUpBanner(),
+            keepItUpBanner(context),
             workoutCard(context, workoutOfSelectedDay)
           ],
         ),
@@ -207,7 +212,7 @@ class HomeView extends StatelessWidget {
       child: Column(
         children: [
           const Spacer(),
-          const Text('No workout for this day. Get some rest.'),
+          Text(context.l10n.noWorkoutToday),
           Image.asset('assets/images/rest.png'),
           const Spacer(),
         ],
@@ -216,6 +221,8 @@ class HomeView extends StatelessWidget {
   }
 
   Widget workoutCard(BuildContext context, Workout workout) {
+    final l10n = context.l10n;
+
     return Expanded(
       child: Padding(
         padding:
@@ -248,19 +255,19 @@ class HomeView extends StatelessWidget {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: <Widget>[
                 Text(
-                  'Workout: ${workout.name}',
+                  '${l10n.workout}: ${workout.name}',
                   textAlign: TextAlign.left,
                   style: Theme.of(context).textTheme.titleLarge,
                 ),
-                const Padding(
-                  padding: EdgeInsets.symmetric(vertical: 12),
+                Padding(
+                  padding: const EdgeInsets.symmetric(vertical: 12),
                   child: Text(
-                    'Sets: ',
+                    '${l10n.sets}:',
                     textAlign: TextAlign.left,
-                    style: TextStyle(color: Colors.white),
+                    style: const TextStyle(color: Colors.white),
                   ),
                 ),
-                exercisesSample(workout.sets),
+                _set(workout.sets),
                 const SizedBox(
                   height: 32,
                 ),
@@ -328,7 +335,7 @@ class HomeView extends StatelessWidget {
     );
   }
 
-  Widget exercisesSample(List<Set> sets) {
+  Widget _set(List<Set> sets) {
     if (sets.isEmpty) {
       return const SizedBox.shrink();
     }
@@ -361,7 +368,9 @@ class HomeView extends StatelessWidget {
     );
   }
 
-  Widget keepItUpBanner() {
+  Widget keepItUpBanner(BuildContext context) {
+    final l10 = context.l10n;
+
     return Column(
       children: <Widget>[
         Padding(
@@ -406,17 +415,17 @@ class HomeView extends StatelessWidget {
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: <Widget>[
                           Row(
-                            children: const <Widget>[
+                            children: <Widget>[
                               Padding(
-                                padding: EdgeInsets.only(
+                                padding: const EdgeInsets.only(
                                   left: 100,
                                   right: 16,
                                   top: 16,
                                 ),
                                 child: Text(
-                                  "You're doing great!",
+                                  l10.youAreDoingGreat,
                                   textAlign: TextAlign.left,
-                                  style: TextStyle(
+                                  style: const TextStyle(
                                     fontWeight: FontWeight.w500,
                                     fontSize: 14,
                                     letterSpacing: 0,
@@ -434,7 +443,7 @@ class HomeView extends StatelessWidget {
                               right: 16,
                             ),
                             child: Text(
-                              'Keep it up\nand stick to your plan!',
+                              l10.keepItUp,
                               textAlign: TextAlign.left,
                               style: TextStyle(
                                 fontWeight: FontWeight.w500,
@@ -466,15 +475,15 @@ class HomeView extends StatelessWidget {
     );
   }
 
-  GradientProgressIndicator customLoader() {
+  GradientProgressIndicator customLoader(BuildContext context) {
     return GradientProgressIndicator(
       gradientColors: [
         Colors.white,
         ColorPerseus.pink,
       ],
-      child: const Text(
-        'Loading...',
-        style: TextStyle(color: Colors.black, fontSize: 18),
+      child: Text(
+        '${context.l10n.loading}...',
+        style: const TextStyle(color: Colors.black, fontSize: 18),
       ),
     );
   }

@@ -34,7 +34,6 @@ class SettingsView extends StatelessWidget {
       left: false,
       right: false,
       child: Scaffold(
-        appBar: AppBar(title: Text(context.l10n.settings)),
         backgroundColor: ColorPerseus.lightGrey,
         body: _page(context),
       ),
@@ -117,11 +116,10 @@ class SettingsView extends StatelessWidget {
           icon: const Icon(Icons.arrow_drop_down_sharp),
           onChanged: (String? value) {
             if (value != null) {
+              context.read<LanguageCubit>().changeLang(value);
               context
                   .read<SettingsBloc>()
                   .add(SettingsChangeLanguageEvent(value));
-
-              context.read<LanguageCubit>().changeLang(value);
             }
           },
           items: <String>['en', 'fr']
