@@ -80,14 +80,14 @@ class HomeView extends StatelessWidget {
             return BottomNavigationBar(
               currentIndex: context.read<BottomNavigationBloc>().currentIndex,
               type: BottomNavigationBarType.fixed,
-              items: const <BottomNavigationBarItem>[
+              items: <BottomNavigationBarItem>[
                 BottomNavigationBarItem(
-                  icon: Icon(Icons.person),
-                  label: 'Profile',
+                  icon: const Icon(Icons.person),
+                  label: l10n.profile,
                 ),
                 BottomNavigationBarItem(
-                  icon: Icon(Icons.calendar_month),
-                  label: 'Board',
+                  icon: const Icon(Icons.calendar_month),
+                  label: l10n.calendar,
                 ),
                 // const BottomNavigationBarItem(
                 //   icon: Icon(Icons.run_circle),
@@ -102,8 +102,8 @@ class HomeView extends StatelessWidget {
                 //   label: 'Notification',
                 // ),
                 BottomNavigationBarItem(
-                  icon: Icon(Icons.settings),
-                  label: 'Settings',
+                  icon: const Icon(Icons.settings),
+                  label: l10n.settings,
                 ),
               ],
               onTap: (index) => context.read<BottomNavigationBloc>().add(

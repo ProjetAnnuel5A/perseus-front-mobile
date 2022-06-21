@@ -1,9 +1,18 @@
 {
     "@@locale": "en",
     "counterAppBarTitle": "Counter",
-    "@counterAppBarTitle": {
-        "description": "Text shown in the AppBar of the Counter Page"
-    },
     "registerAppBarTitle": "Register",
-    "loginAppBarTitle": "Login"
+    "loginAppBarTitle": "Login",
+    "profile": "Profile",
+    "calendar": "Calendar",
+    "settings": "Settings",
+    "languages": "Settings",
+    "account": "Account",
+    "selectLanguage": "Select your language",
+    "loading": "Loading",
+    "signOut": "Sign out",
+    "disconnect": "Disconnect",
+    "profileInformations": "Profile informations",
+    "username": "Usernamme",
+    "email": "Email"
 }

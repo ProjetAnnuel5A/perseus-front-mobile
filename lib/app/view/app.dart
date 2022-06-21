@@ -21,6 +21,8 @@ import 'package:perseus_front_mobile/repositories/profile_repository.dart';
 import 'package:perseus_front_mobile/repositories/set_repository.dart';
 import 'package:perseus_front_mobile/repositories/workout_repository.dart';
 
+import '../../common/language/cubit/language_cubit.dart';
+
 class App extends StatelessWidget {
   const App({Key? key, required this.appRouter}) : super(key: key);
 
@@ -36,38 +38,126 @@ class App extends StatelessWidget {
         RepositoryProvider.value(value: WorkoutRepository()),
         RepositoryProvider.value(value: SetRepository()),
       ],
-      child: MaterialApp(
-        theme: appThemeData[AppTheme.light],
-        localizationsDelegates: const [
-          AppLocalizations.delegate,
-          GlobalMaterialLocalizations.delegate,
-        ],
-        supportedLocales: AppLocalizations.supportedLocales,
-        onGenerateRoute: appRouter.onGenerateRoute,
-        home: BlocBuilder<AuthBloc, AuthState>(
-          builder: (context, state) {
-            if (state is AuthUninitialized) {
-              return Scaffold(
-                body: GradientProgressIndicator(
-                  gradientColors: [
-                    Colors.white,
-                    ColorPerseus.pink,
-                  ],
-                  child: const Text(
-                    'Application is starting...',
-                    style: TextStyle(color: Colors.black, fontSize: 18),
-                  ),
-                ),
-              );
-            } else if (state is AuthUnauthenticated) {
-              return const LoginPage();
-            } else if (state is AuthAuthenticated) {
-              return const HomePage();
-            }
+      child: BlocProvider(
+        create: (context) => LanguageCubit(),
+        child: BlocBuilder<LanguageCubit, Locale>(
+          builder: (context, lang) {
+            return MaterialApp(
+              theme: appThemeData[AppTheme.light],
+              locale: lang,
+              title: 'Localizations Sample App',
+              localizationsDelegates: const [
+                AppLocalizations.delegate,
+                GlobalMaterialLocalizations.delegate,
+                GlobalWidgetsLocalizations.delegate,
+                GlobalCupertinoLocalizations.delegate,
+              ],
+              supportedLocales: const [
+                Locale('en'),
+                Locale('fr'),
+              ],
+              onGenerateRoute: appRouter.onGenerateRoute,
+              home: BlocBuilder<AuthBloc, AuthState>(
+                builder: (context, state) {
+                  if (state is AuthUninitialized) {
+                    return Scaffold(
+                      body: GradientProgressIndicator(
+                        gradientColors: [
+                          Colors.white,
+                          ColorPerseus.pink,
+                        ],
+                        child: const Text(
+                          'Application is starting...',
+                          style: TextStyle(color: Colors.black, fontSize: 18),
+                        ),
+                      ),
+                    );
+                  } else if (state is AuthUnauthenticated) {
+                    return const LoginPage();
+                  } else if (state is AuthAuthenticated) {
+                    return const HomePage();
+                  }
 
-            // TODO add default SplashScreen
-            return const Scaffold();
+                  // TODO add default SplashScreen
+                  return const Scaffold();
+                },
+              ),
+            );
           },
+        ),
+      ),
+    );
+  }
+}
+
+//       MaterialApp(
+//         theme: appThemeData[AppTheme.light],
+//         localizationsDelegates: const [
+//           AppLocalizations.delegate,
+//           GlobalMaterialLocalizations.delegate,
+//         ],
+//         supportedLocales: AppLocalizations.supportedLocales,
+//         onGenerateRoute: appRouter.onGenerateRoute,
+//         home: BlocBuilder<AuthBloc, AuthState>(
+//           builder: (context, state) {
+//             if (state is AuthUninitialized) {
+//               return Scaffold(
+//                 body: GradientProgressIndicator(
+//                   gradientColors: [
+//                     Colors.white,
+//                     ColorPerseus.pink,
+//                   ],
+//                   child: const Text(
+//                     'Application is starting...',
+//                     style: TextStyle(color: Colors.black, fontSize: 18),
+//                   ),
+//                 ),
+//               );
+//             } else if (state is AuthUnauthenticated) {
+//               return const LoginPage();
+//             } else if (state is AuthAuthenticated) {
+//               return const HomePage();
+//             }
+
+//             // TODO add default SplashScreen
+//             return const Scaffold();
+//           },
+//         ),
+//       ),
+//     );
+//   }
+// }
+
+class Home extends StatelessWidget {
+  //Here
+  const Home({Key? key}) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      body: Center(
+        child: Container(
+          color: Colors.amberAccent,
+          width: 200,
+          height: 200,
+          child: Column(
+            children: [
+              Text(AppLocalizations.of(context).counterAppBarTitle),
+              Divider(),
+              TextButton(
+                onPressed: () {
+                  context.read<LanguageCubit>().changeLang('en');
+                },
+                child: Text('English'),
+              ),
+              TextButton(
+                onPressed: () {
+                  context.read<LanguageCubit>().changeLang('fr');
+                },
+                child: Text('French'),
+              ),
+            ],
+          ),
         ),
       ),
     );

@@ -1,0 +1,18 @@
+{
+    "@@locale": "fr",
+    "counterAppBarTitle": "Compteur",
+    "registerAppBarTitle": "Inscription",
+    "loginAppBarTitle": "Login",
+    "profile": "Profil",
+    "calendar": "Calendrier",
+    "settings": "Paramètres",
+    "languages": "Langages",
+    "account": "Compte",
+    "selectLanguage": "Selectionnez votre langage",
+    "loading": "Chargement",
+    "signOut": "Se déconnecter",
+    "disconnect": "Déconnexion",
+    "profileInformations": "Informations du profil",
+    "username": "Pseudo",
+    "email": "Adresse mail"
+}

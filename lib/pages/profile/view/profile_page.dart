@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:perseus_front_mobile/common/theme/colors.dart';
 import 'package:perseus_front_mobile/common/widget/gradient_progress_indicator_widget.dart';
+import 'package:perseus_front_mobile/l10n/l10n.dart';
 import 'package:perseus_front_mobile/pages/profile/bloc/profile_bloc.dart';
 import 'package:perseus_front_mobile/repositories/profile_repository.dart';
 
@@ -22,6 +23,8 @@ class ProfileView extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = context.l10n;
+
     return Scaffold(
       body: BlocBuilder<ProfileBloc, ProfileState>(
         builder: (context, state) {
@@ -49,15 +52,15 @@ class ProfileView extends StatelessWidget {
                       Padding(
                         padding: const EdgeInsets.symmetric(vertical: 20),
                         child: Text(
-                          'Profile informations',
+                          l10n.profileInformations,
                           style: Theme.of(context)
                               .textTheme
                               .titleLarge
                               ?.copyWith(color: Colors.black),
                         ),
                       ),
-                      Text('Username: ${profile.username}'),
-                      Text('Email: ${profile.email}')
+                      Text('${l10n.username}: ${profile.username}'),
+                      Text('${l10n.email}: ${profile.email}')
                     ],
                   ),
                   const Spacer(),
@@ -65,21 +68,21 @@ class ProfileView extends StatelessWidget {
               ),
             );
           }
-          return customLoader();
+          return customLoader(context);
         },
       ),
     );
   }
 
-  GradientProgressIndicator customLoader() {
+  GradientProgressIndicator customLoader(BuildContext context) {
     return GradientProgressIndicator(
       gradientColors: [
         Colors.white,
         ColorPerseus.pink,
       ],
-      child: const Text(
-        'Loading...',
-        style: TextStyle(color: Colors.black, fontSize: 18),
+      child: Text(
+        context.l10n.loading,
+        style: const TextStyle(color: Colors.black, fontSize: 18),
       ),
     );
   }
