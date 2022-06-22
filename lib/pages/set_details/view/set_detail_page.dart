@@ -244,12 +244,12 @@ class SetDetailView extends StatelessWidget {
                 color: Colors.grey.withOpacity(0.2),
               ),
             ),
-            child: IconButton(
-              icon: const Icon(
+            child: const IconButton(
+              icon: Icon(
                 Icons.history_outlined,
                 size: 28,
               ),
-              onPressed: set.isValided ? null : () {},
+              onPressed: null,
             ),
           ),
         ),

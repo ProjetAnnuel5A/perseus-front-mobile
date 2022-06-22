@@ -56,8 +56,8 @@ class App extends StatelessWidget {
                 GlobalCupertinoLocalizations.delegate,
               ],
               supportedLocales: const [
-                Locale('en'),
                 Locale('fr'),
+                Locale('en'),
               ],
               onGenerateRoute: appRouter.onGenerateRoute,
               home: BlocBuilder<AuthBloc, AuthState>(

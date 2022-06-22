@@ -122,7 +122,7 @@ class SettingsView extends StatelessWidget {
                   .add(SettingsChangeLanguageEvent(value));
             }
           },
-          items: <String>['en', 'fr']
+          items: <String>['fr', 'en']
               .map<DropdownMenuItem<String>>((String value) {
             return DropdownMenuItem<String>(
               value: value,

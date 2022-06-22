@@ -313,16 +313,16 @@ class HomeView extends StatelessWidget {
                             ),
                           ],
                         ),
-                        child: IconButton(
-                          onPressed: () => Navigator.pushNamed(
-                            context,
-                            '/set',
-                          ),
-                          icon: const Icon(
-                            Icons.check,
-                            color: Color(0xFF6F56E8),
-                          ),
-                        ),
+                        // child: IconButton(
+                        //   onPressed: () => Navigator.pushNamed(
+                        //     context,
+                        //     '/set',
+                        //   ),
+                        //   icon: const Icon(
+                        //     Icons.check,
+                        //     color: Color(0xFF6F56E8),
+                        //   ),
+                        // ),
                       ),
                     ],
                   ),
