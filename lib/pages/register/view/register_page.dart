@@ -51,7 +51,7 @@ class RegisterView extends StatelessWidget {
                 backgroundColor: ColorPerseus.blue,
                 content: Text(state.message),
                 action: SnackBarAction(
-                  label: 'Close',
+                  label: context.l10n.close,
                   textColor: ColorPerseus.pink,
                   onPressed: () {},
                 ),
@@ -73,10 +73,10 @@ class RegisterView extends StatelessWidget {
                     onChanged: () {},
                     child: Column(
                       children: [
-                        _usernameField(),
-                        _emailField(),
-                        _passwordField(),
-                        _confirmationField(),
+                        _usernameField(context),
+                        _emailField(context),
+                        _passwordField(context),
+                        _confirmationField(context),
                       ],
                     ),
                   ),
@@ -92,7 +92,9 @@ class RegisterView extends StatelessWidget {
     );
   }
 
-  Widget _emailField() {
+  Widget _emailField(BuildContext context) {
+    final l10n = context.l10n;
+
     return Padding(
       padding: const EdgeInsets.all(8),
       child: TextFormField(
@@ -103,19 +105,21 @@ class RegisterView extends StatelessWidget {
           final regex = RegExp(pattern);
 
           if (value == null || !regex.hasMatch(value)) {
-            return 'Please enter a valid Email';
+            return l10n.validEmail;
           }
           return null;
         },
-        decoration: const InputDecoration(
-          border: OutlineInputBorder(),
-          labelText: 'Email',
+        decoration: InputDecoration(
+          border: const OutlineInputBorder(),
+          labelText: l10n.email,
         ),
       ),
     );
   }
 
-  Widget _usernameField() {
+  Widget _usernameField(BuildContext context) {
+    final l10n = context.l10n;
+
     return Padding(
       padding: const EdgeInsets.all(8),
       child: TextFormField(
@@ -126,22 +130,21 @@ class RegisterView extends StatelessWidget {
               value.isEmpty ||
               value.length < 6 ||
               value.length > 30) {
-            return 'Please enter a valid Username'
-                '\n- must not exist'
-                '\n- must have more than 5 characters and less than 29 characters';
+            return l10n.validUsername;
           }
           return null;
         },
-        // @Size(min = 6, max = 30) + unique
-        decoration: const InputDecoration(
-          border: OutlineInputBorder(),
-          labelText: 'Username',
+        decoration: InputDecoration(
+          border: const OutlineInputBorder(),
+          labelText: l10n.username,
         ),
       ),
     );
   }
 
-  Widget _passwordField() {
+  Widget _passwordField(BuildContext context) {
+    final l10n = context.l10n;
+
     return Padding(
       padding: const EdgeInsets.all(8),
       child: TextFormField(
@@ -154,20 +157,21 @@ class RegisterView extends StatelessWidget {
           final regex = RegExp(pattern);
 
           if (value == null || value.isEmpty || !regex.hasMatch(value)) {
-            return 'Please enter a valid Password'
-                '\n- must have more than 8 characters or more and contains both digits and letters';
+            return l10n.validPassword;
           }
           return null;
         },
-        decoration: const InputDecoration(
-          border: OutlineInputBorder(),
-          labelText: 'Password',
+        decoration: InputDecoration(
+          border: const OutlineInputBorder(),
+          labelText: l10n.password,
         ),
       ),
     );
   }
 
-  Widget _confirmationField() {
+  Widget _confirmationField(BuildContext context) {
+    final l10n = context.l10n;
+
     return Padding(
       padding: const EdgeInsets.all(8),
       child: TextFormField(
@@ -178,13 +182,13 @@ class RegisterView extends StatelessWidget {
           if (value == null ||
               _passwordController.value.text !=
                   _confirmationController.value.text) {
-            return 'Please confirm your password';
+            return l10n.confirmPassword;
           }
           return null;
         },
-        decoration: const InputDecoration(
-          border: OutlineInputBorder(),
-          labelText: 'Confirmation',
+        decoration: InputDecoration(
+          border: const OutlineInputBorder(),
+          labelText: l10n.confirmation,
         ),
       ),
     );
@@ -210,7 +214,7 @@ class RegisterView extends StatelessWidget {
                     RegisterValidateFormEvent(username, email, password),
                   );
             },
-            child: const Text('Register'),
+            child: Text(context.l10n.register),
           ),
         );
       },
@@ -222,7 +226,7 @@ class RegisterView extends StatelessWidget {
       onPressed: () {
         Navigator.pushNamedAndRemoveUntil(context, '/login', (route) => false);
       },
-      child: const Text('Do you already have an account ?'),
+      child: Text(context.l10n.alreayHaveAccount),
     );
   }
 

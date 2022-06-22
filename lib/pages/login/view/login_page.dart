@@ -44,7 +44,7 @@ class LoginView extends StatelessWidget {
             backgroundColor: ColorPerseus.blue,
             content: Text(state.message),
             action: SnackBarAction(
-              label: 'Close',
+              label: l10n.close,
               textColor: ColorPerseus.pink,
               onPressed: () {},
             ),
@@ -65,11 +65,11 @@ class LoginView extends StatelessWidget {
                 _headerImage(),
                 const Spacer(),
                 _usernameField(context),
-                _passwordField(),
+                _passwordField(context),
                 _loginButton(context),
                 _registerText(context),
                 // _passwordForgotten(context),
-                _legalMentionsText(),
+                _legalMentionsText(context),
                 const Spacer(),
               ],
             ),
@@ -92,15 +92,14 @@ class LoginView extends StatelessWidget {
       padding: const EdgeInsets.all(8),
       child: TextFormField(
         controller: _usernameController,
-        decoration: const InputDecoration(
-          border: OutlineInputBorder(),
-          labelText: 'Username',
+        decoration: InputDecoration(
+          border: const OutlineInputBorder(),
+          labelText: context.l10n.username,
         ),
         autovalidateMode: AutovalidateMode.onUserInteraction,
         validator: (value) {
           if (value == null || value.isEmpty || value.length < 4) {
-            return 'Please enter a valid Username'
-                '\n- must have more than 4 characters';
+            return context.l10n.validUsernameLogin;
           }
           return null;
         },
@@ -111,7 +110,7 @@ class LoginView extends StatelessWidget {
     );
   }
 
-  Widget _passwordField() {
+  Widget _passwordField(BuildContext context) {
     return Padding(
       padding: const EdgeInsets.all(8),
       child: TextFormField(
@@ -119,9 +118,9 @@ class LoginView extends StatelessWidget {
         controller: _passwordController,
         enableSuggestions: false,
         autocorrect: false,
-        decoration: const InputDecoration(
-          border: OutlineInputBorder(),
-          labelText: 'Password',
+        decoration: InputDecoration(
+          border: const OutlineInputBorder(),
+          labelText: context.l10n.password,
         ),
       ),
     );
@@ -146,7 +145,7 @@ class LoginView extends StatelessWidget {
                   .read<LoginBloc>()
                   .add(LoginValidateFormEvent(username, password));
             },
-            child: const Text('Login'),
+            child: Text(context.l10n.loginAppBarTitle),
           ),
         );
       },
@@ -158,20 +157,20 @@ class LoginView extends StatelessWidget {
       onPressed: () {
         Navigator.pushNamed(context, '/register');
       },
-      child: const Text('Register and create an account'),
+      child: Text(context.l10n.registerCreateAccount),
     );
   }
 
   Widget _passwordForgotten(BuildContext context) {
     return TextButton(
       onPressed: () {},
-      child: const Text('Forgot your password ?'),
+      child: Text(context.l10n.forgotPassword),
     );
   }
 
-  Widget _legalMentionsText() {
-    return const Text(
-      'By continuing, you agree to the Terms, Conditions and Privacy Policy.',
+  Widget _legalMentionsText(BuildContext context) {
+    return Text(
+      context.l10n.legalMentions,
     );
   }
 }

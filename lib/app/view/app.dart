@@ -46,6 +46,7 @@ class App extends StatelessWidget {
 
             return MaterialApp(
               theme: appThemeData[AppTheme.light],
+              debugShowCheckedModeBanner: false,
               locale: lang,
               title: 'Perseus',
               localizationsDelegates: const [
@@ -145,18 +146,18 @@ class Home extends StatelessWidget {
           child: Column(
             children: [
               Text(AppLocalizations.of(context).counterAppBarTitle),
-              Divider(),
+              const Divider(),
               TextButton(
                 onPressed: () {
                   context.read<LanguageCubit>().changeLang('en');
                 },
-                child: Text('English'),
+                child: const Text('English'),
               ),
               TextButton(
                 onPressed: () {
                   context.read<LanguageCubit>().changeLang('fr');
                 },
-                child: Text('French'),
+                child: const Text('French'),
               ),
             ],
           ),
