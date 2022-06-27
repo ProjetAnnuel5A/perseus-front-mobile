@@ -1,8 +1,28 @@
-class ForbiddenException implements Exception {
+import 'package:flutter/material.dart';
+import 'package:perseus_front_mobile/l10n/l10n.dart';
+
+class HttpException implements Exception {
+  HttpException(this.message, this.reason, this.codeStatus);
+
+  String message;
+  String reason;
+  int codeStatus;
+
+  String getTranslatedMessage(BuildContext context) {
+    return '';
+  }
+}
+
+class ForbiddenException implements HttpException {
   ForbiddenException(this.stackTrace);
 
+  @override
   String message = 'Forbidden';
+
+  @override
   String reason = 'Forbidden';
+
+  @override
   int codeStatus = 403;
   StackTrace stackTrace;
 
@@ -10,12 +30,21 @@ class ForbiddenException implements Exception {
   String toString() {
     return '[$codeStatus]: $reason\nstacktrace --> $stackTrace';
   }
+
+  @override
+  String getTranslatedMessage(BuildContext context) {
+    return context.l10n.forbiddenException;
+  }
 }
-class NotFoundException implements Exception {
+
+class NotFoundException implements HttpException {
   NotFoundException(this.stackTrace);
 
+  @override
   String message = 'Resource not found';
+  @override
   String reason = 'Not Found';
+  @override
   int codeStatus = 404;
   StackTrace stackTrace;
 
@@ -23,13 +52,21 @@ class NotFoundException implements Exception {
   String toString() {
     return '[$codeStatus]: $reason\nstacktrace --> $stackTrace';
   }
+
+  @override
+  String getTranslatedMessage(BuildContext context) {
+    return context.l10n.notFoundException;
+  }
 }
 
-class ConflictException implements Exception {
+class ConflictException implements HttpException {
   ConflictException(this.stackTrace);
 
+  @override
   String message = 'Data already exists';
+  @override
   String reason = 'Conflict';
+  @override
   int codeStatus = 409;
   StackTrace stackTrace;
 
@@ -37,13 +74,21 @@ class ConflictException implements Exception {
   String toString() {
     return '[$codeStatus]: $reason\nstacktrace --> $stackTrace';
   }
+
+  @override
+  String getTranslatedMessage(BuildContext context) {
+    return context.l10n.conflictException;
+  }
 }
 
-class InternalServerException implements Exception {
+class InternalServerException implements HttpException {
   InternalServerException(this.stackTrace);
 
+  @override
   String message = 'Internal Server Error';
+  @override
   String reason = 'Internal Server Error';
+  @override
   int codeStatus = 500;
 
   StackTrace stackTrace;
@@ -52,15 +97,28 @@ class InternalServerException implements Exception {
   String toString() {
     return '[$codeStatus]: $reason\nstacktrace --> $stackTrace';
   }
+
+  @override
+  String getTranslatedMessage(BuildContext context) {
+    return context.l10n.internalServerException;
+  }
 }
 
-class ExceptionUnknow implements Exception {
+class ExceptionUnknown implements HttpException {
+  @override
   String message = 'Internal Server Error';
+  @override
   String reason = 'Unknow Error';
+  @override
   int codeStatus = 500;
 
   @override
   String toString() {
     return '[$codeStatus]: $reason';
+  }
+
+  @override
+  String getTranslatedMessage(BuildContext context) {
+    return context.l10n.unknownException;
   }
 }

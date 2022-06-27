@@ -25,3 +25,8 @@ class CalendarLoaded extends CalendarState {
   @override
   List<Object> get props => [workouts, format, selectDay];
 }
+
+class CalendarError extends CalendarState {
+  const CalendarError(this.httpException);
+  final HttpException httpException;
+}

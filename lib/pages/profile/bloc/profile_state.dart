@@ -8,10 +8,13 @@ class ProfileInitial extends ProfileState {}
 
 class ProfileLoading extends ProfileState {}
 
-class ProfileUpdateLoading extends ProfileState {}
-
 class ProfileLoaded extends ProfileState {
   const ProfileLoaded(this.profile);
 
   final Profile profile;
+}
+
+class ProfileError extends ProfileState {
+  const ProfileError(this.httpException);
+  final HttpException httpException;
 }

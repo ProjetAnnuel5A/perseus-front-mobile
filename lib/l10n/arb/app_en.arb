@@ -40,5 +40,13 @@
     "legalMentions1": "By continuing, you agree to the",
     "legalMentions2": "Terms & Conditions",
     "legalMentions3": "and",
-    "legalMentions4": "Privacy Policy"
+    "legalMentions4": "Privacy Policy",
+    "forbiddenException": "Forbidden",
+    "notFoundException": "Resource not found",
+    "conflictException": "Data already exists",
+    "internalServerException": "Internal Server Error",
+    "unknownException": "Internal Server Error",
+    "incorrectIdentifiers": "Username or password incorrect",
+    "incorrectPasswordException": "Incorrect password",
+    "emailOrPseudoAlreadyExist": "Email or Pseudo already exist"
 }

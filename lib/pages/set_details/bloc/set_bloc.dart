@@ -1,5 +1,6 @@
 import 'package:bloc/bloc.dart';
 import 'package:equatable/equatable.dart';
+import 'package:perseus_front_mobile/common/error/exceptions.dart';
 import 'package:perseus_front_mobile/model/exercise.dart';
 import 'package:perseus_front_mobile/model/set.dart';
 import 'package:perseus_front_mobile/repositories/set_repository.dart';
@@ -10,25 +11,37 @@ part 'set_state.dart';
 class SetBloc extends Bloc<SetEvent, SetState> {
   SetBloc(this._setRepository, String setId) : super(SetInitial()) {
     on<SetStarted>((event, emit) async {
-      final set = await _setRepository.getById(setId);
+      emit(SetLoading());
 
-      if (set != null) {
+      try {
+        final set = await _setRepository.getById(setId);
         emit(SetLoaded(set));
-      } else {
-        // error state
+      } catch (e) {
+        print(e.toString());
+
+        if (e is HttpException) {
+          emit(SetError(e));
+        } else {
+          emit(SetError(ExceptionUnknown()));
+        }
       }
     });
 
     on<ValidateSet>((event, emit) async {
       emit(SetLoading());
 
-      final set =
-          await _setRepository.validateSet(event.setId, event.exercises);
-
-      if (set != null) {
+      try {
+        final set =
+            await _setRepository.validateSet(event.setId, event.exercises);
         emit(SetLoaded(set));
-      } else {
-        // error state
+      } catch (e) {
+        print(e.toString());
+
+        if (e is HttpException) {
+          emit(SetError(e));
+        } else {
+          emit(SetError(ExceptionUnknown()));
+        }
       }
     });
 

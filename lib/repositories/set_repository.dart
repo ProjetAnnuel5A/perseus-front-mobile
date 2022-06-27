@@ -2,6 +2,7 @@ import 'dart:convert';
 
 import 'package:dio/dio.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
+import 'package:perseus_front_mobile/common/error/exceptions.dart';
 import 'package:perseus_front_mobile/common/interceptor/jwt_interceptor.dart';
 import 'package:perseus_front_mobile/common/secure_storage.dart';
 import 'package:perseus_front_mobile/model/dto/validate_set_dto.dart';
@@ -17,7 +18,7 @@ class SetRepository {
   final Dio _dio = Dio();
   final _storage = SecureStorage();
 
-  Future<Set?> validateSet(String setId, List<Exercise> exercises) async {
+  Future<Set> validateSet(String setId, List<Exercise> exercises) async {
     await checkToken();
 
     final data = ValidateSetDto(exercises).toJson();
@@ -33,17 +34,20 @@ class SetRepository {
         final set = Set.fromMap(setMap);
 
         return set;
-      } else {
-        print('Request failed with status: ${response.statusCode}.');
       }
-    } catch (e, stacktrace) {
-      print('$e\n$stacktrace');
+    } catch (e, stackTrace) {
+      if (e is DioError && e.response != null) {
+        switch (e.response!.statusCode) {
+          case 404:
+            throw NotFoundException(stackTrace);
+        }
+      }
     }
 
-    return null;
+    throw InternalServerException(StackTrace.current);
   }
 
-  Future<Set?> getById(String setId) async {
+  Future<Set> getById(String setId) async {
     await checkToken();
 
     try {
@@ -56,14 +60,16 @@ class SetRepository {
         final set = Set.fromMap(setMap);
 
         return set;
-      } else {
-        print('Request failed with status: ${response.statusCode}.');
       }
-    } catch (e) {
-      print(e);
+    } catch (e, stackTrace) {
+      if (e is DioError && e.response != null) {
+        switch (e.response!.statusCode) {
+          case 404:
+            throw NotFoundException(stackTrace);
+        }
+      }
     }
-
-    return null;
+    throw InternalServerException(StackTrace.current);
   }
 
   Future<void> checkToken() async {

@@ -40,5 +40,13 @@
     "legalMentions1": "En continuant, vous acceptez les",
     "legalMentions2": "Conditions Générales d'Utilisation",
     "legalMentions3": "et la",
-    "legalMentions4": "Politique de Confidentialité"
+    "legalMentions4": "Politique de Confidentialité",
+    "forbiddenException": "Interdit",
+    "notFoundException": "Ressource non trouvée",
+    "conflictException": "La donnée existe déjà",
+    "internalServerException": "Le serveur a rencontré un problème inattendu",
+    "unknownException": "Le serveur a rencontré un problème inattendu",
+    "incorrectIdentifiers": "Pseudo ou mot de passe erroné",
+    "incorrectPasswordException": "Mot de passe incorrect",
+    "emailOrPseudoAlreadyExist": "L'addresse email ou le pseudo existe déjà"
 }

@@ -12,3 +12,8 @@ class SetLoaded extends SetState {
   const SetLoaded(this.set);
   final Set set;
 }
+
+class SetError extends SetState {
+  const SetError(this.httpException);
+  final HttpException httpException;
+}

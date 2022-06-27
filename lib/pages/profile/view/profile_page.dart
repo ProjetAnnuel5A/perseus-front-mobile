@@ -29,8 +29,6 @@ class ProfilePage extends StatelessWidget {
 class ProfileView extends StatelessWidget {
   ProfileView({Key? key}) : super(key: key);
 
-  final _formKey = GlobalKey<FormState>();
-
   var _usernameController = TextEditingController();
   var _emailController = TextEditingController();
 

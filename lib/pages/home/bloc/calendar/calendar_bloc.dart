@@ -1,5 +1,6 @@
 import 'package:bloc/bloc.dart';
 import 'package:equatable/equatable.dart';
+import 'package:perseus_front_mobile/common/error/exceptions.dart';
 import 'package:perseus_front_mobile/model/workout.dart';
 import 'package:perseus_front_mobile/repositories/workout_repository.dart';
 import 'package:table_calendar/table_calendar.dart';
@@ -11,7 +12,7 @@ class CalendarBloc extends Bloc<CalendarEvent, CalendarState> {
   CalendarBloc(this._workoutRepository) : super(CalendarInitial()) {
     on<CalendarStarted>(_onStarted);
 
-    // use copyWith
+    // use copyWith?
 
     on<UpdateFormat>((event, emit) {
       calendarFormat = event.calendarFormat;
@@ -57,8 +58,14 @@ class CalendarBloc extends Bloc<CalendarEvent, CalendarState> {
     try {
       workouts = await _workoutRepository.getAllByUserId();
       emit(CalendarLoaded(workouts: workouts, selectDay: DateTime.now()));
-    } catch (_) {
-      // error case emit(CalendarError());
+    } catch (e) {
+      print(e.toString());
+
+      if (e is HttpException) {
+        emit(CalendarError(e));
+      } else {
+        emit(CalendarError(ExceptionUnknown()));
+      }
     }
   }
 

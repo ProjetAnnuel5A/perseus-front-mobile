@@ -10,6 +10,7 @@ import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:perseus_front_mobile/common/auth/bloc/auth_bloc.dart';
+import 'package:perseus_front_mobile/common/error/exceptions.dart';
 import 'package:perseus_front_mobile/common/theme/colors.dart';
 import 'package:perseus_front_mobile/l10n/l10n.dart';
 import 'package:perseus_front_mobile/pages/login/bloc/login_bloc.dart';
@@ -42,17 +43,9 @@ class LoginView extends StatelessWidget {
     return BlocListener<LoginBloc, LoginState>(
       listener: (context, state) {
         if (state is LoginError) {
-          final snackBar = SnackBar(
-            backgroundColor: ColorPerseus.blue,
-            content: Text(state.message),
-            action: SnackBarAction(
-              label: l10n.close,
-              textColor: ColorPerseus.pink,
-              onPressed: () {},
-            ),
+          ScaffoldMessenger.of(context).showSnackBar(
+            snackBarError(context, state.httpException),
           );
-
-          ScaffoldMessenger.of(context).showSnackBar(snackBar);
         }
       },
       child: Scaffold(
@@ -217,9 +210,34 @@ class LoginView extends StatelessWidget {
         ],
       ),
     );
+  }
 
-    // return Text(
-    //   context.l10n.legalMentions,
-    // );
+  SnackBar snackBarError(BuildContext context, HttpException httpException) {
+    final snackBar = SnackBar(
+      backgroundColor: ColorPerseus.blue,
+      content: Text(translateErrorMessage(context, httpException)),
+      action: SnackBarAction(
+        label: context.l10n.close,
+        textColor: ColorPerseus.pink,
+        onPressed: () {},
+      ),
+    );
+
+    return snackBar;
+  }
+
+  String translateErrorMessage(
+    BuildContext context,
+    HttpException httpException,
+  ) {
+    if (httpException is ForbiddenException) {
+      return context.l10n.incorrectIdentifiers;
+    } else if (httpException is NotFoundException) {
+      return context.l10n.incorrectIdentifiers;
+    } else if (httpException is InternalServerException) {
+      return httpException.getTranslatedMessage(context);
+    }
+
+    return context.l10n.unknownException;
   }
 }

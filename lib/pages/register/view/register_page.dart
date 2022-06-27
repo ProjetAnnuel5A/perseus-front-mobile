@@ -8,6 +8,7 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:perseus_front_mobile/common/error/exceptions.dart';
 import 'package:perseus_front_mobile/common/theme/colors.dart';
 import 'package:perseus_front_mobile/l10n/l10n.dart';
 import 'package:perseus_front_mobile/pages/register/bloc/register_bloc.dart';
@@ -47,17 +48,8 @@ class RegisterView extends StatelessWidget {
             if (state is RegisterSuccess) {
               Navigator.pop(context);
             } else if (state is RegisterError) {
-              final snackBar = SnackBar(
-                backgroundColor: ColorPerseus.blue,
-                content: Text(state.message),
-                action: SnackBarAction(
-                  label: context.l10n.close,
-                  textColor: ColorPerseus.pink,
-                  onPressed: () {},
-                ),
-              );
-
-              ScaffoldMessenger.of(context).showSnackBar(snackBar);
+              ScaffoldMessenger.of(context)
+                  .showSnackBar(snackBarError(context, state.httpException));
             }
           },
           child: Center(
@@ -232,5 +224,32 @@ class RegisterView extends StatelessWidget {
 
   Widget _headerImage() {
     return Image.asset('assets/images/register.png');
+  }
+
+  SnackBar snackBarError(BuildContext context, HttpException httpException) {
+    final snackBar = SnackBar(
+      backgroundColor: ColorPerseus.blue,
+      content: Text(translateErrorMessage(context, httpException)),
+      action: SnackBarAction(
+        label: context.l10n.close,
+        textColor: ColorPerseus.pink,
+        onPressed: () {},
+      ),
+    );
+
+    return snackBar;
+  }
+
+  String translateErrorMessage(
+    BuildContext context,
+    HttpException httpException,
+  ) {
+    if (httpException is NotFoundException) {
+      return context.l10n.notFoundException;
+    } else if (httpException is ConflictException) {
+      return context.l10n.emailOrPseudoAlreadyExist;
+    }
+
+    return context.l10n.unknownException;
   }
 }

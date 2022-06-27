@@ -7,15 +7,14 @@ import 'package:perseus_front_mobile/model/dto/register_dto.dart';
 
 class AuthRepository {
   AuthRepository() {
-    _dio.options.headers['content-Type'] = 'application/json';
-
     _baseUrl = dotenv.env['login_api'] ?? 'locahost:9090';
+    _dio.options.headers['content-Type'] = 'application/json';
   }
 
   final Dio _dio = Dio();
   String? _baseUrl;
 
-  Future<String?> register(RegisterDto registerDto) async {
+  Future<void> register(RegisterDto registerDto) async {
     final data = registerDto.toJson();
 
     try {
@@ -25,7 +24,7 @@ class AuthRepository {
       );
 
       if (response.statusCode == 201) {
-        return 'ok';
+        return;
       }
     } catch (e, stackTrace) {
       if (e is DioError && e.response != null) {
@@ -41,7 +40,7 @@ class AuthRepository {
     throw InternalServerException(StackTrace.current);
   }
 
-  Future<String?> login(String username, String password) async {
+  Future<String> login(String username, String password) async {
     final body = jsonEncode(
       <String, String>{'username': username, 'password': password},
     );

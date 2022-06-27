@@ -19,16 +19,14 @@ class LoginBloc extends Bloc<LoginEvent, LoginState> {
         final result =
             await _authRepository.login(event.username, event.password);
 
-        _authenticationBloc.add(LoggedIn('username', result!));
+        _authenticationBloc.add(LoggedIn('username', result));
       } catch (e) {
         print(e.toString());
 
-        if (e is NotFoundException) {
-          emit(LoginError(e.message));
-        } else if (e is InternalServerException) {
-          emit(LoginError(e.message));
+        if (e is HttpException) {
+          emit(LoginError(e));
         } else {
-          emit(LoginError(ExceptionUnknow().message));
+          emit(LoginError(ExceptionUnknown()));
         }
       }
     });

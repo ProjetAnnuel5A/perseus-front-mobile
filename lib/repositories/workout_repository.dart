@@ -2,6 +2,7 @@ import 'dart:convert';
 
 import 'package:dio/dio.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
+import 'package:perseus_front_mobile/common/error/exceptions.dart';
 import 'package:perseus_front_mobile/common/interceptor/jwt_interceptor.dart';
 import 'package:perseus_front_mobile/common/secure_storage.dart';
 import 'package:perseus_front_mobile/model/workout.dart';
@@ -17,11 +18,11 @@ class WorkoutRepository {
   final _storage = SecureStorage();
 
   Future<List<Workout>> getAllByUserId() async {
+    await checkToken();
+
+    final userId = await _storage.getUserId();
+
     try {
-      await checkToken();
-
-      final userId = await _storage.getUserId();
-
       final response = await _dio.get<String>(
         '$_baseUrl/v1/workouts/byUserId/$userId',
       );
@@ -38,25 +39,25 @@ class WorkoutRepository {
         }
 
         return workouts;
-      } else {
-        print('Request failed with status: ${response.statusCode}.');
       }
-    } catch (e) {
-      print(e);
+    } catch (e, stackTrace) {
+      if (e is DioError && e.response != null) {
+        switch (e.response!.statusCode) {
+          case 404:
+            throw NotFoundException(stackTrace);
+        }
+      }
     }
 
-    return [];
+    throw InternalServerException(StackTrace.current);
   }
 
   Future<void> checkToken() async {
-    print('checkToken');
-
     if (_dio.interceptors.isEmpty) {
       final token = await _storage.getToken();
 
       if (token != null) {
         _dio.interceptors.add(CustomInterceptors(token));
-        print('add token');
       }
     }
   }

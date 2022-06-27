@@ -13,19 +13,17 @@ class RegisterBloc extends Bloc<RegisterEvent, RegisterState> {
       emit(RegisterLoading());
 
       try {
-        final _ = await _authRepository
+        await _authRepository
             .register(RegisterDto(event.username, event.email, event.password));
 
         emit(RegisterSuccess());
       } catch (e) {
         print(e.toString());
 
-        if (e is NotFoundException) {
-          emit(RegisterError(e.message));
-        } else if (e is ConflictException) {
-          emit(RegisterError(e.message));
+        if (e is HttpException) {
+          emit(RegisterError(e));
         } else {
-          emit(RegisterError(ExceptionUnknow().message));
+          emit(RegisterError(ExceptionUnknown()));
         }
       }
     });

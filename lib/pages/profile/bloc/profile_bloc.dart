@@ -1,5 +1,6 @@
 import 'package:bloc/bloc.dart';
 import 'package:equatable/equatable.dart';
+import 'package:perseus_front_mobile/common/error/exceptions.dart';
 import 'package:perseus_front_mobile/common/extensions.dart';
 import 'package:perseus_front_mobile/common/secure_storage.dart';
 import 'package:perseus_front_mobile/model/dto/profile_update_dto.dart';
@@ -14,17 +15,26 @@ part 'profile_state.dart';
 class ProfileBloc extends Bloc<ProfileEvent, ProfileState> {
   ProfileBloc(this._profileRepository) : super(ProfileInitial()) {
     on<ProfileStarted>((event, emit) async {
+      emit(ProfileLoading());
+
       final profileId = await _storage.getUserId();
-      final jwt = await _storage.getToken();
 
-      if (profileId != null && jwt != null) {
-        final profile = await _profileRepository.getById(profileId, jwt);
+      if (profileId != null) {
+        try {
+          final profile = await _profileRepository.getById(profileId);
 
-        if (profile != null) {
           emit(ProfileLoaded(profile));
-        } else {
-          // error state
+        } catch (e) {
+          print(e.toString());
+
+          if (e is HttpException) {
+            emit(ProfileError(e));
+          } else {
+            emit(ProfileError(ExceptionUnknown()));
+          }
         }
+      } else {
+        // error jwt
       }
     });
 
@@ -58,26 +68,36 @@ class ProfileBloc extends Bloc<ProfileEvent, ProfileState> {
       emit(ProfileLoading());
 
       final profileId = await _storage.getUserId();
-      final jwt = await _storage.getToken();
 
-      if (profileId != null && jwt != null) {
-        final birthDate = event.profile.birthDate.toString().substring(0, 10);
-        final level = event.profile.level.toShortString();
-        final objective = event.profile.objective.toShortString();
+      if (profileId != null) {
+        try {
+          final birthDate = event.profile.birthDate.toString().substring(0, 10);
+          final level = event.profile.level.toShortString();
+          final objective = event.profile.objective.toShortString();
 
-        final profileUpdateDto = ProfileUpdateDto(
-          birthDate,
-          event.profile.height,
-          event.profile.weight,
-          event.profile.availability,
-          objective,
-          level,
-        );
+          final profileUpdateDto = ProfileUpdateDto(
+            birthDate,
+            event.profile.height,
+            event.profile.weight,
+            event.profile.availability,
+            objective,
+            level,
+          );
 
-        // TODO try catch /
+          await _profileRepository.update(profileId, profileUpdateDto);
 
-        await _profileRepository.update(profileId, profileUpdateDto, jwt);
-        emit(ProfileLoaded(event.profile));
+          emit(ProfileLoaded(event.profile));
+        } catch (e) {
+          print(e.toString());
+
+          if (e is HttpException) {
+            emit(ProfileError(e));
+          } else {
+            emit(ProfileError(ExceptionUnknown()));
+          }
+        }
+      } else {
+        // error jwt
       }
     });
 
