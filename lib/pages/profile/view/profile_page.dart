@@ -314,7 +314,7 @@ class ProfileView extends StatelessWidget {
     return Padding(
       padding: const EdgeInsets.all(8),
       child: DropdownButtonFormField<Objective>(
-        value: Objective.GAIN,
+        value: profile.objective,
         onChanged: (Objective? newValue) {
           if (newValue != null) {
             context
