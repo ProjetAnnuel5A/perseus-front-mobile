@@ -7,7 +7,6 @@ import 'package:perseus_front_mobile/common/widget/gradient_progress_indicator_w
 import 'package:perseus_front_mobile/l10n/l10n.dart';
 import 'package:perseus_front_mobile/model/set.dart';
 import 'package:perseus_front_mobile/model/workout.dart';
-import 'package:perseus_front_mobile/pages/counter/counter.dart';
 import 'package:perseus_front_mobile/pages/home/bloc/bottom_navigation/bottom_navigation_bloc.dart';
 import 'package:perseus_front_mobile/pages/home/bloc/calendar/calendar_bloc.dart';
 import 'package:perseus_front_mobile/pages/notification/view/notification_page.dart';
@@ -66,7 +65,7 @@ class HomeView extends StatelessWidget {
               } else if (state.currentIndex == 2) {
                 return const SettingsPage();
               } else {
-                return const CounterPage();
+                // return ?;
               }
             }
             return Container();
@@ -129,8 +128,6 @@ class HomeView extends StatelessWidget {
         return customLoader(context);
       },
     );
-
-    //!! TODO => 1 bloc builder et pas 2?
   }
 
   Widget _getHomeCalendar(BuildContext context) {

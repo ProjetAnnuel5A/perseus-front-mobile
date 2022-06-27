@@ -1,3 +1,6 @@
+import 'package:flutter/material.dart';
+import 'package:perseus_front_mobile/l10n/l10n.dart';
+import 'package:perseus_front_mobile/model/enum/day.dart';
 import 'package:perseus_front_mobile/model/enum/level.dart';
 
 extension DateOnlyCompare on DateTime {
@@ -9,12 +12,5 @@ extension DateOnlyCompare on DateTime {
 extension ParseToString on Enum {
   String toShortString() {
     return toString().split('.').last;
-  }
-}
-
-extension ParseStringToEnum on Level {
-  Level? enumFromString<T>(Iterable<Level> values, String value) {
-    return values
-        .firstWhere((type) => type.toString().split('.').last == value);
   }
 }

@@ -5,6 +5,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_datetime_picker/flutter_datetime_picker.dart';
 import 'package:perseus_front_mobile/common/extensions.dart';
 import 'package:perseus_front_mobile/common/theme/colors.dart';
+import 'package:perseus_front_mobile/common/widget/functions.dart';
 import 'package:perseus_front_mobile/common/widget/gradient_progress_indicator_widget.dart';
 import 'package:perseus_front_mobile/l10n/l10n.dart';
 import 'package:perseus_front_mobile/model/enum/day.dart';
@@ -51,18 +52,18 @@ class ProfileView extends StatelessWidget {
                     padding: const EdgeInsets.all(20),
                     child: Column(
                       children: <Widget>[
-                        const Text('Informations principales'),
+                        Text(l10n.mainInformations),
                         _usernameField(context, profile.username),
                         _emailField(context, profile.email),
                         const SizedBox(height: 20),
-                        const Text('Informations complémentaires'),
+                        Text(l10n.additionalInformations),
                         _heightField(context, profile),
                         _weightField(context, profile),
                         _birthDateField(context, profile),
                         _levelField(context, profile),
                         _objectiveField(context, profile),
                         const SizedBox(height: 20),
-                        const Text('Disponibilités'),
+                        Text(l10n.availabilities),
                         _availabilies(context, profile)
                       ],
                     ),
@@ -192,7 +193,7 @@ class ProfileView extends StatelessWidget {
           const Icon(
             Icons.date_range,
           ),
-          const Text(' Birthday:'),
+          Text('${l10n.birthday}:'),
           const Spacer(),
           OutlinedButton(
             onPressed: () {
@@ -246,9 +247,9 @@ class ProfileView extends StatelessWidget {
         inputFormatters: <TextInputFormatter>[
           FilteringTextInputFormatter.digitsOnly
         ],
-        decoration: const InputDecoration(
-          border: OutlineInputBorder(),
-          labelText: 'Height(cm)',
+        decoration: InputDecoration(
+          border: const OutlineInputBorder(),
+          labelText: '${l10n.height}(cm)',
         ),
       ),
     );
@@ -274,9 +275,9 @@ class ProfileView extends StatelessWidget {
         },
         autovalidateMode: AutovalidateMode.onUserInteraction,
         keyboardType: const TextInputType.numberWithOptions(decimal: true),
-        decoration: const InputDecoration(
-          border: OutlineInputBorder(),
-          labelText: 'Weight(kg)',
+        decoration: InputDecoration(
+          border: const OutlineInputBorder(),
+          labelText: '${l10n.weight}(kg)',
         ),
       ),
     );
@@ -294,14 +295,14 @@ class ProfileView extends StatelessWidget {
             context.read<ProfileBloc>().add(LevelChanged(profile, newValue));
           }
         },
-        decoration: const InputDecoration(
-          border: OutlineInputBorder(),
-          labelText: 'Level',
+        decoration: InputDecoration(
+          border: const OutlineInputBorder(),
+          labelText: l10n.level,
         ),
         items: Level.values.map((Level level) {
           return DropdownMenuItem<Level>(
             value: level,
-            child: Text(level.toString()),
+            child: Text(translateLevel(context, level)),
           );
         }).toList(),
       ),
@@ -322,14 +323,14 @@ class ProfileView extends StatelessWidget {
                 .add(ObjectiveChanged(profile, newValue));
           }
         },
-        decoration: const InputDecoration(
-          border: OutlineInputBorder(),
-          labelText: 'Objective',
+        decoration: InputDecoration(
+          border: const OutlineInputBorder(),
+          labelText: l10n.objective,
         ),
         items: Objective.values.map((Objective objective) {
           return DropdownMenuItem<Objective>(
             value: objective,
-            child: Text(objective.toString()),
+            child: Text(translateObjective(context, objective)),
           );
         }).toList(),
       ),
@@ -344,7 +345,8 @@ class ProfileView extends StatelessWidget {
         physics: const ClampingScrollPhysics(),
         itemCount: Day.values.length,
         itemBuilder: (context, index) {
-          final dayString = Day.values[index].toShortString();
+          final day = Day.values[index];
+          final dayString = translateDay(context, day);
           var isChecked = false;
 
           if (profile.availability.contains(dayString)) {
@@ -363,9 +365,9 @@ class ProfileView extends StatelessWidget {
 
                   if (newValue != null) {
                     if (newValue == true) {
-                      availability.add(dayString);
+                      availability.add(day.toShortString());
                     } else {
-                      availability.remove(dayString);
+                      availability.remove(day.toShortString());
                     }
                   }
                   context
@@ -393,7 +395,7 @@ class ProfileView extends StatelessWidget {
                       ProfileUpdate(profile),
                     );
               },
-              child: const Text('Update'),
+              child: Text(context.l10n.update),
             ),
           );
         }

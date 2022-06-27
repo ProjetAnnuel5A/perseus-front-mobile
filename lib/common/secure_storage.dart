@@ -22,7 +22,8 @@ class SecureStorage {
     await _storage.write(key: _role, value: role);
 
     print(
-        'Saving from JWT [username --> $username, userId --> $userId, role --> $role]');
+      'Saving from JWT [username --> $username, userId --> $userId, role --> $role]',
+    );
   }
 
   Future<bool> hasToken() async {

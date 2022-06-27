@@ -156,12 +156,12 @@ class LoginView extends StatelessWidget {
     );
   }
 
-  Widget _passwordForgotten(BuildContext context) {
-    return TextButton(
-      onPressed: () {},
-      child: Text(context.l10n.forgotPassword),
-    );
-  }
+  // Widget _passwordForgotten(BuildContext context) {
+  //   return TextButton(
+  //     onPressed: () {},
+  //     child: Text(context.l10n.forgotPassword),
+  //   );
+  // }
 
   Widget _legalMentionsText(BuildContext context) {
     return RichText(
