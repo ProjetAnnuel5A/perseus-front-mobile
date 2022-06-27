@@ -6,6 +6,7 @@
 // https://opensource.org/licenses/MIT.
 
 import 'package:flutter/cupertino.dart';
+import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:perseus_front_mobile/common/auth/bloc/auth_bloc.dart';
@@ -13,6 +14,7 @@ import 'package:perseus_front_mobile/common/theme/colors.dart';
 import 'package:perseus_front_mobile/l10n/l10n.dart';
 import 'package:perseus_front_mobile/pages/login/bloc/login_bloc.dart';
 import 'package:perseus_front_mobile/repositories/auth_repository.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 class LoginPage extends StatelessWidget {
   const LoginPage({Key? key}) : super(key: key);
@@ -169,8 +171,55 @@ class LoginView extends StatelessWidget {
   }
 
   Widget _legalMentionsText(BuildContext context) {
-    return Text(
-      context.l10n.legalMentions,
+    return RichText(
+      text: TextSpan(
+        children: [
+          TextSpan(
+            text: '${context.l10n.legalMentions1} ',
+            style: const TextStyle(color: Colors.black),
+          ),
+          TextSpan(
+            text: '${context.l10n.legalMentions2} ',
+            style: const TextStyle(color: Colors.blue),
+            recognizer: TapGestureRecognizer()
+              ..onTap = () {
+                launchUrl(
+                  Uri(
+                    scheme: 'https',
+                    host: 'sites.google.com',
+                    path: '/view/perseus-sport/terms-conditions',
+                  ),
+                );
+              },
+          ),
+          TextSpan(
+            text: '${context.l10n.legalMentions3} ',
+            style: const TextStyle(color: Colors.black),
+          ),
+          TextSpan(
+            text: context.l10n.legalMentions4,
+            style: const TextStyle(color: Colors.blue),
+            recognizer: TapGestureRecognizer()
+              ..onTap = () {
+                launchUrl(
+                  Uri(
+                    scheme: 'https',
+                    host: 'sites.google.com',
+                    path: '/view/perseus-sport/privacy-policy',
+                  ),
+                );
+              },
+          ),
+          const TextSpan(
+            text: '.',
+            style: TextStyle(color: Colors.black),
+          ),
+        ],
+      ),
     );
+
+    // return Text(
+    //   context.l10n.legalMentions,
+    // );
   }
 }

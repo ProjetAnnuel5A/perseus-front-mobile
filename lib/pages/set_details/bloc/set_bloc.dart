@@ -52,6 +52,26 @@ class SetBloc extends Bloc<SetEvent, SetState> {
       );
     });
 
+    on<IncrementWeight>((event, emit) {
+      event.set.exercises[event.index].weight++;
+
+      emit(
+        SetLoaded(
+          event.set,
+        ),
+      );
+    });
+
+    on<DecrementWeight>((event, emit) {
+      event.set.exercises[event.index].weight--;
+
+      emit(
+        SetLoaded(
+          event.set,
+        ),
+      );
+    });
+
     add(SetStarted());
   }
 

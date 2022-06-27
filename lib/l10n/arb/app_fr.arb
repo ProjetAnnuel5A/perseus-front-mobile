@@ -36,5 +36,9 @@
     "validUsernameLogin": "S'il vous plait entrez un pseudo valide\n- Le Pseudo doit avoir plus de 4 caractères",
     "registerCreateAccount": "S'enregistrer et créer un compte",
     "forgotPassword": "Vous avez oublié votre mot de passe ?",
-    "legalMentions": "En continuant, vous acceptez les conditions générales d'utilisation."
+    "legalMentions": "En continuant, vous acceptez les Conditions Générales d'Utilisation et la Politique de Confidentialité.",
+    "legalMentions1": "En continuant, vous acceptez les",
+    "legalMentions2": "Conditions Générales d'Utilisation",
+    "legalMentions3": "et la",
+    "legalMentions4": "Politique de Confidentialité"
 }

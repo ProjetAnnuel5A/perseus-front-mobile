@@ -1,9 +1,9 @@
-// ignore_for_file: public_member_api_docs, sort_constructors_first
+// ignore_for_file: must_be_immutable
+
 import 'dart:convert';
 
 import 'package:equatable/equatable.dart';
-
-import 'package:perseus_front_mobile/model/difficulty.dart';
+import 'package:perseus_front_mobile/model/enum/difficulty.dart';
 
 class Exercise extends Equatable {
   Exercise(
@@ -17,6 +17,8 @@ class Exercise extends Equatable {
     this.createdAt,
     this.updatedAt,
   );
+  factory Exercise.fromJson(String source) =>
+      Exercise.fromMap(json.decode(source) as Map<String, dynamic>);
 
   factory Exercise.fromMap(Map<String, dynamic> _map) {
     return Exercise(
@@ -36,7 +38,7 @@ class Exercise extends Equatable {
   final String name;
   final String description;
   int repetition;
-  final int weight;
+  int weight;
   final int calorie;
   final Difficulty difficulty;
   final DateTime createdAt;
@@ -103,7 +105,4 @@ class Exercise extends Equatable {
     }
     return item;
   }
-
-  factory Exercise.fromJson(String source) =>
-      Exercise.fromMap(json.decode(source) as Map<String, dynamic>);
 }

@@ -36,5 +36,9 @@
     "validUsernameLogin": "Please enter a valid Username\n- must have more than 4 characters",
     "registerCreateAccount": "Register and create an account",
     "forgotPassword": "Forgot your password ?",
-    "legalMentions": "By continuing, you agree to the Terms, Conditions and Privacy Policy."
+    "legalMentions": "By continuing, you agree to the Terms & Conditions and Privacy Policy.",
+    "legalMentions1": "By continuing, you agree to the",
+    "legalMentions2": "Terms & Conditions",
+    "legalMentions3": "and",
+    "legalMentions4": "Privacy Policy"
 }

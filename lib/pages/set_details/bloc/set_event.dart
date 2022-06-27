@@ -29,6 +29,26 @@ class DecrementRepetition extends SetEvent {
   List<Object> get props => [set];
 }
 
+class IncrementWeight extends SetEvent {
+  const IncrementWeight(this.set, this.index);
+
+  final Set set;
+  final int index;
+
+  @override
+  List<Object> get props => [set];
+}
+
+class DecrementWeight extends SetEvent {
+  const DecrementWeight(this.set, this.index);
+
+  final Set set;
+  final int index;
+
+  @override
+  List<Object> get props => [set];
+}
+
 class ValidateSet extends SetEvent {
   const ValidateSet(this.setId, this.exercises);
 

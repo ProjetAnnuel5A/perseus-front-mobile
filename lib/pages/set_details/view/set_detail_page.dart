@@ -47,6 +47,7 @@ class SetDetailView extends StatelessWidget {
                       child: Column(
                         children: [
                           Text(set.name),
+                          const SizedBox(height: 20),
                           Expanded(
                             child: ListView.builder(
                               itemCount: set.exercises.length,
@@ -59,12 +60,6 @@ class SetDetailView extends StatelessWidget {
                                     index,
                                   ),
                                 ];
-
-                                // if (index != set.exercises.length - 1) {
-                                //   children.add(
-                                //     waitingTime(),
-                                //   );
-                                // }
 
                                 return Column(
                                   children: children,
@@ -150,46 +145,55 @@ class SetDetailView extends StatelessWidget {
             child: Card(
               child: Padding(
                 padding: const EdgeInsets.all(15),
-                child: Row(
+                child: Column(
                   children: [
-                    Text('${index + 1}) ${exercise.name}'),
-                    const Spacer(),
-                    CupertinoButton(
-                      padding: EdgeInsets.zero,
-                      onPressed:
-                          set.exercises[index].repetition <= 0 || set.isValided
-                              ? null
-                              : () {
-                                  context
-                                      .read<SetBloc>()
-                                      .add(DecrementRepetition(set, index));
-                                },
-                      child: const Icon(
-                        CupertinoIcons.minus_circle_fill,
-                        size: 35,
-                      ),
-                    ),
-                    SizedBox(
-                      width: 40,
-                      child: Center(
-                        child: Text(
-                          '${state.set.exercises[index].repetition}',
+                    Row(
+                      children: [
+                        Text(
+                          '${index + 1} - ${exercise.name}',
+                          style: const TextStyle(fontWeight: FontWeight.bold),
                         ),
-                      ),
+                        const Spacer(),
+                        IconButton(
+                          onPressed: () {
+                            dialog(context, exercise.description);
+                          },
+                          icon: const Icon(Icons.info_outline),
+                        )
+                      ],
                     ),
-                    CupertinoButton(
-                      padding: EdgeInsets.zero,
-                      onPressed: set.isValided
-                          ? null
-                          : () {
-                              context
-                                  .read<SetBloc>()
-                                  .add(IncrementRepetition(set, index));
-                            },
-                      child: const Icon(
-                        CupertinoIcons.plus_circle_fill,
-                        size: 35,
-                      ),
+                    const SizedBox(height: 20),
+                    Row(
+                      children: [
+                        const Text('Repetitions'),
+                        const Spacer(),
+                        _decrementRepetitionButton(context, state.set, index),
+                        SizedBox(
+                          width: 60,
+                          child: Center(
+                            child: Text(
+                              '${state.set.exercises[index].repetition}',
+                            ),
+                          ),
+                        ),
+                        _incrementRepetitionButton(context, state.set, index),
+                      ],
+                    ),
+                    Row(
+                      children: [
+                        const Text('Weight'),
+                        const Spacer(),
+                        _decrementWeightButton(context, state.set, index),
+                        SizedBox(
+                          width: 60,
+                          child: Center(
+                            child: Text(
+                              '${state.set.exercises[index].weight} kg',
+                            ),
+                          ),
+                        ),
+                        _incrementWeightButton(context, state.set, index),
+                      ],
                     ),
                   ],
                 ),
@@ -197,8 +201,71 @@ class SetDetailView extends StatelessWidget {
             ),
           );
         }
+
         return const CircularProgressIndicator();
       },
+    );
+  }
+
+  Widget _decrementRepetitionButton(BuildContext context, Set set, int index) {
+    return CupertinoButton(
+      padding: EdgeInsets.zero,
+      onPressed: set.exercises[index].repetition <= 0 || set.isValided
+          ? null
+          : () {
+              context.read<SetBloc>().add(DecrementRepetition(set, index));
+            },
+      child: const Icon(
+        CupertinoIcons.minus_circle_fill,
+        size: 35,
+      ),
+    );
+  }
+
+  Widget _incrementRepetitionButton(BuildContext context, Set set, int index) {
+    return CupertinoButton(
+      padding: EdgeInsets.zero,
+      onPressed: set.isValided
+          ? null
+          : () {
+              context.read<SetBloc>().add(IncrementRepetition(set, index));
+            },
+      child: const Icon(
+        CupertinoIcons.plus_circle_fill,
+        size: 35,
+      ),
+    );
+  }
+
+  Widget _decrementWeightButton(BuildContext context, Set set, int index) {
+    return CupertinoButton(
+      padding: EdgeInsets.zero,
+      onPressed: set.exercises[index].repetition <= 0 || set.isValided
+          ? null
+          : () {
+              context.read<SetBloc>().add(DecrementWeight(set, index));
+            },
+      child: Icon(
+        CupertinoIcons.minus_circle_fill,
+        color: !set.isValided ? ColorPerseus.pink : null,
+        size: 35,
+      ),
+    );
+  }
+
+  Widget _incrementWeightButton(BuildContext context, Set set, int index) {
+    return CupertinoButton(
+      padding: EdgeInsets.zero,
+      onPressed: set.isValided
+          ? null
+          : () {
+              context.read<SetBloc>().add(IncrementWeight(set, index));
+            },
+      child: Icon(
+        CupertinoIcons.plus_circle_fill,
+        color: !set.isValided ? ColorPerseus.pink : null,
+        size: 35,
+      ),
     );
   }
 
@@ -206,31 +273,6 @@ class SetDetailView extends StatelessWidget {
     return Row(
       mainAxisAlignment: MainAxisAlignment.center,
       children: <Widget>[
-        // Padding(
-        //   padding: const EdgeInsets.only(right: 10),
-        //   child: SizedBox(
-        //     width: 48,
-        //     height: 48,
-        //     child: Container(
-        //       decoration: BoxDecoration(
-        //         color: Colors.white,
-        //         borderRadius: const BorderRadius.all(
-        //           Radius.circular(16),
-        //         ),
-        //         border: Border.all(
-        //           color: Colors.grey.withOpacity(0.2),
-        //         ),
-        //       ),
-        //       child: IconButton(
-        //         icon: const Icon(
-        //           Icons.edit,
-        //           size: 28,
-        //         ),
-        //         onPressed: set.isValided ? null : () {},
-        //       ),
-        //     ),
-        //   ),
-        // ),
         SizedBox(
           width: 48,
           height: 48,
@@ -312,6 +354,25 @@ class SetDetailView extends StatelessWidget {
           ),
         ),
       ],
+    );
+  }
+
+  Future<String?> dialog(BuildContext context, String content) {
+    return showDialog<String>(
+      context: context,
+      builder: (BuildContext context) => AlertDialog(
+        title: const Text(
+          'Informations complémentaires',
+          style: TextStyle(color: Colors.black, fontSize: 18),
+        ),
+        content: Text(content),
+        actions: <Widget>[
+          TextButton(
+            onPressed: () => Navigator.pop(context, 'Close'),
+            child: const Text('Close'),
+          ),
+        ],
+      ),
     );
   }
 }
