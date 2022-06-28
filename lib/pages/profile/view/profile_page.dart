@@ -349,7 +349,7 @@ class ProfileView extends StatelessWidget {
           final dayString = translateDay(context, day);
           var isChecked = false;
 
-          if (profile.availability.contains(dayString)) {
+          if (profile.availability.contains(day.toShortString())) {
             isChecked = true;
           }
 
