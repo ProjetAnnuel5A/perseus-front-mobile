@@ -1,8 +1,11 @@
 import 'package:bloc/bloc.dart';
 import 'package:equatable/equatable.dart';
+import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:perseus_front_mobile/common/error/exceptions.dart';
+import 'package:perseus_front_mobile/common/secure_storage.dart';
 import 'package:perseus_front_mobile/model/workout.dart';
 import 'package:perseus_front_mobile/repositories/workout_repository.dart';
+import 'package:socket_io_client/socket_io_client.dart';
 import 'package:table_calendar/table_calendar.dart';
 
 part 'calendar_event.dart';
@@ -38,6 +41,8 @@ class CalendarBloc extends Bloc<CalendarEvent, CalendarState> {
       );
     });
 
+    initializeSocket();
+
     add(CalendarStarted());
   }
 
@@ -68,6 +73,36 @@ class CalendarBloc extends Bloc<CalendarEvent, CalendarState> {
       }
     }
   }
+
+  @override
+  Future<void> close() async {
+    _socket.dispose();
+    return super.close();
+  }
+
+  Future<void> initializeSocket() async {
+    final userId = await SecureStorage().getUserId();
+
+    final server = dotenv.env['sport_api'] ?? 'http://127.0.0.1:3000';
+    _socket = io('$server/', <String, dynamic>{
+      'transports': ['websocket'],
+      'autoConnect': false,
+    });
+    _socket
+      ..connect()
+      ..on('event-validate-set/$userId', (dynamic data) async {
+        if (state is CalendarLoaded) {
+          add(CalendarStarted());
+        }
+      })
+      ..on('event-generate-program/$userId', (dynamic data) async {
+        if (state is CalendarLoaded) {
+          add(CalendarStarted());
+        }
+      });
+  }
+
+  late final Socket _socket;
 
   final WorkoutRepository _workoutRepository;
 
