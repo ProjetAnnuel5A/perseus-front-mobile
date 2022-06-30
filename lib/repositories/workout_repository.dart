@@ -52,6 +52,29 @@ class WorkoutRepository {
     throw InternalServerException(StackTrace.current);
   }
 
+  Future<void> validateWorkout(String workoutId) async {
+    await checkToken();
+
+    try {
+      final response = await _dio.patch<String>(
+        '$_baseUrl/v1/workouts/validateWorkout/$workoutId',
+      );
+
+      if (response.statusCode == 200 && response.data != null) {
+        return;
+      }
+    } catch (e, stackTrace) {
+      if (e is DioError && e.response != null) {
+        switch (e.response!.statusCode) {
+          case 404:
+            throw NotFoundException(stackTrace);
+        }
+      }
+    }
+
+    throw InternalServerException(StackTrace.current);
+  }
+
   Future<void> checkToken() async {
     if (_dio.interceptors.isEmpty) {
       final token = await _storage.getToken();

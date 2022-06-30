@@ -1,4 +1,5 @@
 import 'package:collection/collection.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:perseus_front_mobile/common/extensions.dart';
@@ -300,7 +301,9 @@ class HomeView extends StatelessWidget {
                       ),
                       Container(
                         decoration: BoxDecoration(
-                          color: Colors.white70,
+                          color: workout.isValidated()
+                              ? Colors.white70
+                              : Colors.white,
                           shape: BoxShape.circle,
                           boxShadow: <BoxShadow>[
                             BoxShadow(
@@ -310,16 +313,19 @@ class HomeView extends StatelessWidget {
                             ),
                           ],
                         ),
-                        // child: IconButton(
-                        //   onPressed: () => Navigator.pushNamed(
-                        //     context,
-                        //     '/set',
-                        //   ),
-                        //   icon: const Icon(
-                        //     Icons.check,
-                        //     color: Color(0xFF6F56E8),
-                        //   ),
-                        // ),
+                        child: IconButton(
+                          onPressed: workout.isValidated()
+                              ? null
+                              : () {
+                                  confirmationDialog(context, workout.id);
+                                },
+                          icon: Icon(
+                            Icons.check,
+                            color: workout.isValidated()
+                                ? const Color(0xFF008000)
+                                : const Color(0xFF6F56E8),
+                          ),
+                        ),
                       ),
                     ],
                   ),
@@ -470,6 +476,65 @@ class HomeView extends StatelessWidget {
         ),
       ],
     );
+  }
+
+  Future<String?> confirmationDialog(
+    BuildContext blocContext,
+    String workoutId,
+  ) {
+    return showCupertinoDialog<String>(
+      context: blocContext,
+      builder: (context) {
+        return CupertinoAlertDialog(
+          title: Text(context.l10n.confirmation),
+          content: Text(
+            context.l10n.validateWorkoutQuestion,
+          ),
+          actions: [
+            CupertinoDialogAction(
+              child: Text(context.l10n.no),
+              onPressed: () {
+                Navigator.of(context).pop();
+              },
+            ),
+            CupertinoDialogAction(
+              child: Text(context.l10n.yes),
+              onPressed: () {
+                blocContext
+                    .read<CalendarBloc>()
+                    .add(ValidateWorkout(workoutId: workoutId));
+                Navigator.of(context).pop();
+              },
+            )
+          ],
+        );
+      },
+    );
+
+    // return showDialog<String>(
+    //   context: context,
+    //   builder: (BuildContext context) => AlertDialog(
+    //     title: Text(
+    //       context.l10n.validateWorkoutQuestion,
+    //       style: const TextStyle(color: Colors.black, fontSize: 18),
+    //     ),
+    //     actions: <Widget>[
+    //       TextButton(
+    //         onPressed: () => Navigator.pop(context, 'Non'),
+    //         child: const Text('Non'),
+    //       ),
+    //       TextButton(
+    //         onPressed: () {
+    //           Navigator.pop(context, 'Oui');
+    //           //        context
+    //           // .read<CalendarBloc>()
+    //           // .add(ValidateWorkout(workoutId: workout.id));
+    //         },
+    //         child: const Text('Oui'),
+    //       ),
+    //     ],
+    //   ),
+    // );
   }
 
   GradientProgressIndicator customLoader(BuildContext context) {

@@ -70,5 +70,8 @@
     "advanced": "Advanced",
     "maintain": "Maintain",
     "gain": "Gain",
-    "lose": "Lose"
+    "lose": "Lose",
+    "validateWorkoutQuestion": "Do you want to validate the whole workout ?",
+    "yes": "Yes",
+    "no": "No"
 }

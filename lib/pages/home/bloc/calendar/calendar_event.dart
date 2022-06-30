@@ -24,3 +24,11 @@ class SelectDay extends CalendarEvent {
   @override
   List<Object> get props => [selectedDay];
 }
+
+class ValidateWorkout extends CalendarEvent {
+  const ValidateWorkout({required this.workoutId});
+  final String workoutId;
+
+  @override
+  List<Object> get props => [workoutId];
+}

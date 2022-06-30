@@ -41,6 +41,23 @@ class CalendarBloc extends Bloc<CalendarEvent, CalendarState> {
       );
     });
 
+    on<ValidateWorkout>((event, emit) async {
+      emit(CalendarLoading());
+
+      try {
+        await _workoutRepository.validateWorkout(event.workoutId);
+        add(CalendarStarted());
+      } catch (e) {
+        print(e.toString());
+
+        if (e is HttpException) {
+          emit(CalendarError(e));
+        } else {
+          emit(CalendarError(ExceptionUnknown()));
+        }
+      }
+    });
+
     initializeSocket();
 
     add(CalendarStarted());

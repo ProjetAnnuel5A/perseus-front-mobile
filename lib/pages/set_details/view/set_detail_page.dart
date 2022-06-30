@@ -361,15 +361,15 @@ class SetDetailView extends StatelessWidget {
     return showDialog<String>(
       context: context,
       builder: (BuildContext context) => AlertDialog(
-        title: const Text(
-          'Informations complémentaires',
-          style: TextStyle(color: Colors.black, fontSize: 18),
+        title: Text(
+          context.l10n.additionalInformations,
+          style: const TextStyle(color: Colors.black, fontSize: 18),
         ),
         content: Text(content),
         actions: <Widget>[
           TextButton(
-            onPressed: () => Navigator.pop(context, 'Close'),
-            child: const Text('Close'),
+            onPressed: () => Navigator.pop(context, context.l10n.close),
+            child: Text(context.l10n.close),
           ),
         ],
       ),
