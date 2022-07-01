@@ -177,7 +177,7 @@ class SetDetailView extends StatelessWidget {
                     const SizedBox(height: 20),
                     Row(
                       children: [
-                        const Text('Repetitions'),
+                        Text(context.l10n.repetition),
                         const Spacer(),
                         _decrementRepetitionButton(context, state.set, index),
                         SizedBox(
@@ -193,7 +193,7 @@ class SetDetailView extends StatelessWidget {
                     ),
                     Row(
                       children: [
-                        const Text('Weight'),
+                        Text(context.l10n.weight),
                         const Spacer(),
                         _decrementWeightButton(context, state.set, index),
                         SizedBox(
@@ -410,9 +410,9 @@ class SetDetailView extends StatelessWidget {
       context: context,
       builder: (BuildContext context) => AlertDialog(
         scrollable: true,
-        title: const Text(
-          'Previous sets',
-          style: TextStyle(color: Colors.black, fontSize: 18),
+        title: Text(
+          context.l10n.previousSet,
+          style: const TextStyle(color: Colors.black, fontSize: 18),
         ),
         content:
             getPreviousSetsContent(context, previousSets, previousSetDates),
@@ -432,7 +432,7 @@ class SetDetailView extends StatelessWidget {
     List<DateTime> previousSetDates,
   ) {
     if (previousSets.isEmpty) {
-      return const Text("Il n'y a pas d'entrainement passé");
+      return Text(context.l10n.noPreviousWorkout);
     }
 
     return SizedBox(

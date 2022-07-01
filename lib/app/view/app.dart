@@ -62,26 +62,14 @@ class App extends StatelessWidget {
               home: BlocBuilder<AuthBloc, AuthState>(
                 builder: (context, state) {
                   if (state is AuthUninitialized) {
-                    return Scaffold(
-                      body: GradientProgressIndicator(
-                        gradientColors: [
-                          Colors.white,
-                          ColorPerseus.pink,
-                        ],
-                        child: const Text(
-                          'Application is starting...',
-                          style: TextStyle(color: Colors.black, fontSize: 18),
-                        ),
-                      ),
-                    );
+                    return Scaffold(body: customLoader(context));
                   } else if (state is AuthUnauthenticated) {
                     return const LoginPage();
                   } else if (state is AuthAuthenticated) {
                     return const HomePage();
                   }
 
-                  // TODO add default SplashScreen
-                  return const Scaffold();
+                  return customLoader(context);
                 },
               ),
             );
@@ -90,38 +78,16 @@ class App extends StatelessWidget {
       ),
     );
   }
-}
-class Home extends StatelessWidget {
-  //Here
-  const Home({Key? key}) : super(key: key);
 
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      body: Center(
-        child: Container(
-          color: Colors.amberAccent,
-          width: 200,
-          height: 200,
-          child: Column(
-            children: [
-              Text(AppLocalizations.of(context).counterAppBarTitle),
-              const Divider(),
-              TextButton(
-                onPressed: () {
-                  context.read<LanguageCubit>().changeLang('en');
-                },
-                child: const Text('English'),
-              ),
-              TextButton(
-                onPressed: () {
-                  context.read<LanguageCubit>().changeLang('fr');
-                },
-                child: const Text('French'),
-              ),
-            ],
-          ),
-        ),
+  Widget customLoader(BuildContext context) {
+    return GradientProgressIndicator(
+      gradientColors: [
+        Colors.white,
+        ColorPerseus.pink,
+      ],
+      child: Text(
+        '${context.l10n.loading}...',
+        style: const TextStyle(color: Colors.black, fontSize: 18),
       ),
     );
   }

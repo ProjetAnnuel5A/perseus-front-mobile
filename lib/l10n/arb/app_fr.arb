@@ -73,5 +73,8 @@
     "lose": "Perdre du poids",
     "validateWorkoutQuestion": "Voulez vous vraiment terminer et valider l'entrainement ?",
     "yes": "Oui",
-    "no": "Non"
+    "no": "Non",
+    "repetition": "Repetition",
+    "previousSet": "Séries précédentes",
+    "noPreviousWorkout": "Il n'y a pas d'entrainement passé"
 }

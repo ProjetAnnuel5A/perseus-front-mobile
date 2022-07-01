@@ -190,7 +190,6 @@ class HomeView extends StatelessWidget {
   Widget _getWorkouts(BuildContext context, List<Workout> workouts) {
     final selectedDay = context.read<CalendarBloc>().selectedDay;
 
-    // TODO One workout /day ?
     final workoutOfSelectedDay = workouts.firstWhereOrNull(
       (Workout workout) => workout.date.isSameDay(selectedDay),
     );
@@ -512,31 +511,6 @@ class HomeView extends StatelessWidget {
         );
       },
     );
-
-    // return showDialog<String>(
-    //   context: context,
-    //   builder: (BuildContext context) => AlertDialog(
-    //     title: Text(
-    //       context.l10n.validateWorkoutQuestion,
-    //       style: const TextStyle(color: Colors.black, fontSize: 18),
-    //     ),
-    //     actions: <Widget>[
-    //       TextButton(
-    //         onPressed: () => Navigator.pop(context, 'Non'),
-    //         child: const Text('Non'),
-    //       ),
-    //       TextButton(
-    //         onPressed: () {
-    //           Navigator.pop(context, 'Oui');
-    //           //        context
-    //           // .read<CalendarBloc>()
-    //           // .add(ValidateWorkout(workoutId: workout.id));
-    //         },
-    //         child: const Text('Oui'),
-    //       ),
-    //     ],
-    //   ),
-    // );
   }
 
   GradientProgressIndicator customLoader(BuildContext context) {
