@@ -1,6 +1,7 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:intl/intl.dart';
 import 'package:perseus_front_mobile/common/theme/colors.dart';
 import 'package:perseus_front_mobile/common/widget/gradient_progress_indicator_widget.dart';
 import 'package:perseus_front_mobile/l10n/l10n.dart';
@@ -303,7 +304,7 @@ class SetDetailView extends StatelessWidget {
                 size: 28,
               ),
               onPressed: () {
-                previousWorkoutsDialog(context);
+                previousWorkoutsDialog(context, set.name);
               },
             ),
           ),
@@ -389,29 +390,84 @@ class SetDetailView extends StatelessWidget {
     );
   }
 
-  Future<String?> previousWorkoutsDialog(BuildContext context) {
+  Future<String?> previousWorkoutsDialog(BuildContext context, String setName) {
     final previousWorkouts = context.read<SetBloc>().previousWorkout;
-    Widget child = const Text("Il n'y a pas d'entrainement passé");
+    final previousSets = <Set>[];
+    final previousSetDates = <DateTime>[];
 
     if (previousWorkouts.isNotEmpty) {
-      // TODO REMPLIR COLON NE
-      child = Column(children: []);
+      for (final workout in previousWorkouts) {
+        for (final set in workout.sets) {
+          if (set.name == setName) {
+            previousSets.add(set);
+            previousSetDates.add(workout.date);
+          }
+        }
+      }
     }
 
     return showDialog<String>(
       context: context,
       builder: (BuildContext context) => AlertDialog(
+        scrollable: true,
         title: const Text(
-          'Previous workouts',
+          'Previous sets',
           style: TextStyle(color: Colors.black, fontSize: 18),
         ),
-        content: const Text("Il n'y a pas d'entrainement passé"),
+        content:
+            getPreviousSetsContent(context, previousSets, previousSetDates),
         actions: <Widget>[
           TextButton(
             onPressed: () => Navigator.pop(context, context.l10n.close),
             child: Text(context.l10n.close),
           ),
         ],
+      ),
+    );
+  }
+
+  Widget getPreviousSetsContent(
+    BuildContext context,
+    List<Set> previousSets,
+    List<DateTime> previousSetDates,
+  ) {
+    if (previousSets.isEmpty) {
+      return const Text("Il n'y a pas d'entrainement passé");
+    }
+
+    return SizedBox(
+      height: 500,
+      width: double.maxFinite,
+      child: ListView.builder(
+        itemCount: previousSets.length,
+        itemBuilder: (context, index) {
+          final exercises = <Widget>[];
+          final previousSet = previousSets[index];
+
+          for (final exercise in previousSet.exercises) {
+            exercises.add(
+              Text(
+                '${exercise.repetition} x ${exercise.name}'
+                ' + ${exercise.weight} kg',
+              ),
+            );
+          }
+
+          return Card(
+            child: Column(
+              children: [
+                Text(
+                  '${index + 1} - ${previousSet.name} - '
+                  '${DateFormat.yMd('fr_FR').format(previousSetDates[index])}',
+                  style: const TextStyle(fontWeight: FontWeight.bold),
+                ),
+                const SizedBox(height: 10),
+                Column(children: exercises)
+              ],
+            ),
+          );
+        },
+        shrinkWrap: true,
       ),
     );
   }
