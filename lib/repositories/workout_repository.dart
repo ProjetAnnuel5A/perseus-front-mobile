@@ -52,6 +52,48 @@ class WorkoutRepository {
     throw InternalServerException(StackTrace.current);
   }
 
+  Future<List<Workout>> getAllPreviousByUserId(DateTime date) async {
+    await checkToken();
+
+    final body = jsonEncode(
+      <String, dynamic>{'date': date},
+      toEncodable: datetimeEncode,
+    );
+
+    final userId = await _storage.getUserId();
+
+    try {
+      final response = await _dio.post<String>(
+        '$_baseUrl/v1/workouts/validatedByUserId/$userId',
+        data: body,
+      );
+
+      if (response.statusCode == 200 ||
+          response.statusCode == 201 && response.data != null) {
+        final workouts = <Workout>[];
+        final dataList = jsonDecode(response.data!) as List;
+
+        for (final element in dataList) {
+          final map = element as Map<String, dynamic>;
+          final workout = Workout.fromMap(map);
+
+          workouts.add(workout);
+        }
+
+        return workouts;
+      }
+    } catch (e, stackTrace) {
+      if (e is DioError && e.response != null) {
+        switch (e.response!.statusCode) {
+          case 404:
+            throw NotFoundException(stackTrace);
+        }
+      }
+    }
+
+    throw InternalServerException(StackTrace.current);
+  }
+
   Future<void> validateWorkout(String workoutId) async {
     await checkToken();
 
@@ -83,5 +125,12 @@ class WorkoutRepository {
         _dio.interceptors.add(CustomInterceptors(token));
       }
     }
+  }
+
+  dynamic datetimeEncode(dynamic item) {
+    if (item is DateTime) {
+      return item.toIso8601String();
+    }
+    return item;
   }
 }

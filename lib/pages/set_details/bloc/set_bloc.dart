@@ -3,17 +3,26 @@ import 'package:equatable/equatable.dart';
 import 'package:perseus_front_mobile/common/error/exceptions.dart';
 import 'package:perseus_front_mobile/model/exercise.dart';
 import 'package:perseus_front_mobile/model/set.dart';
+import 'package:perseus_front_mobile/model/workout.dart';
 import 'package:perseus_front_mobile/repositories/set_repository.dart';
+import 'package:perseus_front_mobile/repositories/workout_repository.dart';
 
 part 'set_event.dart';
 part 'set_state.dart';
 
 class SetBloc extends Bloc<SetEvent, SetState> {
-  SetBloc(this._setRepository, String setId) : super(SetInitial()) {
+  SetBloc(
+    this._setRepository,
+    this._workoutRepository,
+    String setId,
+    DateTime workoutDate,
+  ) : super(SetInitial()) {
     on<SetStarted>((event, emit) async {
       emit(SetLoading());
 
       try {
+        previousWorkout =
+            await _workoutRepository.getAllPreviousByUserId(workoutDate);
         final set = await _setRepository.getById(setId);
         emit(SetLoaded(set));
       } catch (e) {
@@ -88,5 +97,8 @@ class SetBloc extends Bloc<SetEvent, SetState> {
     add(SetStarted());
   }
 
+  final WorkoutRepository _workoutRepository;
   final SetRepository _setRepository;
+
+  List<Workout> previousWorkout = [];
 }

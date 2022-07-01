@@ -8,16 +8,27 @@ import 'package:perseus_front_mobile/model/exercise.dart';
 import 'package:perseus_front_mobile/model/set.dart';
 import 'package:perseus_front_mobile/pages/set_details/bloc/set_bloc.dart';
 import 'package:perseus_front_mobile/repositories/set_repository.dart';
+import 'package:perseus_front_mobile/repositories/workout_repository.dart';
 
 class SetDetailPage extends StatelessWidget {
-  const SetDetailPage({Key? key, required this.setId}) : super(key: key);
+  const SetDetailPage({
+    Key? key,
+    required this.setId,
+    required this.workoutDate,
+  }) : super(key: key);
 
   final String setId;
+  final DateTime workoutDate;
 
   @override
   Widget build(BuildContext context) {
     return BlocProvider(
-      create: (_) => SetBloc(context.read<SetRepository>(), setId),
+      create: (_) => SetBloc(
+        context.read<SetRepository>(),
+        context.read<WorkoutRepository>(),
+        setId,
+        workoutDate,
+      ),
       child: const SetDetailView(),
     );
   }
@@ -286,12 +297,14 @@ class SetDetailView extends StatelessWidget {
                 color: Colors.grey.withOpacity(0.2),
               ),
             ),
-            child: const IconButton(
-              icon: Icon(
+            child: IconButton(
+              icon: const Icon(
                 Icons.history_outlined,
                 size: 28,
               ),
-              onPressed: null,
+              onPressed: () {
+                previousWorkoutsDialog(context);
+              },
             ),
           ),
         ),
@@ -366,6 +379,33 @@ class SetDetailView extends StatelessWidget {
           style: const TextStyle(color: Colors.black, fontSize: 18),
         ),
         content: Text(content),
+        actions: <Widget>[
+          TextButton(
+            onPressed: () => Navigator.pop(context, context.l10n.close),
+            child: Text(context.l10n.close),
+          ),
+        ],
+      ),
+    );
+  }
+
+  Future<String?> previousWorkoutsDialog(BuildContext context) {
+    final previousWorkouts = context.read<SetBloc>().previousWorkout;
+    Widget child = const Text("Il n'y a pas d'entrainement passé");
+
+    if (previousWorkouts.isNotEmpty) {
+      // TODO REMPLIR COLON NE
+      child = Column(children: []);
+    }
+
+    return showDialog<String>(
+      context: context,
+      builder: (BuildContext context) => AlertDialog(
+        title: const Text(
+          'Previous workouts',
+          style: TextStyle(color: Colors.black, fontSize: 18),
+        ),
+        content: const Text("Il n'y a pas d'entrainement passé"),
         actions: <Widget>[
           TextButton(
             onPressed: () => Navigator.pop(context, context.l10n.close),

@@ -265,7 +265,7 @@ class HomeView extends StatelessWidget {
                     style: const TextStyle(color: Colors.white),
                   ),
                 ),
-                _set(workout.sets),
+                _set(workout.sets, workout.date),
                 const SizedBox(
                   height: 32,
                 ),
@@ -301,9 +301,8 @@ class HomeView extends StatelessWidget {
                       ),
                       Container(
                         decoration: BoxDecoration(
-                          color: workout.isValidated()
-                              ? Colors.white70
-                              : Colors.white,
+                          color:
+                              workout.isValided ? Colors.white70 : Colors.white,
                           shape: BoxShape.circle,
                           boxShadow: <BoxShadow>[
                             BoxShadow(
@@ -314,14 +313,14 @@ class HomeView extends StatelessWidget {
                           ],
                         ),
                         child: IconButton(
-                          onPressed: workout.isValidated()
+                          onPressed: workout.isValided
                               ? null
                               : () {
                                   confirmationDialog(context, workout.id);
                                 },
                           icon: Icon(
                             Icons.check,
-                            color: workout.isValidated()
+                            color: workout.isValided
                                 ? const Color(0xFF008000)
                                 : const Color(0xFF6F56E8),
                           ),
@@ -338,7 +337,7 @@ class HomeView extends StatelessWidget {
     );
   }
 
-  Widget _set(List<Set> sets) {
+  Widget _set(List<Set> sets, DateTime workoutDate) {
     if (sets.isEmpty) {
       return const SizedBox.shrink();
     }
@@ -360,7 +359,10 @@ class HomeView extends StatelessWidget {
                   Navigator.pushNamed(
                     context,
                     '/set',
-                    arguments: sets[index].id,
+                    arguments: {
+                      'setId': sets[index].id,
+                      'workoutDate': workoutDate
+                    },
                   );
                 },
               ),

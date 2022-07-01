@@ -30,11 +30,15 @@ class AppRouter {
           builder: (_) => const HomePage(),
         );
       case '/set':
-        final arg = settings.arguments as String?;
+        final arg = settings.arguments as Map?;
 
         if (arg != null) {
+          final setId = arg['setId'] as String;
+          final workoutDate = arg['workoutDate'] as DateTime;
+
           return CupertinoPageRoute<dynamic>(
-            builder: (_) => SetDetailPage(setId: arg),
+            builder: (_) =>
+                SetDetailPage(setId: setId, workoutDate: workoutDate),
           );
         }
         break;

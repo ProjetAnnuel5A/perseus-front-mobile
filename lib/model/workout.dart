@@ -97,17 +97,7 @@ class Workout extends Equatable {
       'updatedAt': updatedAt.millisecondsSinceEpoch,
     };
   }
-
-  bool isValidated() {
-    for (final set in sets) {
-      if (!set.isValided) {
-        return false;
-      }
-    }
-
-    return true;
-  }
-
+  
   @override
   List<Object> get props {
     return [

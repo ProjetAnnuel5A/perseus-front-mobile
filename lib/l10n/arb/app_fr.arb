@@ -71,7 +71,7 @@
     "maintain": "Se maintenir",
     "gain": "Gagner du muscle",
     "lose": "Perdre du poids",
-    "validateWorkoutQuestion": "Voulez vous vraiment valider l'entrainement ?",
+    "validateWorkoutQuestion": "Voulez vous vraiment terminer et valider l'entrainement ?",
     "yes": "Oui",
     "no": "Non"
 }
