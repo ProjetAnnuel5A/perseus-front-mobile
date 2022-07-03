@@ -32,3 +32,9 @@ class ValidateWorkout extends CalendarEvent {
   @override
   List<Object> get props => [workoutId];
 }
+
+class UpdateWorkoutsRequested extends CalendarEvent {
+  const UpdateWorkoutsRequested();
+  @override
+  List<Object> get props => [];
+}

@@ -15,7 +15,7 @@
     "profileInformations": "Informations du profil",
     "username": "Pseudo",
     "email": "Adresse mail",
-    "noWorkoutToday": "Pas d'entrainement aujourd'hui, essayez de vous reposer.",
+    "noWorkoutToday": "Pas d'entrainement aujourd'hui, essayez \nde vous reposer.",
     "workout": "Entraînement",
     "sets": "Série d'exercises",
     "youAreDoingGreat": "Vous vous en sortez bien !",

@@ -58,6 +58,24 @@ class CalendarBloc extends Bloc<CalendarEvent, CalendarState> {
       }
     });
 
+    on<UpdateWorkoutsRequested>((event, emit) async {
+      emit(CalendarLoading());
+
+      try {
+        workouts = await _workoutRepository.getAllByUserId();
+
+        emit(CalendarLoaded(workouts: workouts, selectDay: selectedDay));
+      } catch (e) {
+        print(e.toString());
+
+        if (e is HttpException) {
+          emit(CalendarError(e));
+        } else {
+          emit(CalendarError(ExceptionUnknown()));
+        }
+      }
+    });
+
     initializeSocket();
 
     add(CalendarStarted());
@@ -114,7 +132,7 @@ class CalendarBloc extends Bloc<CalendarEvent, CalendarState> {
       })
       ..on('event-generate-program/$userId', (dynamic data) async {
         if (state is CalendarLoaded) {
-          add(CalendarStarted());
+          add(const UpdateWorkoutsRequested());
         }
       });
   }
