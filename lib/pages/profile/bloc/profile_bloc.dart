@@ -25,7 +25,7 @@ class ProfileBloc extends Bloc<ProfileEvent, ProfileState> {
 
           emit(ProfileLoaded(profile));
         } catch (e) {
-          print(e.toString());
+          // print(e.toString());
 
           if (e is HttpException) {
             emit(ProfileError(e));
@@ -88,7 +88,7 @@ class ProfileBloc extends Bloc<ProfileEvent, ProfileState> {
 
           emit(ProfileLoaded(event.profile));
         } catch (e) {
-          print(e.toString());
+          // print(e.toString());
 
           if (e is HttpException) {
             emit(ProfileError(e));

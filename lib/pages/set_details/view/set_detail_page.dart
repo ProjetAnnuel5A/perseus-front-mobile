@@ -2,6 +2,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:intl/intl.dart';
+import 'package:perseus_front_mobile/common/error/exceptions.dart';
 import 'package:perseus_front_mobile/common/theme/colors.dart';
 import 'package:perseus_front_mobile/common/widget/gradient_progress_indicator_widget.dart';
 import 'package:perseus_front_mobile/l10n/l10n.dart';
@@ -86,6 +87,8 @@ class SetDetailView extends StatelessWidget {
                   ),
                 ],
               );
+            } else if (state is SetError) {
+              return showError(context, state);
             }
 
             return GradientProgressIndicator(
@@ -470,5 +473,96 @@ class SetDetailView extends StatelessWidget {
         shrinkWrap: true,
       ),
     );
+  }
+
+  Widget showError(BuildContext context, SetError state) {
+    Future.delayed(Duration.zero, () {
+      ScaffoldMessenger.of(context).showSnackBar(
+        snackBarError(context, state.httpException),
+      );
+    });
+    return Center(
+      child: Column(
+        children: [
+          Align(
+            alignment: Alignment.topLeft,
+            child: Padding(
+              padding: const EdgeInsets.all(20),
+              child: InkWell(
+                child: const Icon(
+                  Icons.arrow_back_ios,
+                  color: Colors.black,
+                ),
+                onTap: () {
+                  Navigator.pop(context);
+                },
+              ),
+            ),
+          ),
+          const Spacer(),
+          _errorImage(),
+          const Spacer(),
+          ElevatedButton(
+            style: ButtonStyle(
+              backgroundColor: MaterialStateProperty.all(ColorPerseus.pink),
+              padding: MaterialStateProperty.all(const EdgeInsets.all(20)),
+              textStyle: MaterialStateProperty.all(
+                const TextStyle(fontSize: 20),
+              ),
+            ),
+            onPressed: () {
+              context.read<SetBloc>().add(SetStarted());
+            },
+            child: Row(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                Text(context.l10n.reload),
+                const SizedBox(
+                  width: 5,
+                ),
+                const Icon(
+                  Icons.refresh,
+                  size: 30,
+                ),
+              ],
+            ),
+          ),
+          const Spacer(),
+        ],
+      ),
+    );
+  }
+
+  Widget _errorImage() {
+    return SizedBox(
+      child: Image.asset('assets/images/exception.png'),
+    );
+  }
+
+  SnackBar snackBarError(BuildContext context, HttpException httpException) {
+    final snackBar = SnackBar(
+      backgroundColor: ColorPerseus.blue,
+      content: Text(translateErrorMessage(context, httpException)),
+      action: SnackBarAction(
+        label: context.l10n.close,
+        textColor: ColorPerseus.pink,
+        onPressed: () {},
+      ),
+    );
+
+    return snackBar;
+  }
+
+  String translateErrorMessage(
+    BuildContext context,
+    HttpException httpException,
+  ) {
+    if (httpException is InternalServerException) {
+      return httpException.getTranslatedMessage(context);
+    } else if (httpException is CommunicationTimeoutException) {
+      return httpException.getTranslatedMessage(context);
+    }
+
+    return context.l10n.unknownException;
   }
 }

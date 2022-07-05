@@ -18,7 +18,7 @@ class RegisterBloc extends Bloc<RegisterEvent, RegisterState> {
 
         emit(RegisterSuccess());
       } catch (e) {
-        print(e.toString());
+        // print(e.toString());
 
         if (e is HttpException) {
           emit(RegisterError(e));

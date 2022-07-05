@@ -87,6 +87,7 @@ class LoginView extends StatelessWidget {
       padding: const EdgeInsets.all(8),
       child: TextFormField(
         controller: _usernameController,
+        textInputAction: TextInputAction.next,
         decoration: InputDecoration(
           border: const OutlineInputBorder(),
           labelText: context.l10n.username,
@@ -109,8 +110,8 @@ class LoginView extends StatelessWidget {
     return Padding(
       padding: const EdgeInsets.all(8),
       child: TextFormField(
-        obscureText: true,
         controller: _passwordController,
+        obscureText: true,
         enableSuggestions: false,
         autocorrect: false,
         decoration: InputDecoration(
@@ -234,6 +235,8 @@ class LoginView extends StatelessWidget {
       return context.l10n.incorrectIdentifiers;
     } else if (httpException is NotFoundException) {
       return context.l10n.incorrectIdentifiers;
+    } else if (httpException is CommunicationTimeoutException) {
+      return httpException.getTranslatedMessage(context);
     } else if (httpException is InternalServerException) {
       return httpException.getTranslatedMessage(context);
     }

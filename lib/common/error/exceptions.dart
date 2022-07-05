@@ -104,6 +104,30 @@ class InternalServerException implements HttpException {
   }
 }
 
+class CommunicationTimeoutException implements HttpException {
+  CommunicationTimeoutException(this.stackTrace);
+
+  @override
+  String message = 'Server is not reachable. Please verify your internet '
+      'connection and try again';
+  @override
+  String reason = 'Communication exception';
+  @override
+  int codeStatus = 418;
+
+  StackTrace stackTrace;
+
+  @override
+  String toString() {
+    return '[$codeStatus]: $reason\nstacktrace --> $stackTrace';
+  }
+
+  @override
+  String getTranslatedMessage(BuildContext context) {
+    return context.l10n.timeoutException;
+  }
+}
+
 class ExceptionUnknown implements HttpException {
   @override
   String message = 'Internal Server Error';

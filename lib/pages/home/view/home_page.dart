@@ -1,7 +1,10 @@
+import 'dart:async';
+
 import 'package:collection/collection.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:perseus_front_mobile/common/error/exceptions.dart';
 import 'package:perseus_front_mobile/common/extensions.dart';
 import 'package:perseus_front_mobile/common/theme/colors.dart';
 import 'package:perseus_front_mobile/common/widget/gradient_progress_indicator_widget.dart';
@@ -87,18 +90,6 @@ class HomeView extends StatelessWidget {
                   icon: const Icon(Icons.calendar_month),
                   label: l10n.calendar,
                 ),
-                // const BottomNavigationBarItem(
-                //   icon: Icon(Icons.run_circle),
-                //   label: 'Running',
-                // ),
-                // BottomNavigationBarItem(
-                //   icon: Badge(
-                //     badgeContent:
-                //         const Text('3', style: TextStyle(color: Colors.white)),
-                //     child: const Icon(Icons.notifications),
-                //   ),
-                //   label: 'Notification',
-                // ),
                 BottomNavigationBarItem(
                   icon: const Icon(Icons.settings),
                   label: l10n.settings,
@@ -124,6 +115,8 @@ class HomeView extends StatelessWidget {
               _getWorkouts(context, state.workouts)
             ],
           );
+        } else if (state is CalendarError) {
+          return showError(context, state);
         }
 
         return customLoader(context);
@@ -524,5 +517,81 @@ class HomeView extends StatelessWidget {
         style: const TextStyle(color: Colors.black, fontSize: 18),
       ),
     );
+  }
+
+  Widget showError(BuildContext context, CalendarError state) {
+    Future.delayed(Duration.zero, () {
+      ScaffoldMessenger.of(context).showSnackBar(
+        snackBarError(context, state.httpException),
+      );
+    });
+    return Center(
+      child: Column(
+        children: [
+          const Spacer(),
+          _errorImage(),
+          const Spacer(),
+          ElevatedButton(
+            style: ButtonStyle(
+              backgroundColor: MaterialStateProperty.all(ColorPerseus.pink),
+              padding: MaterialStateProperty.all(const EdgeInsets.all(20)),
+              textStyle: MaterialStateProperty.all(
+                const TextStyle(fontSize: 20),
+              ),
+            ),
+            onPressed: () {
+              context.read<CalendarBloc>().add(CalendarStarted());
+            },
+            child: Row(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                Text(context.l10n.reload),
+                const SizedBox(
+                  width: 5,
+                ),
+                const Icon(
+                  Icons.refresh,
+                  size: 30,
+                ),
+              ],
+            ),
+          ),
+          const Spacer(),
+        ],
+      ),
+    );
+  }
+
+  Widget _errorImage() {
+    return SizedBox(
+      child: Image.asset('assets/images/exception.png'),
+    );
+  }
+
+  SnackBar snackBarError(BuildContext context, HttpException httpException) {
+    final snackBar = SnackBar(
+      backgroundColor: ColorPerseus.blue,
+      content: Text(translateErrorMessage(context, httpException)),
+      action: SnackBarAction(
+        label: context.l10n.close,
+        textColor: ColorPerseus.pink,
+        onPressed: () {},
+      ),
+    );
+
+    return snackBar;
+  }
+
+  String translateErrorMessage(
+    BuildContext context,
+    HttpException httpException,
+  ) {
+    if (httpException is InternalServerException) {
+      return httpException.getTranslatedMessage(context);
+    } else if (httpException is CommunicationTimeoutException) {
+      return httpException.getTranslatedMessage(context);
+    }
+
+    return context.l10n.unknownException;
   }
 }

@@ -13,15 +13,13 @@ class LoginBloc extends Bloc<LoginEvent, LoginState> {
     on<LoginValidateFormEvent>((event, emit) async {
       emit(LoginLoading());
 
-      // TODO add form validation ?
-
       try {
         final result =
             await _authRepository.login(event.username, event.password);
 
         _authenticationBloc.add(LoggedIn('username', result));
       } catch (e) {
-        print(e.toString());
+        // print(e.toString());
 
         if (e is HttpException) {
           emit(LoginError(e));

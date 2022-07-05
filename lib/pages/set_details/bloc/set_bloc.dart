@@ -26,7 +26,7 @@ class SetBloc extends Bloc<SetEvent, SetState> {
         final set = await _setRepository.getById(setId);
         emit(SetLoaded(set));
       } catch (e) {
-        print(e.toString());
+        // print(e.toString());
 
         if (e is HttpException) {
           emit(SetError(e));
@@ -44,7 +44,7 @@ class SetBloc extends Bloc<SetEvent, SetState> {
             await _setRepository.validateSet(event.setId, event.exercises);
         emit(SetLoaded(set));
       } catch (e) {
-        print(e.toString());
+        // print(e.toString());
 
         if (e is HttpException) {
           emit(SetError(e));

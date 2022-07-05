@@ -31,8 +31,16 @@ class ProfileRepository {
 
         return profile;
       }
-    } catch (e, stackTrace) {
-      if (e is DioError && e.response != null) {
+    } on DioError catch (e, stackTrace) {
+      if (DioErrorType.receiveTimeout == e.type ||
+          DioErrorType.connectTimeout == e.type) {
+        throw CommunicationTimeoutException(stackTrace);
+      } else if (DioErrorType.other == e.type) {
+        if (e.message.contains('SocketException')) {
+          throw CommunicationTimeoutException(stackTrace);
+        }
+      }
+      if (e.response != null) {
         switch (e.response!.statusCode) {
           case 404:
             throw NotFoundException(stackTrace);
@@ -60,8 +68,16 @@ class ProfileRepository {
       if (response.statusCode == 200) {
         return;
       }
-    } catch (e, stackTrace) {
-      if (e is DioError && e.response != null) {
+    } on DioError catch (e, stackTrace) {
+      if (DioErrorType.receiveTimeout == e.type ||
+          DioErrorType.connectTimeout == e.type) {
+        throw CommunicationTimeoutException(stackTrace);
+      } else if (DioErrorType.other == e.type) {
+        if (e.message.contains('SocketException')) {
+          throw CommunicationTimeoutException(stackTrace);
+        }
+      }
+      if (e.response != null) {
         switch (e.response!.statusCode) {
           case 404:
             throw NotFoundException(stackTrace);

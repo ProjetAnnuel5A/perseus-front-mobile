@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:bloc/bloc.dart';
 import 'package:equatable/equatable.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
@@ -48,7 +50,7 @@ class CalendarBloc extends Bloc<CalendarEvent, CalendarState> {
         await _workoutRepository.validateWorkout(event.workoutId);
         add(CalendarStarted());
       } catch (e) {
-        print(e.toString());
+        // print(e.toString());
 
         if (e is HttpException) {
           emit(CalendarError(e));
@@ -66,7 +68,7 @@ class CalendarBloc extends Bloc<CalendarEvent, CalendarState> {
 
         emit(CalendarLoaded(workouts: workouts, selectDay: selectedDay));
       } catch (e) {
-        print(e.toString());
+        // print(e.toString());
 
         if (e is HttpException) {
           emit(CalendarError(e));
@@ -99,7 +101,7 @@ class CalendarBloc extends Bloc<CalendarEvent, CalendarState> {
       workouts = await _workoutRepository.getAllByUserId();
       emit(CalendarLoaded(workouts: workouts, selectDay: DateTime.now()));
     } catch (e) {
-      print(e.toString());
+      // print(e.toString());
 
       if (e is HttpException) {
         emit(CalendarError(e));

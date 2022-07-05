@@ -76,5 +76,7 @@
     "no": "No",
     "repetition": "Repetition",
     "previousSet": "Previous sets",
-    "noPreviousWorkout": "There is no previous workout"
+    "noPreviousWorkout": "There is no previous workout",
+    "timeoutException": "Server is not reachable. Please verify your internet connection and try again",
+    "reload": "Reload"
 }

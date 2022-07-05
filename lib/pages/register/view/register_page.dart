@@ -40,6 +40,7 @@ class RegisterView extends StatelessWidget {
   Widget build(BuildContext context) {
     final l10n = context.l10n;
     return Scaffold(
+      resizeToAvoidBottomInset: true,
       appBar: AppBar(title: Text(l10n.registerAppBarTitle)),
       body: BlocProvider(
         create: (context) => RegisterBloc(context.read<AuthRepository>()),
@@ -54,7 +55,7 @@ class RegisterView extends StatelessWidget {
           },
           child: Center(
             child: Padding(
-              padding: const EdgeInsets.all(20),
+              padding: const EdgeInsets.symmetric(horizontal: 20),
               child: Column(
                 children: [
                   const Spacer(),
@@ -91,6 +92,7 @@ class RegisterView extends StatelessWidget {
       padding: const EdgeInsets.all(8),
       child: TextFormField(
         controller: _emailController,
+        textInputAction: TextInputAction.next,
         autovalidateMode: AutovalidateMode.onUserInteraction,
         validator: (value) {
           const pattern = r'^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$';
@@ -116,6 +118,7 @@ class RegisterView extends StatelessWidget {
       padding: const EdgeInsets.all(8),
       child: TextFormField(
         controller: _usernameController,
+        textInputAction: TextInputAction.next,
         autovalidateMode: AutovalidateMode.onUserInteraction,
         validator: (value) {
           if (value == null ||
@@ -141,6 +144,7 @@ class RegisterView extends StatelessWidget {
       padding: const EdgeInsets.all(8),
       child: TextFormField(
         controller: _passwordController,
+        textInputAction: TextInputAction.next,
         obscureText: true,
         autovalidateMode: AutovalidateMode.onUserInteraction,
         validator: (value) {
@@ -223,7 +227,11 @@ class RegisterView extends StatelessWidget {
   }
 
   Widget _headerImage() {
-    return Image.asset('assets/images/register.png');
+    return SizedBox(
+      height: 200,
+      width: 200,
+      child: Image.asset('assets/images/register.png'),
+    );
   }
 
   SnackBar snackBarError(BuildContext context, HttpException httpException) {
@@ -244,10 +252,14 @@ class RegisterView extends StatelessWidget {
     BuildContext context,
     HttpException httpException,
   ) {
-    if (httpException is NotFoundException) {
-      return context.l10n.notFoundException;
+    if (httpException is ForbiddenException) {
+      return context.l10n.incorrectIdentifiers;
+    } else if (httpException is NotFoundException) {
+      return context.l10n.incorrectIdentifiers;
     } else if (httpException is ConflictException) {
       return context.l10n.emailOrPseudoAlreadyExist;
+    } else if (httpException is CommunicationTimeoutException) {
+      return httpException.getTranslatedMessage(context);
     }
 
     return context.l10n.unknownException;
