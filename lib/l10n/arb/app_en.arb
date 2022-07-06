@@ -27,7 +27,7 @@
     "close": "Close",
     "validEmail": "Please enter a valid Email",
     "validUsername": "Please enter a valid Username\n- must not exist\n- must have more than 5 characters and less than 29 characters",
-    "validPassword": "Please enter a valid Password\n- must have more than 8 characters or more and contains both digits and letters",
+    "validPassword": "Please enter a valid Password\n- must have more than 8 characters\n- contains both digits and letters",
     "password": "Password",
     "confirmPassword": "Please confirm your password",
     "confirmation": "Confirmation",

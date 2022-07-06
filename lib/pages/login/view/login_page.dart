@@ -128,9 +128,11 @@ class LoginView extends StatelessWidget {
               final username = _usernameController.value.text;
               final password = _passwordController.value.text;
 
-              context
-                  .read<LoginBloc>()
-                  .add(LoginValidateFormEvent(username, password));
+              if (username.isNotEmpty && password.isNotEmpty) {
+                context
+                    .read<LoginBloc>()
+                    .add(LoginValidateFormEvent(username, password));
+              }
             },
             child: Text(context.l10n.loginAppBarTitle),
           ),

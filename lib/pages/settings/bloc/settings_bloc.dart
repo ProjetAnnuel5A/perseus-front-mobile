@@ -25,7 +25,6 @@ class SettingsBloc extends Bloc<SettingsEvent, SettingsState> {
       final newLangCode = event.langCode;
 
       emit(SettingsLoaded(newLangCode));
-      _authenticationBloc.add(Logout());
     });
 
     on<SettingsDeleteAccount>((event, emit) async {

@@ -27,7 +27,7 @@
     "close": "Fermer",
     "validEmail": "S'il vous plait entrez une addresse email valide",
     "validUsername": "S'il vous plait entrez un pseudo valide\n- Le pseudo ne doit pas déjà exister\n- Le pseudo doit avoir entre 5 caractères et 29 caractères",
-    "validPassword": "S'il vous plait entrez un mot de passe valide\n- Un mot de passe doit avoir au moins 8 caractères ou plus et contenir des chiffres et des lettres",
+    "validPassword": "S'il vous plait entrez un mot de passe valide\n- Un mot de passe doit avoir au moins 8 caractères ou plus \n- contenir des chiffres et des lettres",
     "password": "Mot de passe",
     "confirmPassword": "S'il vous plait confirmez votre mot de passe",
     "confirmation": "Confirmation",

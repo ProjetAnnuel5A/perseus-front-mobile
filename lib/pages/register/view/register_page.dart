@@ -200,10 +200,20 @@ class RegisterView extends StatelessWidget {
               final username = _usernameController.value.text;
               final email = _emailController.value.text;
               final password = _passwordController.value.text;
+              final confirmation = _confirmationController.value.text;
 
-              context.read<RegisterBloc>().add(
-                    RegisterValidateFormEvent(username, email, password),
-                  );
+              if (username.isNotEmpty &&
+                  email.isNotEmpty &&
+                  password.isNotEmpty &&
+                  confirmation.isNotEmpty &&
+                  password.length > 7 &&
+                  password == confirmation) {
+                context.read<RegisterBloc>().add(
+                      RegisterValidateFormEvent(username, email, password),
+                    );
+              } else {
+                // dialog
+              }
             },
             child: Text(context.l10n.register),
           ),
