@@ -249,17 +249,10 @@ class HomeView extends StatelessWidget {
                   textAlign: TextAlign.left,
                   style: Theme.of(context).textTheme.titleLarge,
                 ),
-                Padding(
-                  padding: const EdgeInsets.symmetric(vertical: 12),
-                  child: Text(
-                    '${l10n.sets}:',
-                    textAlign: TextAlign.left,
-                    style: const TextStyle(color: Colors.white),
-                  ),
-                ),
+                const SizedBox(height: 18),
                 _set(workout.sets, workout.date),
                 const SizedBox(
-                  height: 32,
+                  height: 18,
                 ),
                 Padding(
                   padding: const EdgeInsets.only(right: 4),
@@ -333,6 +326,10 @@ class HomeView extends StatelessWidget {
     if (sets.isEmpty) {
       return const SizedBox.shrink();
     }
+
+    sets.sort((set1, set2) {
+      return set1.name.toLowerCase().compareTo(set2.name.toLowerCase());
+    });
 
     return Expanded(
       child: ListView.builder(
