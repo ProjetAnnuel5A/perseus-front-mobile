@@ -1,6 +1,6 @@
 name: perseus_front_mobile
 description: Perseus's mobile front
-version: 1.0.4+6
+version: 1.0.5+7
 publish_to: none
 
 environment:
