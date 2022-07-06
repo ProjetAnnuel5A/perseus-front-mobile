@@ -1,3 +1,4 @@
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:perseus_front_mobile/common/auth/bloc/auth_bloc.dart';
@@ -6,6 +7,7 @@ import 'package:perseus_front_mobile/common/theme/colors.dart';
 import 'package:perseus_front_mobile/common/widget/gradient_progress_indicator_widget.dart';
 import 'package:perseus_front_mobile/l10n/l10n.dart';
 import 'package:perseus_front_mobile/pages/settings/bloc/settings_bloc.dart';
+import 'package:perseus_front_mobile/repositories/profile_repository.dart';
 
 class SettingsPage extends StatelessWidget {
   const SettingsPage({Key? key}) : super(key: key);
@@ -15,9 +17,12 @@ class SettingsPage extends StatelessWidget {
     return MultiBlocProvider(
       providers: [
         BlocProvider(
-          create: (_) => SettingsBloc(),
+          create: (_) => SettingsBloc(
+            context.read<AuthBloc>(),
+            context.read<ProfileRepository>(),
+          ),
         ),
-        BlocProvider.value(value: BlocProvider.of<AuthBloc>(context))
+        // BlocProvider.value(value: BlocProvider.of<AuthBloc>(context))
       ],
       child: const SettingsView(),
     );
@@ -51,16 +56,13 @@ class SettingsView extends StatelessWidget {
             child: Column(
               children: [
                 _categoryContainer(
-                  _cardContainer(
-                    _languageSettings(context, state.langCode),
-                  ),
+                  _languageSettings(context, state.langCode),
                   l10n.languages,
                 ),
                 const Spacer(),
-                _categoryContainer(
-                  _cardContainer(
-                    _accountSignOut(context),
-                  ),
+                _accountContainer(
+                  _accountSignOut(context),
+                  _accountDeleteProfile(context),
                   l10n.account,
                 ),
               ],
@@ -80,12 +82,38 @@ class SettingsView extends StatelessWidget {
           padding: const EdgeInsets.only(left: 25),
           child: Align(alignment: Alignment.topLeft, child: Text(text)),
         ),
-        card,
+        _cardContainer(
+          Column(children: [card]),
+        )
       ],
     );
   }
 
-  Widget _cardContainer(Widget content) {
+  Widget _accountContainer(
+    Widget disconnectCard,
+    Widget deleteProfileCard,
+    String text,
+  ) {
+    return Column(
+      children: [
+        Padding(
+          padding: const EdgeInsets.only(left: 25),
+          child: Align(alignment: Alignment.topLeft, child: Text(text)),
+        ),
+        _cardContainer(
+          Column(
+            children: [
+              deleteProfileCard,
+              const Divider(),
+              disconnectCard,
+            ],
+          ),
+        )
+      ],
+    );
+  }
+
+  Widget _cardContainer(Column content) {
     return Card(
       child: Padding(
         padding: const EdgeInsets.only(top: 5, bottom: 5, right: 10, left: 10),
@@ -150,6 +178,26 @@ class SettingsView extends StatelessWidget {
     );
   }
 
+  Row _accountDeleteProfile(BuildContext context) {
+    return Row(
+      children: [
+        const Icon(Icons.warning),
+        Text(context.l10n.delete_account),
+        const Spacer(),
+        ElevatedButton(
+          style: ButtonStyle(
+            backgroundColor: MaterialStateProperty.all(ColorPerseus.pink),
+          ),
+          onPressed: () {
+            confirmationDialog(context);
+            // context.read<SettingsBloc>().add(SettingsDeleteAccount());
+          },
+          child: Center(child: Text(context.l10n.delete)),
+        ),
+      ],
+    );
+  }
+
   GradientProgressIndicator customLoader(BuildContext context) {
     return GradientProgressIndicator(
       gradientColors: [
@@ -160,6 +208,48 @@ class SettingsView extends StatelessWidget {
         '${context.l10n.loading}...',
         style: const TextStyle(color: Colors.black, fontSize: 18),
       ),
+    );
+  }
+
+  Future<String?> confirmationDialog(
+    BuildContext blocContext,
+  ) {
+    return showCupertinoDialog<String>(
+      context: blocContext,
+      builder: (context) {
+        return CupertinoAlertDialog(
+          title: Text(context.l10n.confirmation),
+          content: Column(
+            children: [
+              const Padding(
+                padding: EdgeInsets.symmetric(vertical: 10),
+                child: Icon(Icons.warning),
+              ),
+              Text(
+                context.l10n.warning_delete_account,
+              ),
+            ],
+          ),
+          actions: [
+            CupertinoDialogAction(
+              child: Text(
+                context.l10n.no,
+                style: const TextStyle(fontWeight: FontWeight.bold),
+              ),
+              onPressed: () {
+                Navigator.of(context).pop();
+              },
+            ),
+            CupertinoDialogAction(
+              child: Text(context.l10n.yes),
+              onPressed: () {
+                Navigator.of(context).pop();
+                blocContext.read<SettingsBloc>().add(SettingsDeleteAccount());
+              },
+            )
+          ],
+        );
+      },
     );
   }
 }

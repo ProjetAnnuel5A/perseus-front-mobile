@@ -13,12 +13,12 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
     on<AppStarted>(_appStarted);
     on<LoggedIn>(_loggedIn);
     on<Logout>(_logout);
+    on<DeleteAccount>(_deleteAccount);
   }
 
   final _storage = SecureStorage();
 
-  // ignore: avoid_void_async
-  void _appStarted(AuthEvent event, Emitter<AuthState> emit) async {
+  Future<void> _appStarted(AuthEvent event, Emitter<AuthState> emit) async {
     await _cleanUpStorage();
     await _initStartup(emit);
   }
@@ -29,8 +29,16 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
     emit(AuthAuthenticated());
   }
 
-  void _logout(Logout event, Emitter<AuthState> emit) {
-    _storage.deleteAll();
+  Future<void> _logout(Logout event, Emitter<AuthState> emit) async {
+    await _storage.deleteAll();
+    emit(AuthUnauthenticated());
+  }
+
+  Future<void> _deleteAccount(
+    DeleteAccount event,
+    Emitter<AuthState> emit,
+  ) async {
+    await _storage.deleteAll();
     emit(AuthUnauthenticated());
   }
 

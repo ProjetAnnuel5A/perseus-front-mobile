@@ -78,5 +78,8 @@
     "previousSet": "Previous sets",
     "noPreviousWorkout": "There is no previous workout",
     "timeoutException": "Server is not reachable. Please verify your internet connection and try again",
-    "reload": "Reload"
+    "reload": "Reload",
+    "delete": "Delete",
+    "delete_account": "Delete my account",
+    "warning_delete_account": "Warning, do you really want to delete your account ?"
 }

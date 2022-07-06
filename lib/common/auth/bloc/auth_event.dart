@@ -9,6 +9,8 @@ abstract class AuthEvent extends Equatable {
 class AppStarted extends AuthEvent {}
 
 class Logout extends AuthEvent {}
+
+class DeleteAccount extends AuthEvent {}
 class LoggedIn extends AuthEvent {
   LoggedIn(this.username, this.token);
 

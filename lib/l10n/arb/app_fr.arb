@@ -78,6 +78,9 @@
     "previousSet": "Séries précédentes",
     "noPreviousWorkout": "Il n'y a pas d'entrainement passé",
     "timeoutException": "Le server ne réponds pas. Veuillez vérifier votre connexion internet et réessayer.",
-    "reload": "Recharger"
+    "reload": "Recharger",
+    "delete": "Supprimer",
+    "delete_account": "Supprimer mon compte",
+    "warning_delete_account": "Attention, voulez vous vraiment supprimer votre compte ?"
 
 }

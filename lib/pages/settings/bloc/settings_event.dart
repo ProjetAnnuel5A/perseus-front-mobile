@@ -9,6 +9,7 @@ abstract class SettingsEvent extends Equatable {
 
 class SettingsStarted extends SettingsEvent {}
 
+class SettingsDeleteAccount extends SettingsEvent {}
 class SettingsChangeLanguageEvent extends SettingsEvent {
   const SettingsChangeLanguageEvent(this.langCode);
 
