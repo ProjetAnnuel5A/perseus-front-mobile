@@ -21,9 +21,9 @@ class SetBloc extends Bloc<SetEvent, SetState> {
       emit(SetLoading());
 
       try {
+        final set = await _setRepository.getById(setId);
         previousWorkout =
             await _workoutRepository.getAllPreviousByUserId(workoutDate);
-        final set = await _setRepository.getById(setId);
         emit(SetLoaded(set));
       } catch (e) {
         // print(e.toString());
