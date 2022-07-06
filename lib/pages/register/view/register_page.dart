@@ -1,10 +1,3 @@
-// Copyright (c) 2022, Very Good Ventures
-// https://verygood.ventures
-//
-// Use of this source code is governed by an MIT-style
-// license that can be found in the LICENSE file or at
-// https://opensource.org/licenses/MIT.
-
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -56,11 +49,10 @@ class RegisterView extends StatelessWidget {
           child: Center(
             child: Padding(
               padding: const EdgeInsets.symmetric(horizontal: 20),
-              child: Column(
+              child: ListView(
+                shrinkWrap: true,
                 children: [
-                  const Spacer(),
                   _headerImage(),
-                  const Spacer(),
                   Form(
                     key: _formKey,
                     onChanged: () {},
@@ -73,9 +65,9 @@ class RegisterView extends StatelessWidget {
                       ],
                     ),
                   ),
+                  const SizedBox(height: 30),
                   _registerButton(context),
                   _loginText(context),
-                  const Spacer(),
                 ],
               ),
             ),
@@ -94,6 +86,8 @@ class RegisterView extends StatelessWidget {
         controller: _emailController,
         textInputAction: TextInputAction.next,
         autovalidateMode: AutovalidateMode.onUserInteraction,
+        autocorrect: false,
+        keyboardType: TextInputType.emailAddress,
         validator: (value) {
           const pattern = r'^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$';
           final regex = RegExp(pattern);
@@ -119,6 +113,7 @@ class RegisterView extends StatelessWidget {
       child: TextFormField(
         controller: _usernameController,
         textInputAction: TextInputAction.next,
+        autocorrect: false,
         autovalidateMode: AutovalidateMode.onUserInteraction,
         validator: (value) {
           if (value == null ||
@@ -194,7 +189,7 @@ class RegisterView extends StatelessWidget {
     return BlocBuilder<RegisterBloc, RegisterState>(
       builder: (context, state) {
         if (state is RegisterLoading) {
-          return const CircularProgressIndicator();
+          return const Center(child: CircularProgressIndicator());
         }
 
         return Padding(
@@ -228,8 +223,8 @@ class RegisterView extends StatelessWidget {
 
   Widget _headerImage() {
     return SizedBox(
-      height: 200,
-      width: 200,
+      height: 250,
+      width: 250,
       child: Image.asset('assets/images/register.png'),
     );
   }

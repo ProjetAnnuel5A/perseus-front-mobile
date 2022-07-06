@@ -37,47 +37,46 @@ class ProfileView extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final l10n = context.l10n;
+    return GestureDetector(
+      onTap: () => FocusManager.instance.primaryFocus?.unfocus(),
+      child: Scaffold(
+        body: BlocBuilder<ProfileBloc, ProfileState>(
+          builder: (context, state) {
+            if (state is ProfileLoaded) {
+              final profile = state.profile;
 
-    return Scaffold(
-      body: BlocBuilder<ProfileBloc, ProfileState>(
-        builder: (context, state) {
-          if (state is ProfileLoaded) {
-            final profile = state.profile;
-
-            return Column(
-              children: [
-                _profilePicture(context),
-                _profileInformationsTitle(context),
-                Expanded(
-                  child: SingleChildScrollView(
-                    padding: const EdgeInsets.all(20),
-                    child: Column(
-                      children: <Widget>[
-                        Text(l10n.mainInformations),
-                        _usernameField(context, profile.username),
-                        _emailField(context, profile.email),
-                        const SizedBox(height: 20),
-                        Text(l10n.additionalInformations),
-                        _heightField(context, profile),
-                        _weightField(context, profile),
-                        _birthDateField(context, profile),
-                        _levelField(context, profile),
-                        _objectiveField(context, profile),
-                        const SizedBox(height: 20),
-                        Text(l10n.availabilities),
-                        _availabilies(context, profile)
-                      ],
-                    ),
+              return ListView(
+                shrinkWrap: true,
+                padding: const EdgeInsets.all(20),
+                children: [
+                  _profilePicture(context),
+                  _profileInformationsTitle(context),
+                  Column(
+                    children: <Widget>[
+                      Text(l10n.mainInformations),
+                      _usernameField(context, profile.username),
+                      _emailField(context, profile.email),
+                      const SizedBox(height: 20),
+                      Text(l10n.additionalInformations),
+                      _heightField(context, profile),
+                      _weightField(context, profile),
+                      _birthDateField(context, profile),
+                      _levelField(context, profile),
+                      _objectiveField(context, profile),
+                      const SizedBox(height: 20),
+                      Text(l10n.availabilities),
+                      _availabilies(context, profile)
+                    ],
                   ),
-                ),
-                _validateButton(context, profile)
-              ],
-            );
-          } else if (state is ProfileError) {
-            return showError(context, state);
-          }
-          return customLoader(context);
-        },
+                  _validateButton(context, profile)
+                ],
+              );
+            } else if (state is ProfileError) {
+              return showError(context, state);
+            }
+            return customLoader(context);
+          },
+        ),
       ),
     );
   }
@@ -111,14 +110,16 @@ class ProfileView extends StatelessWidget {
   }
 
   Widget _profileInformationsTitle(BuildContext context) {
-    return Padding(
-      padding: const EdgeInsets.symmetric(vertical: 20),
-      child: Text(
-        context.l10n.profileInformations,
-        style: Theme.of(context)
-            .textTheme
-            .titleLarge
-            ?.copyWith(color: Colors.black),
+    return Center(
+      child: Padding(
+        padding: const EdgeInsets.symmetric(vertical: 20),
+        child: Text(
+          context.l10n.profileInformations,
+          style: Theme.of(context)
+              .textTheme
+              .titleLarge
+              ?.copyWith(color: Colors.black),
+        ),
       ),
     );
   }
@@ -196,7 +197,7 @@ class ProfileView extends StatelessWidget {
           const Icon(
             Icons.date_range,
           ),
-          Text('${l10n.birthday}:'),
+          Text(' ${l10n.birthday}:'),
           const Spacer(),
           OutlinedButton(
             onPressed: () {

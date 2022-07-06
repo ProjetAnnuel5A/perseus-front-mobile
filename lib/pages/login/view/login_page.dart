@@ -1,10 +1,3 @@
-// Copyright (c) 2022, Very Good Ventures
-// https://verygood.ventures
-//
-// Use of this source code is governed by an MIT-style
-// license that can be found in the LICENSE file or at
-// https://opensource.org/licenses/MIT.
-
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
@@ -53,19 +46,17 @@ class LoginView extends StatelessWidget {
         body: Center(
           child: Padding(
             padding: const EdgeInsets.only(right: 20, left: 20),
-            child: Column(
-              mainAxisAlignment: MainAxisAlignment.center,
+            child: ListView(
+              shrinkWrap: true,
               children: [
-                const Spacer(),
                 _headerImage(),
-                const Spacer(),
                 _usernameField(context),
                 _passwordField(context),
+                const SizedBox(height: 30),
                 _loginButton(context),
                 _registerText(context),
                 // _passwordForgotten(context),
                 _legalMentionsText(context),
-                const Spacer(),
               ],
             ),
           ),
@@ -76,8 +67,8 @@ class LoginView extends StatelessWidget {
 
   Widget _headerImage() {
     return SizedBox(
-      height: 250,
-      width: 250,
+      height: 300,
+      width: 300,
       child: Image.asset('assets/images/login_lock.png'),
     );
   }
@@ -126,7 +117,7 @@ class LoginView extends StatelessWidget {
     return BlocBuilder<LoginBloc, LoginState>(
       builder: (context, state) {
         if (state is LoginLoading) {
-          return const CircularProgressIndicator();
+          return const Center(child: CircularProgressIndicator());
         }
 
         return Padding(
