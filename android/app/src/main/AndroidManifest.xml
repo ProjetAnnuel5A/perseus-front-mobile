@@ -1,5 +1,5 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    package="com.example.verygoodcore.perseus_front_mobile">
+    package="fr.perseus.verygoodcore.perseus_front_mobile">
    <application
         android:label="${appName}"
         android:icon="@mipmap/ic_launcher">
