@@ -14,7 +14,12 @@ class ProfileRepository {
     _dio.options.headers['content-Type'] = 'application/json';
   }
   String? _baseUrl;
-  final Dio _dio = Dio();
+  final Dio _dio = Dio(
+    BaseOptions(
+      connectTimeout: 3000,
+      receiveTimeout: 3000,
+    ),
+  );
   final _storage = SecureStorage();
 
   Future<Profile> getById(String profileId) async {
@@ -90,7 +95,7 @@ class ProfileRepository {
 
   Future<void> deleteProfile() async {
     await checkToken();
-    
+
     final profileId = await _storage.getUserId();
 
     if (profileId != null) {

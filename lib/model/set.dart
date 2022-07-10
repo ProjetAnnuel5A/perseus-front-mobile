@@ -1,6 +1,7 @@
 import 'dart:convert';
 
 import 'package:equatable/equatable.dart';
+import 'package:hive/hive.dart';
 
 import 'package:perseus_front_mobile/model/exercise.dart';
 
@@ -14,6 +15,36 @@ class Set extends Equatable {
     this.updatedAt, {
     required this.isValided,
   });
+
+  factory Set.fromJson(String source) =>
+      Set.fromMapJson(json.decode(source) as Map<String, dynamic>);
+
+  factory Set.fromMapJson(Map<String, dynamic> _map) {
+    final exercises = <Exercise>[];
+    final exercisesMap = _map['exercises'] as List<dynamic>;
+
+    for (final exercise in exercisesMap) {
+      final exerciseMap =
+          json.decode(exercise as String) as Map<String, dynamic>;
+      exercises.add(Exercise.fromMap(exerciseMap as Map<String, dynamic>));
+    }
+
+    return Set(
+      _map['id'] as String,
+      _map['name'] as String,
+      exercises,
+      _map['validedAt'] != null
+          ? DateTime.parse(_map['validedAt'] as String)
+          : null,
+      _map['createdAt'] != null
+          ? DateTime.parse(_map['createdAt'] as String)
+          : DateTime.now(),
+      _map['updatedAt'] != null
+          ? DateTime.parse(_map['updatedAt'] as String)
+          : DateTime.now(),
+      isValided: _map['isValided'] as bool,
+    );
+  }
 
   factory Set.fromMap(Map<String, dynamic> _map) {
     final exercises = <Exercise>[];
@@ -54,7 +85,16 @@ class Set extends Equatable {
     };
   }
 
-  String toJson() => json.encode(toMap());
+  String toJson() => json.encode(toMap(), toEncodable: datetimeEncode);
+
+  dynamic datetimeEncode(dynamic item) {
+    if (item is DateTime) {
+      return item.toIso8601String();
+    } else if (item is Exercise) {
+      return item.toJson();
+    }
+    return item;
+  }
 
   Set copyWith({
     String? id,
@@ -86,5 +126,9 @@ class Set extends Equatable {
       createdAt,
       updatedAt,
     ];
+  }
+
+  Future<void> saveToBox(Box<String> setBox) async {
+    await setBox.put('data', toJson());
   }
 }

@@ -1,8 +1,10 @@
 import 'dart:async';
+import 'dart:convert';
 
 import 'package:bloc/bloc.dart';
 import 'package:equatable/equatable.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
+import 'package:hive/hive.dart';
 import 'package:perseus_front_mobile/common/error/exceptions.dart';
 import 'package:perseus_front_mobile/common/secure_storage.dart';
 import 'package:perseus_front_mobile/model/workout.dart';
@@ -62,6 +64,7 @@ class CalendarBloc extends Bloc<CalendarEvent, CalendarState> {
 
     on<UpdateWorkoutsRequested>((event, emit) async {
       emit(CalendarLoading());
+      final workoutsBox = await Hive.openBox<String>('workouts');
 
       try {
         workouts = await _workoutRepository.getAllByUserId();
@@ -71,6 +74,20 @@ class CalendarBloc extends Bloc<CalendarEvent, CalendarState> {
         // print(e.toString());
 
         if (e is HttpException) {
+          if (e is CommunicationTimeoutException && workoutsBox.isNotEmpty) {
+            final cachedWorkouts = getCachedWorkouts(workoutsBox);
+
+            workouts = cachedWorkouts;
+
+            emit(
+              CalendarLoaded(
+                workouts: cachedWorkouts,
+                selectDay: DateTime.now(),
+              ),
+            );
+
+            return;
+          }
           emit(CalendarError(e));
         } else {
           emit(CalendarError(ExceptionUnknown()));
@@ -89,6 +106,8 @@ class CalendarBloc extends Bloc<CalendarEvent, CalendarState> {
   ) async {
     emit(CalendarLoading());
 
+    final workoutsBox = await Hive.openBox<String>('workouts');
+
     // Initialize calendar values
     final _now = DateTime.now();
 
@@ -99,11 +118,24 @@ class CalendarBloc extends Bloc<CalendarEvent, CalendarState> {
 
     try {
       workouts = await _workoutRepository.getAllByUserId();
+      await saveWorkoutsToBox(workouts, workoutsBox);
+
       emit(CalendarLoaded(workouts: workouts, selectDay: DateTime.now()));
     } catch (e) {
       // print(e.toString());
 
       if (e is HttpException) {
+        if (e is CommunicationTimeoutException && workoutsBox.isNotEmpty) {
+          final cachedWorkouts = getCachedWorkouts(workoutsBox);
+
+          workouts = cachedWorkouts;
+
+          emit(
+            CalendarLoaded(workouts: cachedWorkouts, selectDay: DateTime.now()),
+          );
+
+          return;
+        }
         emit(CalendarError(e));
       } else {
         emit(CalendarError(ExceptionUnknown()));
@@ -137,6 +169,36 @@ class CalendarBloc extends Bloc<CalendarEvent, CalendarState> {
           add(const UpdateWorkoutsRequested());
         }
       });
+  }
+
+  Future<void> saveWorkoutsToBox(
+    List<Workout> workouts,
+    Box<String> workoutsBox,
+  ) async {
+    final workoutsJson = jsonEncode(workouts);
+    await workoutsBox.put('data', workoutsJson);
+  }
+
+  List<Workout> getCachedWorkouts(
+    Box<String> workoutsBox,
+  ) {
+    final cachedWorkouts = <Workout>[];
+    final workoutsJson = workoutsBox.get('data');
+
+    if (workoutsJson == null) {
+      return [];
+    }
+
+    final workoutsMap = jsonDecode(workoutsJson) as List<dynamic>;
+
+    for (final workoutJson in workoutsMap) {
+      final workoutMap =
+          json.decode(workoutJson as String) as Map<String, dynamic>;
+      final workout = Workout.fromMapJson(workoutMap);
+      cachedWorkouts.add(workout);
+    }
+
+    return cachedWorkouts;
   }
 
   late final Socket _socket;

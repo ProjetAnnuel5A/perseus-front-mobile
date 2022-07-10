@@ -1,5 +1,6 @@
 import 'package:bloc/bloc.dart';
 import 'package:equatable/equatable.dart';
+import 'package:hive/hive.dart';
 import 'package:perseus_front_mobile/common/error/exceptions.dart';
 import 'package:perseus_front_mobile/model/exercise.dart';
 import 'package:perseus_front_mobile/model/set.dart';
@@ -14,14 +15,16 @@ class SetBloc extends Bloc<SetEvent, SetState> {
   SetBloc(
     this._setRepository,
     this._workoutRepository,
-    String setId,
+    Set set,
     DateTime workoutDate,
   ) : super(SetInitial()) {
     on<SetStarted>((event, emit) async {
       emit(SetLoading());
+      final setBox = await Hive.openBox<String>('set${set.id}');
 
       try {
-        final set = await _setRepository.getById(setId);
+        await set.saveToBox(setBox);
+
         previousWorkout =
             await _workoutRepository.getAllPreviousByUserId(workoutDate);
         emit(SetLoaded(set));
@@ -29,6 +32,15 @@ class SetBloc extends Bloc<SetEvent, SetState> {
         // print(e.toString());
 
         if (e is HttpException) {
+          if (e is CommunicationTimeoutException && setBox.isNotEmpty) {
+            final setJson = setBox.get('data');
+            if (setJson != null) {
+              final setCached = Set.fromJson(setJson);
+              emit(SetLoaded(setCached));
+
+              return;
+            }
+          }
           emit(SetError(e));
         } else {
           emit(SetError(ExceptionUnknown()));

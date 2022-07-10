@@ -15,11 +15,11 @@ import 'package:perseus_front_mobile/repositories/workout_repository.dart';
 class SetDetailPage extends StatelessWidget {
   const SetDetailPage({
     Key? key,
-    required this.setId,
+    required this.set,
     required this.workoutDate,
   }) : super(key: key);
 
-  final String setId;
+  final Set set;
   final DateTime workoutDate;
 
   @override
@@ -28,7 +28,7 @@ class SetDetailPage extends StatelessWidget {
       create: (_) => SetBloc(
         context.read<SetRepository>(),
         context.read<WorkoutRepository>(),
-        setId,
+        set,
         workoutDate,
       ),
       child: const SetDetailView(),

@@ -31,6 +31,8 @@ class ProfilePage extends StatelessWidget {
 class ProfileView extends StatelessWidget {
   ProfileView({Key? key}) : super(key: key);
 
+  final _formKey = GlobalKey<FormState>();
+
   var _usernameController = TextEditingController();
   var _emailController = TextEditingController();
 
@@ -51,22 +53,25 @@ class ProfileView extends StatelessWidget {
                 children: [
                   _profilePicture(context),
                   _profileInformationsTitle(context),
-                  Column(
-                    children: <Widget>[
-                      Text(l10n.mainInformations),
-                      _usernameField(context, profile.username),
-                      _emailField(context, profile.email),
-                      const SizedBox(height: 20),
-                      Text(l10n.additionalInformations),
-                      _heightField(context, profile),
-                      _weightField(context, profile),
-                      _birthDateField(context, profile),
-                      _levelField(context, profile),
-                      _objectiveField(context, profile),
-                      const SizedBox(height: 20),
-                      Text(l10n.availabilities),
-                      _availabilies(context, profile)
-                    ],
+                  Form(
+                    key: _formKey,
+                    child: Column(
+                      children: <Widget>[
+                        Text(l10n.mainInformations),
+                        _usernameField(context, profile.username),
+                        _emailField(context, profile.email),
+                        const SizedBox(height: 20),
+                        Text(l10n.additionalInformations),
+                        _heightField(context, profile),
+                        _weightField(context, profile),
+                        _birthDateField(context, profile),
+                        _levelField(context, profile),
+                        _objectiveField(context, profile),
+                        const SizedBox(height: 20),
+                        Text(l10n.availabilities),
+                        _availabilies(context, profile)
+                      ],
+                    ),
                   ),
                   _validateButton(context, profile)
                 ],
@@ -230,7 +235,6 @@ class ProfileView extends StatelessWidget {
 
   Widget _heightField(BuildContext context, Profile profile) {
     final l10n = context.l10n;
-
     var height = '';
 
     if (profile.height != null) {
@@ -240,6 +244,18 @@ class ProfileView extends StatelessWidget {
     return Padding(
       padding: const EdgeInsets.all(8),
       child: TextFormField(
+        validator: (String? value) {
+          if (value == null || value == '') {
+            return context.l10n.validNumber;
+          }
+
+          final number = int.parse(value);
+          if (number > 250 || number < 0) {
+            return context.l10n.validWeight;
+          }
+
+          return null;
+        },
         initialValue: height,
         onChanged: (String newValue) {
           context.read<ProfileBloc>().add(
@@ -261,7 +277,6 @@ class ProfileView extends StatelessWidget {
 
   Widget _weightField(BuildContext context, Profile profile) {
     final l10n = context.l10n;
-
     var weight = '';
 
     if (profile.weight != null) {
@@ -271,6 +286,19 @@ class ProfileView extends StatelessWidget {
     return Padding(
       padding: const EdgeInsets.all(8),
       child: TextFormField(
+        validator: (String? value) {
+          if (value == null || value == '') {
+            return context.l10n.validNumber;
+          }
+
+          final number = double.parse(value);
+
+          if (number > 250 || number < 100) {
+            return context.l10n.validWeight;
+          }
+
+          return null;
+        },
         initialValue: weight,
         onChanged: (String newValue) {
           context.read<ProfileBloc>().add(
@@ -395,9 +423,23 @@ class ProfileView extends StatelessWidget {
             child: CupertinoButton.filled(
               disabledColor: CupertinoColors.inactiveGray,
               onPressed: () {
-                context.read<ProfileBloc>().add(
-                      ProfileUpdate(profile),
-                    );
+                if (_formKey.currentState!.validate()) {
+                  context.read<ProfileBloc>().add(
+                        ProfileUpdate(profile),
+                      );
+                } else {
+                  final snackBarForm = SnackBar(
+                    backgroundColor: ColorPerseus.blue,
+                    content: Text(context.l10n.formValid),
+                    action: SnackBarAction(
+                      label: context.l10n.close,
+                      textColor: ColorPerseus.pink,
+                      onPressed: () {},
+                    ),
+                  );
+
+                  ScaffoldMessenger.of(context).showSnackBar(snackBarForm);
+                }
               },
               child: Text(context.l10n.update),
             ),

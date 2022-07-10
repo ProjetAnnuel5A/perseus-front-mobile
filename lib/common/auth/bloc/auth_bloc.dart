@@ -19,8 +19,8 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
   final _storage = SecureStorage();
 
   Future<void> _appStarted(AuthEvent event, Emitter<AuthState> emit) async {
-    await _cleanUpStorage();
-    await _initStartup(emit);
+    final firstRun = await _cleanUpStorage();
+    await _initStartup(emit, firstRun);
   }
 
   Future<void> _loggedIn(LoggedIn event, Emitter<AuthState> emit) async {
@@ -42,8 +42,13 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
     emit(AuthUnauthenticated());
   }
 
-  Future<void> _initStartup(Emitter<AuthState> emit) async {
+  Future<void> _initStartup(Emitter<AuthState> emit, bool firstRun) async {
     final hasToken = await _storage.hasToken();
+    print('[_initStartup] --> $firstRun');
+
+    if (firstRun) {
+      isFirstRun = true;
+    }
 
     if (!hasToken) {
       emit(AuthUnauthenticated());
@@ -67,12 +72,18 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
     emit(AuthAuthenticated());
   }
 
-  Future<void> _cleanUpStorage() async {
+  Future<bool> _cleanUpStorage() async {
     final prefs = await SharedPreferences.getInstance();
 
     if (prefs.getBool('first_run') ?? true) {
       await _storage.deleteAll();
       await prefs.setBool('first_run', false);
+
+      return true;
     }
+
+    return false;
   }
+
+  bool isFirstRun = false;
 }

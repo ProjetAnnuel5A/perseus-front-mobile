@@ -3,6 +3,7 @@
 import 'dart:convert';
 
 import 'package:equatable/equatable.dart';
+import 'package:hive/hive.dart';
 import 'package:perseus_front_mobile/common/extensions.dart';
 import 'package:perseus_front_mobile/model/enum/level.dart';
 import 'package:perseus_front_mobile/model/enum/objective.dart';
@@ -72,7 +73,7 @@ class Profile extends Equatable {
 
   Map<String, dynamic> toMap() {
     return <String, dynamic>{
-      'id': id,
+      'uuid': id,
       'email': email,
       'username': username,
       'birthDate': birthDate,
@@ -84,7 +85,14 @@ class Profile extends Equatable {
     };
   }
 
-  String toJson() => json.encode(toMap());
+  String toJson() => json.encode(toMap(), toEncodable: datetimeEncode);
+
+  dynamic datetimeEncode(dynamic item) {
+    if (item is DateTime) {
+      return item.toIso8601String();
+    }
+    return item;
+  }
 
   bool isProfileComplete() {
     if (height != null && weight != null) {
@@ -129,5 +137,9 @@ class Profile extends Equatable {
       objective ?? this.objective,
       level ?? this.level,
     );
+  }
+
+  Future<void> saveToBox(Box<String> profileBox) async {
+    await profileBox.put('data', toJson());
   }
 }

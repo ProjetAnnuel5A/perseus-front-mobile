@@ -15,7 +15,13 @@ class SetRepository {
     _dio.options.headers['content-Type'] = 'application/json';
   }
   String? _baseUrl;
-  final Dio _dio = Dio();
+
+  final Dio _dio = Dio(
+    BaseOptions(
+      connectTimeout: 3000,
+      receiveTimeout: 3000,
+    ),
+  );
   final _storage = SecureStorage();
 
   Future<Set> validateSet(String setId, List<Exercise> exercises) async {

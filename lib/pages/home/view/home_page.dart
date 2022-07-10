@@ -348,10 +348,7 @@ class HomeView extends StatelessWidget {
                   Navigator.pushNamed(
                     context,
                     '/set',
-                    arguments: {
-                      'setId': sets[index].id,
-                      'workoutDate': workoutDate
-                    },
+                    arguments: {'set': sets[index], 'workoutDate': workoutDate},
                   );
                 },
               ),

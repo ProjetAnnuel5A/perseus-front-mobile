@@ -1,4 +1,5 @@
 import 'package:flutter/cupertino.dart';
+import 'package:perseus_front_mobile/model/set.dart';
 import 'package:perseus_front_mobile/pages/home/view/home_page.dart';
 import 'package:perseus_front_mobile/pages/login/view/login_page.dart';
 import 'package:perseus_front_mobile/pages/notification/view/notification_page.dart';
@@ -33,12 +34,11 @@ class AppRouter {
         final arg = settings.arguments as Map?;
 
         if (arg != null) {
-          final setId = arg['setId'] as String;
+          final set = arg['set'] as Set;
           final workoutDate = arg['workoutDate'] as DateTime;
 
           return CupertinoPageRoute<dynamic>(
-            builder: (_) =>
-                SetDetailPage(setId: setId, workoutDate: workoutDate),
+            builder: (_) => SetDetailPage(set: set, workoutDate: workoutDate),
           );
         }
         break;

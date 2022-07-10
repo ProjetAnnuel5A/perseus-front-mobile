@@ -4,6 +4,7 @@ import 'dart:developer';
 import 'package:flutter/widgets.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
+import 'package:hive_flutter/hive_flutter.dart';
 import 'package:perseus_front_mobile/common/auth/bloc/auth_bloc.dart';
 import 'package:sentry_flutter/sentry_flutter.dart';
 
@@ -27,6 +28,7 @@ Future<void> bootstrap(FutureOr<Widget> Function() builder) async {
   };
 
   await dotenv.load();
+  await Hive.initFlutter();
 
   await runZonedGuarded(
     () async {

@@ -32,6 +32,13 @@ class LoginView extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final l10n = context.l10n;
+    final firstRun = context.read<AuthBloc>().isFirstRun;
+
+    if (firstRun) {
+      Future.delayed(Duration.zero, () {
+        applicationInformations(context);
+      });
+    }
 
     return BlocListener<LoginBloc, LoginState>(
       listener: (context, state) {
@@ -235,5 +242,33 @@ class LoginView extends StatelessWidget {
     }
 
     return context.l10n.unknownException;
+  }
+
+  Future<String?> applicationInformations(
+    BuildContext blocContext,
+  ) {
+    // TODO DESC + TRAD
+    return showCupertinoDialog<String>(
+      context: blocContext,
+      builder: (context) {
+        return CupertinoAlertDialog(
+          title: Text(context.l10n.informations),
+          content: const Text(
+            "Cette application fonctionne en symbiose avec l'application web.\n"
+            'Une fois votre profil rempli, '
+            "n'oubliez pas de generer votre programme sur l'interface web.",
+          ),
+          actions: [
+            CupertinoDialogAction(
+              child: Text(context.l10n.close),
+              onPressed: () {
+                context.read<AuthBloc>().isFirstRun = false;
+                Navigator.of(context).pop();
+              },
+            ),
+          ],
+        );
+      },
+    );
   }
 }

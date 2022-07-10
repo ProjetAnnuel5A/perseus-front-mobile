@@ -11,7 +11,12 @@ class AuthRepository {
     _dio.options.headers['content-Type'] = 'application/json';
   }
 
-  final Dio _dio = Dio();
+  final Dio _dio = Dio(
+    BaseOptions(
+      connectTimeout: 3000,
+      receiveTimeout: 3000,
+    ),
+  );
   String? _baseUrl;
 
   Future<void> register(RegisterDto registerDto) async {

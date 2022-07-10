@@ -14,7 +14,12 @@ class WorkoutRepository {
   }
 
   String? _baseUrl;
-  final Dio _dio = Dio();
+  final Dio _dio = Dio(
+    BaseOptions(
+      connectTimeout: 3000,
+      receiveTimeout: 3000,
+    ),
+  );
   final _storage = SecureStorage();
 
   Future<List<Workout>> getAllByUserId() async {

@@ -81,6 +81,10 @@
     "reload": "Recharger",
     "delete": "Supprimer",
     "delete_account": "Supprimer mon compte",
-    "warning_delete_account": "Attention, voulez vous vraiment supprimer votre compte ?"
-
+    "warning_delete_account": "Attention, voulez vous vraiment supprimer votre compte ?",
+    "validNumber": "S'il vous plait saisissez un nombre",
+    "validWeight": "S'il vous plait saisissez un poids valide",
+    "validHeight": "S'il vous plait saisissez une taille correcte",
+    "formValid": "Le formulaire n'est pas valide",
+    "informations": "Informations"
 }

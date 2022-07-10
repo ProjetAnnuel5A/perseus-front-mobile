@@ -1,5 +1,6 @@
 import 'package:bloc/bloc.dart';
 import 'package:equatable/equatable.dart';
+import 'package:hive/hive.dart';
 import 'package:perseus_front_mobile/common/error/exceptions.dart';
 import 'package:perseus_front_mobile/common/extensions.dart';
 import 'package:perseus_front_mobile/common/secure_storage.dart';
@@ -17,17 +18,29 @@ class ProfileBloc extends Bloc<ProfileEvent, ProfileState> {
     on<ProfileStarted>((event, emit) async {
       emit(ProfileLoading());
 
+      final profileBox = await Hive.openBox<String>('profile');
       final profileId = await _storage.getUserId();
 
       if (profileId != null) {
         try {
           final profile = await _profileRepository.getById(profileId);
+          await profile.saveToBox(profileBox);
 
           emit(ProfileLoaded(profile));
         } catch (e) {
           // print(e.toString());
 
           if (e is HttpException) {
+            if (e is CommunicationTimeoutException && profileBox.isNotEmpty) {
+              final profileJson = profileBox.get('data');
+              if (profileJson != null) {
+                final profileCached = Profile.fromJson(profileJson);
+                emit(ProfileLoaded(profileCached));
+                
+                return;
+              }
+            }
+
             emit(ProfileError(e));
           } else {
             emit(ProfileError(ExceptionUnknown()));
