@@ -8,6 +8,7 @@ import 'package:perseus_front_mobile/common/widget/gradient_progress_indicator_w
 import 'package:perseus_front_mobile/l10n/l10n.dart';
 import 'package:perseus_front_mobile/model/exercise.dart';
 import 'package:perseus_front_mobile/model/set.dart';
+import 'package:perseus_front_mobile/pages/home/bloc/calendar/calendar_bloc.dart';
 import 'package:perseus_front_mobile/pages/set_details/bloc/set_bloc.dart';
 import 'package:perseus_front_mobile/repositories/set_repository.dart';
 import 'package:perseus_front_mobile/repositories/workout_repository.dart';
@@ -24,13 +25,20 @@ class SetDetailPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return BlocProvider(
-      create: (_) => SetBloc(
-        context.read<SetRepository>(),
-        context.read<WorkoutRepository>(),
-        set,
-        workoutDate,
-      ),
+    return MultiBlocProvider(
+      providers: [
+        BlocProvider(
+          create: (_) => SetBloc(
+            context.read<SetRepository>(),
+            context.read<WorkoutRepository>(),
+            set,
+            workoutDate,
+          ),
+        ),
+        BlocProvider.value(
+          value: BlocProvider.of<CalendarBloc>(context),
+        )
+      ],
       child: const SetDetailView(),
     );
   }
@@ -138,6 +146,10 @@ class SetDetailView extends StatelessWidget {
                 ),
                 onTap: () {
                   Navigator.pop(context);
+
+                  if (context.read<SetBloc>().isOffline) {
+                    context.read<CalendarBloc>().add(ReloadCache());
+                  }
                 },
               ),
             ),

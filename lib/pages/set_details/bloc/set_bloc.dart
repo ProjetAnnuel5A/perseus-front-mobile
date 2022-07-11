@@ -36,20 +36,16 @@ class SetBloc extends Bloc<SetEvent, SetState> {
 
         if (e is HttpException) {
           if (e is CommunicationTimeoutException && setBox.isNotEmpty) {
-            final setJson = setBox.get('data');
-            if (setJson != null) {
-              isOffline = true;
-              final setCached = Set.fromJson(setJson);
+            isOffline = true;
 
-              emit(
-                SetLoaded(
-                  setCached,
-                  isOffline: true,
-                ),
-              );
+            emit(
+              SetLoaded(
+                set,
+                isOffline: true,
+              ),
+            );
 
-              return;
-            }
+            return;
           }
           emit(SetError(e));
         } else {
@@ -123,32 +119,43 @@ class SetBloc extends Bloc<SetEvent, SetState> {
       final setBox = await Hive.openBox<String>('set${set.id}');
 
       try {
-        final set =
-            await _setRepository.validateSet(event.setId, event.exercises);
-        emit(SetLoaded(set));
+        if (isOffline) {
+          isOffline = true;
+
+          final cachedSetUpdated =
+              await validateSetOffline(event.setId, event.exercises);
+
+          emit(
+            SetLoaded(
+              cachedSetUpdated!,
+              isOffline: true,
+            ),
+          );
+        } else {
+          final set =
+              await _setRepository.validateSet(event.setId, event.exercises);
+          emit(SetLoaded(set));
+        }
       } catch (e) {
         // print(e.toString());
 
         if (e is HttpException) {
           if (e is CommunicationTimeoutException && setBox.isNotEmpty) {
-            final setJson = setBox.get('data');
-            if (setJson != null) {
-              isOffline = true;
+            isOffline = true;
 
-              final cachedSetUpdated =
-                  await validateSetOffline(set.id, event.exercises);
+            final cachedSetUpdated =
+                await validateSetOffline(set.id, event.exercises);
 
-              emit(
-                SetLoaded(
-                  cachedSetUpdated!,
-                  isOffline: true,
-                ),
-              );
+            emit(
+              SetLoaded(
+                cachedSetUpdated!,
+                isOffline: true,
+              ),
+            );
 
-              // todo calendarbloc emit started
+            // todo calendarbloc emit started
 
-              return;
-            }
+            return;
           }
           emit(SetError(e));
         } else {

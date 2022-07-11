@@ -29,10 +29,6 @@ class HomePage extends StatelessWidget {
         BlocProvider<BottomNavigationBloc>(
           create: (BuildContext context) => BottomNavigationBloc(),
         ),
-        BlocProvider<CalendarBloc>(
-          create: (BuildContext context) =>
-              CalendarBloc(context.read<WorkoutRepository>()),
-        ),
       ],
       child: HomeView(),
     );

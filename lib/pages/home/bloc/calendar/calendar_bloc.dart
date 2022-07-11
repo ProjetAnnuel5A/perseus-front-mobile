@@ -50,6 +50,7 @@ class CalendarBloc extends Bloc<CalendarEvent, CalendarState> {
 
     on<ValidateWorkout>((event, emit) async {
       emit(CalendarLoading());
+      final workoutsBox = await Hive.openBox<String>('workouts');
 
       try {
         await _workoutRepository.validateWorkout(event.workoutId);
@@ -58,6 +59,48 @@ class CalendarBloc extends Bloc<CalendarEvent, CalendarState> {
         // print(e.toString());
 
         if (e is HttpException) {
+          if (e is CommunicationTimeoutException && workoutsBox.isNotEmpty) {
+            isOffline = true;
+            final cachedWorkouts = getCachedWorkouts(workoutsBox);
+
+            for (var i = 0; i < cachedWorkouts.length; i++) {
+              if (cachedWorkouts[i].id == event.workoutId) {
+                cachedWorkouts[i] = cachedWorkouts[i].copyWith(isValided: true);
+                for (var y = 0; y < cachedWorkouts[i].sets.length; y++) {
+                  if (!cachedWorkouts[i].sets[y].isValided) {
+                    cachedWorkouts[i].sets[y] =
+                        cachedWorkouts[i].sets[y].copyWith(
+                              isValided: true,
+                              validedAt: DateTime.now(),
+                            );
+                  }
+                }
+
+                final data = OfflineDto(cachedWorkouts).toJson();
+                await workoutsBox.put('data', data);
+
+                emit(
+                  CalendarLoaded(
+                    workouts: cachedWorkouts,
+                    selectDay: DateTime.now(),
+                    isOffline: true,
+                  ),
+                );
+
+                return;
+              }
+            }
+
+            emit(
+              CalendarLoaded(
+                workouts: cachedWorkouts,
+                selectDay: DateTime.now(),
+                isOffline: true,
+              ),
+            );
+
+            return;
+          }
           emit(CalendarError(e));
         } else {
           emit(CalendarError(ExceptionUnknown()));
@@ -71,7 +114,6 @@ class CalendarBloc extends Bloc<CalendarEvent, CalendarState> {
 
       try {
         workouts = await _workoutRepository.getAllByUserId();
-
         emit(CalendarLoaded(workouts: workouts, selectDay: selectedDay));
       } catch (e) {
         // print(e.toString());
@@ -80,8 +122,6 @@ class CalendarBloc extends Bloc<CalendarEvent, CalendarState> {
           if (e is CommunicationTimeoutException && workoutsBox.isNotEmpty) {
             isOffline = true;
             final cachedWorkouts = getCachedWorkouts(workoutsBox);
-
-            workouts = cachedWorkouts;
 
             emit(
               CalendarLoaded(
@@ -129,6 +169,7 @@ class CalendarBloc extends Bloc<CalendarEvent, CalendarState> {
 
       try {
         final cachedWorkouts = getCachedWorkouts(workoutsBox);
+        isOffline = true;
         emit(
           CalendarLoaded(
             workouts: cachedWorkouts,
@@ -180,7 +221,6 @@ class CalendarBloc extends Bloc<CalendarEvent, CalendarState> {
           isOffline = true;
 
           final cachedWorkouts = getCachedWorkouts(workoutsBox);
-          workouts = cachedWorkouts;
 
           emit(
             CalendarLoaded(
@@ -253,6 +293,8 @@ class CalendarBloc extends Bloc<CalendarEvent, CalendarState> {
       final workout = Workout.fromMap(workoutMap);
       cachedWorkouts.add(workout);
     }
+
+    workouts = cachedWorkouts;
 
     return cachedWorkouts;
   }

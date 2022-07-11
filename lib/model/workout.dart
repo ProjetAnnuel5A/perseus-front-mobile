@@ -20,32 +20,6 @@ class Workout extends Equatable {
     required this.isValided,
   });
 
-  // factory Workout.fromMapJson(Map<String, dynamic> _map) {
-  //   final sets = <Set>[];
-  //   final setsMap = _map['sets'] as List<dynamic>;
-
-  //   for (final setMap in setsMap) {
-  //     final set = Set.fromMap(setMap as Map<String, dynamic>);
-  //     sets.add(set);
-  //   }
-
-  //   return Workout(
-  //     _map['id'] as String,
-  //     _map['name'] as String,
-  //     _map['description'] as String,
-  //     _map['estimatedTime'] as int,
-  //     DateTime.parse(_map['date'] as String),
-  //     _map['userId'] as String,
-  //     sets,
-  //     _map['validedAt'] != null
-  //         ? DateTime.parse(_map['validedAt'] as String)
-  //         : null,
-  //     DateTime.parse(_map['createdAt'] as String),
-  //     DateTime.parse(_map['updatedAt'] as String),
-  //     isValided: _map['isValided'] as bool,
-  //   );
-  // }
-
   factory Workout.fromMap(Map<String, dynamic> _map) {
     final sets = <Set>[];
     final setsMap = _map['sets'] as List<dynamic>;

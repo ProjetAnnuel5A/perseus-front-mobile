@@ -9,6 +9,7 @@ import 'package:perseus_front_mobile/common/theme/app_theme.dart';
 import 'package:perseus_front_mobile/common/theme/colors.dart';
 import 'package:perseus_front_mobile/common/widget/gradient_progress_indicator_widget.dart';
 import 'package:perseus_front_mobile/l10n/l10n.dart';
+import 'package:perseus_front_mobile/pages/home/bloc/calendar/calendar_bloc.dart';
 import 'package:perseus_front_mobile/pages/home/view/home_page.dart';
 import 'package:perseus_front_mobile/pages/login/view/login_page.dart';
 import 'package:perseus_front_mobile/repositories/auth_repository.dart';
@@ -42,34 +43,38 @@ class App extends StatelessWidget {
           builder: (context, lang) {
             context.read<LanguageCubit>().getStartingLanguage();
 
-            return MaterialApp(
-              theme: appThemeData[AppTheme.light],
-              debugShowCheckedModeBanner: false,
-              locale: lang,
-              title: 'Perseus',
-              localizationsDelegates: const [
-                AppLocalizations.delegate,
-                GlobalMaterialLocalizations.delegate,
-                GlobalWidgetsLocalizations.delegate,
-                GlobalCupertinoLocalizations.delegate,
-              ],
-              supportedLocales: const [
-                Locale('fr'),
-                Locale('en'),
-              ],
-              onGenerateRoute: appRouter.onGenerateRoute,
-              home: BlocBuilder<AuthBloc, AuthState>(
-                builder: (context, state) {
-                  if (state is AuthUninitialized) {
-                    return Scaffold(body: customLoader(context));
-                  } else if (state is AuthUnauthenticated) {
-                    return const LoginPage();
-                  } else if (state is AuthAuthenticated) {
-                    return const HomePage();
-                  }
+            return BlocProvider(
+              create: (context) =>
+                  CalendarBloc(context.read<WorkoutRepository>()),
+              child: MaterialApp(
+                theme: appThemeData[AppTheme.light],
+                debugShowCheckedModeBanner: false,
+                locale: lang,
+                title: 'Perseus',
+                localizationsDelegates: const [
+                  AppLocalizations.delegate,
+                  GlobalMaterialLocalizations.delegate,
+                  GlobalWidgetsLocalizations.delegate,
+                  GlobalCupertinoLocalizations.delegate,
+                ],
+                supportedLocales: const [
+                  Locale('fr'),
+                  Locale('en'),
+                ],
+                onGenerateRoute: appRouter.onGenerateRoute,
+                home: BlocBuilder<AuthBloc, AuthState>(
+                  builder: (context, state) {
+                    if (state is AuthUninitialized) {
+                      return Scaffold(body: customLoader(context));
+                    } else if (state is AuthUnauthenticated) {
+                      return const LoginPage();
+                    } else if (state is AuthAuthenticated) {
+                      return const HomePage();
+                    }
 
-                  return customLoader(context);
-                },
+                    return customLoader(context);
+                  },
+                ),
               ),
             );
           },
