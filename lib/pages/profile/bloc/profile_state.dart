@@ -9,9 +9,10 @@ class ProfileInitial extends ProfileState {}
 class ProfileLoading extends ProfileState {}
 
 class ProfileLoaded extends ProfileState {
-  const ProfileLoaded(this.profile);
+  const ProfileLoaded(this.profile, {this.isOffline = false});
 
   final Profile profile;
+  final bool isOffline;
 }
 
 class ProfileError extends ProfileState {

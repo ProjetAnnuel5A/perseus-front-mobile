@@ -38,3 +38,7 @@ class UpdateWorkoutsRequested extends CalendarEvent {
   @override
   List<Object> get props => [];
 }
+
+class SaveOfflineWorkouts extends CalendarEvent {}
+
+class ReloadCache extends CalendarEvent {}

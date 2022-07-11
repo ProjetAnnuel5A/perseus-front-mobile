@@ -17,16 +17,14 @@ class Set extends Equatable {
   });
 
   factory Set.fromJson(String source) =>
-      Set.fromMapJson(json.decode(source) as Map<String, dynamic>);
+      Set.fromMap(json.decode(source) as Map<String, dynamic>);
 
-  factory Set.fromMapJson(Map<String, dynamic> _map) {
+  factory Set.fromMap(Map<String, dynamic> _map) {
     final exercises = <Exercise>[];
     final exercisesMap = _map['exercises'] as List<dynamic>;
 
     for (final exercise in exercisesMap) {
-      final exerciseMap =
-          json.decode(exercise as String) as Map<String, dynamic>;
-      exercises.add(Exercise.fromMap(exerciseMap as Map<String, dynamic>));
+      exercises.add(Exercise.fromMap(exercise as Map<String, dynamic>));
     }
 
     return Set(
@@ -46,27 +44,6 @@ class Set extends Equatable {
     );
   }
 
-  factory Set.fromMap(Map<String, dynamic> _map) {
-    final exercises = <Exercise>[];
-    final exercisesMap = _map['exercises'] as List<dynamic>;
-
-    for (final exercise in exercisesMap) {
-      exercises.add(Exercise.fromMap(exercise as Map<String, dynamic>));
-    }
-
-    return Set(
-      _map['id'] as String,
-      _map['name'] as String,
-      exercises,
-      _map['validedAt'] != null
-          ? DateTime.parse(_map['validedAt'] as String)
-          : null,
-      DateTime.parse(_map['createdAt'] as String),
-      DateTime.parse(_map['updatedAt'] as String),
-      isValided: _map['isValided'] as bool,
-    );
-  }
-
   final String id;
   final String name;
   final bool isValided;
@@ -81,7 +58,7 @@ class Set extends Equatable {
       'id': id,
       'name': name,
       'isValided': isValided,
-      'exercises': exercises,
+      'exercises': exercises.map((exercise) => exercise.toMap()).toList(),
     };
   }
 

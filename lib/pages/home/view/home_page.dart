@@ -111,6 +111,7 @@ class HomeView extends StatelessWidget {
         if (state is CalendarLoaded) {
           return Column(
             children: [
+              if (state.isOffline == true) _offlineBanner(context),
               _getHomeCalendar(context),
               _getWorkouts(context, state.workouts)
             ],
@@ -587,5 +588,42 @@ class HomeView extends StatelessWidget {
     }
 
     return context.l10n.unknownException;
+  }
+
+  Widget _offlineBanner(BuildContext context) {
+    return Container(
+      height: 40,
+      width: double.infinity,
+      color: ColorPerseus.pink,
+      child: Padding(
+        padding: const EdgeInsets.symmetric(horizontal: 15),
+        child: Row(
+          children: [
+            IconButton(
+              icon: const Icon(Icons.save),
+              color: Colors.white,
+              onPressed: () {
+                context.read<CalendarBloc>().add(SaveOfflineWorkouts());
+              },
+            ),
+            Expanded(
+              child: Center(
+                child: Text(
+                  context.l10n.offline,
+                  style: const TextStyle(color: Colors.white),
+                ),
+              ),
+            ),
+            IconButton(
+              icon: const Icon(Icons.refresh),
+              color: Colors.white,
+              onPressed: () {
+                context.read<CalendarBloc>().add(ReloadCache());
+              },
+            ),
+          ],
+        ),
+      ),
+    );
   }
 }

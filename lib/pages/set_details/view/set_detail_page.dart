@@ -53,6 +53,7 @@ class SetDetailView extends StatelessWidget {
 
               return Column(
                 children: [
+                  if (state.isOffline == true) _offlineBanner(context),
                   _imageContainer(context),
                   Expanded(
                     child: Padding(
@@ -564,5 +565,26 @@ class SetDetailView extends StatelessWidget {
     }
 
     return context.l10n.unknownException;
+  }
+
+  Widget _offlineBanner(BuildContext context) {
+    return Container(
+      height: 40,
+      width: double.infinity,
+      color: ColorPerseus.pink,
+      child: Row(
+        children: [
+          Expanded(
+            child: Center(
+              child: Text(
+                context.l10n.offline,
+                style: const TextStyle(color: Colors.white),
+              ),
+            ),
+          ),
+          // Icon(Icons.refresh)
+        ],
+      ),
+    );
   }
 }

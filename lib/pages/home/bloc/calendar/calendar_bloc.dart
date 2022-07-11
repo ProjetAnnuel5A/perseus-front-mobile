@@ -7,6 +7,7 @@ import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:hive/hive.dart';
 import 'package:perseus_front_mobile/common/error/exceptions.dart';
 import 'package:perseus_front_mobile/common/secure_storage.dart';
+import 'package:perseus_front_mobile/model/dto/offline_dto.dart';
 import 'package:perseus_front_mobile/model/workout.dart';
 import 'package:perseus_front_mobile/repositories/workout_repository.dart';
 import 'package:socket_io_client/socket_io_client.dart';
@@ -28,6 +29,7 @@ class CalendarBloc extends Bloc<CalendarEvent, CalendarState> {
           workouts: workouts,
           format: calendarFormat,
           selectDay: selectedDay,
+          isOffline: isOffline,
         ),
       );
     });
@@ -41,6 +43,7 @@ class CalendarBloc extends Bloc<CalendarEvent, CalendarState> {
           workouts: workouts,
           format: calendarFormat,
           selectDay: selectedDay,
+          isOffline: isOffline,
         ),
       );
     });
@@ -75,6 +78,7 @@ class CalendarBloc extends Bloc<CalendarEvent, CalendarState> {
 
         if (e is HttpException) {
           if (e is CommunicationTimeoutException && workoutsBox.isNotEmpty) {
+            isOffline = true;
             final cachedWorkouts = getCachedWorkouts(workoutsBox);
 
             workouts = cachedWorkouts;
@@ -83,11 +87,57 @@ class CalendarBloc extends Bloc<CalendarEvent, CalendarState> {
               CalendarLoaded(
                 workouts: cachedWorkouts,
                 selectDay: DateTime.now(),
+                isOffline: true,
               ),
             );
 
             return;
           }
+          emit(CalendarError(e));
+        } else {
+          emit(CalendarError(ExceptionUnknown()));
+        }
+      }
+    });
+
+    on<SaveOfflineWorkouts>((event, emit) async {
+      emit(CalendarLoading());
+      final workoutsBox = await Hive.openBox<String>('workouts');
+
+      try {
+        final cachedWorkouts = getCachedWorkouts(workoutsBox);
+        // final workoutsJson = workoutsBox.get('data');
+        final workouts =
+            await _workoutRepository.saveOfflineWorkouts(cachedWorkouts);
+
+        isOffline = false;
+        emit(CalendarLoaded(workouts: workouts, selectDay: selectedDay));
+      } catch (e) {
+        // print(e.toString());
+
+        if (e is HttpException) {
+          emit(CalendarError(e));
+        } else {
+          emit(CalendarError(ExceptionUnknown()));
+        }
+      }
+    });
+
+    on<ReloadCache>((event, emit) async {
+      emit(CalendarLoading());
+      final workoutsBox = await Hive.openBox<String>('workouts');
+
+      try {
+        final cachedWorkouts = getCachedWorkouts(workoutsBox);
+        emit(
+          CalendarLoaded(
+            workouts: cachedWorkouts,
+            selectDay: selectedDay,
+            isOffline: true,
+          ),
+        );
+      } catch (e) {
+        if (e is HttpException) {
           emit(CalendarError(e));
         } else {
           emit(CalendarError(ExceptionUnknown()));
@@ -105,6 +155,7 @@ class CalendarBloc extends Bloc<CalendarEvent, CalendarState> {
     Emitter<CalendarState> emit,
   ) async {
     emit(CalendarLoading());
+    isOffline = false;
 
     final workoutsBox = await Hive.openBox<String>('workouts');
 
@@ -126,12 +177,17 @@ class CalendarBloc extends Bloc<CalendarEvent, CalendarState> {
 
       if (e is HttpException) {
         if (e is CommunicationTimeoutException && workoutsBox.isNotEmpty) {
-          final cachedWorkouts = getCachedWorkouts(workoutsBox);
+          isOffline = true;
 
+          final cachedWorkouts = getCachedWorkouts(workoutsBox);
           workouts = cachedWorkouts;
 
           emit(
-            CalendarLoaded(workouts: cachedWorkouts, selectDay: DateTime.now()),
+            CalendarLoaded(
+              workouts: cachedWorkouts,
+              selectDay: DateTime.now(),
+              isOffline: true,
+            ),
           );
 
           return;
@@ -175,7 +231,7 @@ class CalendarBloc extends Bloc<CalendarEvent, CalendarState> {
     List<Workout> workouts,
     Box<String> workoutsBox,
   ) async {
-    final workoutsJson = jsonEncode(workouts);
+    final workoutsJson = OfflineDto(workouts).toJson();
     await workoutsBox.put('data', workoutsJson);
   }
 
@@ -189,12 +245,12 @@ class CalendarBloc extends Bloc<CalendarEvent, CalendarState> {
       return [];
     }
 
-    final workoutsMap = jsonDecode(workoutsJson) as List<dynamic>;
+    final data = jsonDecode(workoutsJson) as Map<String, dynamic>;
+    final workoutsMap = data['workouts'] as List<dynamic>;
 
-    for (final workoutJson in workoutsMap) {
-      final workoutMap =
-          json.decode(workoutJson as String) as Map<String, dynamic>;
-      final workout = Workout.fromMapJson(workoutMap);
+    for (final workoutMapDynamic in workoutsMap) {
+      final workoutMap = workoutMapDynamic as Map<String, dynamic>;
+      final workout = Workout.fromMap(workoutMap);
       cachedWorkouts.add(workout);
     }
 
@@ -221,4 +277,6 @@ class CalendarBloc extends Bloc<CalendarEvent, CalendarState> {
   DateTime lastDay = DateTime.fromMillisecondsSinceEpoch(0);
 
   List<Workout> workouts = [];
+
+  bool isOffline = false;
 }

@@ -49,28 +49,37 @@ class ProfileView extends StatelessWidget {
 
               return ListView(
                 shrinkWrap: true,
-                padding: const EdgeInsets.all(20),
                 children: [
-                  _profilePicture(context),
-                  _profileInformationsTitle(context),
-                  Form(
-                    key: _formKey,
-                    child: Column(
-                      children: <Widget>[
-                        Text(l10n.mainInformations),
-                        _usernameField(context, profile.username),
-                        _emailField(context, profile.email),
-                        const SizedBox(height: 20),
-                        Text(l10n.additionalInformations),
-                        _heightField(context, profile),
-                        _weightField(context, profile),
-                        _birthDateField(context, profile),
-                        _levelField(context, profile),
-                        _objectiveField(context, profile),
-                        const SizedBox(height: 20),
-                        Text(l10n.availabilities),
-                        _availabilies(context, profile)
-                      ],
+                  if (state.isOffline == true) _offlineBanner(context),
+                  Padding(
+                    padding: const EdgeInsets.all(20),
+                    child: _profilePicture(context),
+                  ),
+                  Padding(
+                    padding: const EdgeInsets.all(20),
+                    child: _profileInformationsTitle(context),
+                  ),
+                  Padding(
+                    padding: const EdgeInsets.all(20),
+                    child: Form(
+                      key: _formKey,
+                      child: Column(
+                        children: <Widget>[
+                          Text(l10n.mainInformations),
+                          _usernameField(context, profile.username),
+                          _emailField(context, profile.email),
+                          const SizedBox(height: 20),
+                          Text(l10n.additionalInformations),
+                          _heightField(context, profile),
+                          _weightField(context, profile),
+                          _birthDateField(context, profile),
+                          _levelField(context, profile),
+                          _objectiveField(context, profile),
+                          const SizedBox(height: 20),
+                          Text(l10n.availabilities),
+                          _availabilies(context, profile)
+                        ],
+                      ),
                     ),
                   ),
                   _validateButton(context, profile)
@@ -149,6 +158,7 @@ class ProfileView extends StatelessWidget {
           return null;
         },
         decoration: InputDecoration(
+          errorMaxLines: 4,
           border: const OutlineInputBorder(),
           labelText: l10n.email,
         ),
@@ -176,6 +186,7 @@ class ProfileView extends StatelessWidget {
           return null;
         },
         decoration: InputDecoration(
+          errorMaxLines: 4,
           border: const OutlineInputBorder(),
           labelText: l10n.username,
         ),
@@ -268,6 +279,7 @@ class ProfileView extends StatelessWidget {
           FilteringTextInputFormatter.digitsOnly
         ],
         decoration: InputDecoration(
+          errorMaxLines: 4,
           border: const OutlineInputBorder(),
           labelText: '${l10n.height}(cm)',
         ),
@@ -291,6 +303,10 @@ class ProfileView extends StatelessWidget {
             return context.l10n.validNumber;
           }
 
+          if (value.contains(',')) {
+            value = value.replaceAll(',', '.');
+          }
+
           final number = double.parse(value);
 
           if (number > 250 || number < 100) {
@@ -301,6 +317,10 @@ class ProfileView extends StatelessWidget {
         },
         initialValue: weight,
         onChanged: (String newValue) {
+          if (newValue.contains(',')) {
+            newValue = newValue.replaceAll(',', '.');
+          }
+
           context.read<ProfileBloc>().add(
                 WeightChanged(profile, double.parse(newValue)),
               );
@@ -308,6 +328,7 @@ class ProfileView extends StatelessWidget {
         autovalidateMode: AutovalidateMode.onUserInteraction,
         keyboardType: const TextInputType.numberWithOptions(decimal: true),
         decoration: InputDecoration(
+          errorMaxLines: 4,
           border: const OutlineInputBorder(),
           labelText: '${l10n.weight}(kg)',
         ),
@@ -328,6 +349,7 @@ class ProfileView extends StatelessWidget {
           }
         },
         decoration: InputDecoration(
+          errorMaxLines: 4,
           border: const OutlineInputBorder(),
           labelText: l10n.level,
         ),
@@ -356,6 +378,7 @@ class ProfileView extends StatelessWidget {
           }
         },
         decoration: InputDecoration(
+          errorMaxLines: 4,
           border: const OutlineInputBorder(),
           labelText: l10n.objective,
         ),
@@ -423,7 +446,19 @@ class ProfileView extends StatelessWidget {
             child: CupertinoButton.filled(
               disabledColor: CupertinoColors.inactiveGray,
               onPressed: () {
-                if (_formKey.currentState!.validate()) {
+                if (state.isOffline) {
+                  final snackBarForm = SnackBar(
+                    backgroundColor: ColorPerseus.blue,
+                    content: Text(context.l10n.offlineProfile),
+                    action: SnackBarAction(
+                      label: context.l10n.close,
+                      textColor: ColorPerseus.pink,
+                      onPressed: () {},
+                    ),
+                  );
+
+                  ScaffoldMessenger.of(context).showSnackBar(snackBarForm);
+                } else if (_formKey.currentState!.validate()) {
                   context.read<ProfileBloc>().add(
                         ProfileUpdate(profile),
                       );
@@ -525,5 +560,28 @@ class ProfileView extends StatelessWidget {
     }
 
     return context.l10n.unknownException;
+  }
+
+  Widget _offlineBanner(BuildContext context) {
+    return Container(
+      height: 40,
+      width: double.infinity,
+      color: ColorPerseus.pink,
+      child: Padding(
+        padding: const EdgeInsets.symmetric(horizontal: 15),
+        child: Row(
+          children: [
+            Expanded(
+              child: Center(
+                child: Text(
+                  context.l10n.offline,
+                  style: const TextStyle(color: Colors.white),
+                ),
+              ),
+            ),
+          ],
+        ),
+      ),
+    );
   }
 }

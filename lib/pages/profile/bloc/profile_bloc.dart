@@ -35,8 +35,8 @@ class ProfileBloc extends Bloc<ProfileEvent, ProfileState> {
               final profileJson = profileBox.get('data');
               if (profileJson != null) {
                 final profileCached = Profile.fromJson(profileJson);
-                emit(ProfileLoaded(profileCached));
-                
+                emit(ProfileLoaded(profileCached, isOffline: true));
+
                 return;
               }
             }

@@ -1,7 +1,10 @@
+import 'dart:convert';
+
 import 'package:bloc/bloc.dart';
 import 'package:equatable/equatable.dart';
 import 'package:hive/hive.dart';
 import 'package:perseus_front_mobile/common/error/exceptions.dart';
+import 'package:perseus_front_mobile/model/dto/offline_dto.dart';
 import 'package:perseus_front_mobile/model/exercise.dart';
 import 'package:perseus_front_mobile/model/set.dart';
 import 'package:perseus_front_mobile/model/workout.dart';
@@ -35,8 +38,15 @@ class SetBloc extends Bloc<SetEvent, SetState> {
           if (e is CommunicationTimeoutException && setBox.isNotEmpty) {
             final setJson = setBox.get('data');
             if (setJson != null) {
+              isOffline = true;
               final setCached = Set.fromJson(setJson);
-              emit(SetLoaded(setCached));
+
+              emit(
+                SetLoaded(
+                  setCached,
+                  isOffline: true,
+                ),
+              );
 
               return;
             }
@@ -48,8 +58,69 @@ class SetBloc extends Bloc<SetEvent, SetState> {
       }
     });
 
+    List<Workout> getCachedWorkouts(
+      Box<String> workoutsBox,
+    ) {
+      final cachedWorkouts = <Workout>[];
+      final workoutsJson = workoutsBox.get('data');
+
+      if (workoutsJson == null) {
+        return [];
+      }
+
+      final data = jsonDecode(workoutsJson) as Map<String, dynamic>;
+      final workoutsMap = data['workouts'] as List<dynamic>;
+
+      for (final workoutMapDynamic in workoutsMap) {
+        final workoutMap = workoutMapDynamic as Map<String, dynamic>;
+        final workout = Workout.fromMap(workoutMap);
+        cachedWorkouts.add(workout);
+      }
+
+      return cachedWorkouts;
+    }
+
+    Future<Set?> validateSetOffline(
+      String setId,
+      List<Exercise> exercises,
+    ) async {
+      final workoutsBox = await Hive.openBox<String>('workouts');
+      final cachedWorkouts = getCachedWorkouts(workoutsBox);
+      var i = 0;
+      Set? currentSet;
+
+      for (final cachedWorkout in cachedWorkouts) {
+        for (final cachedSet in cachedWorkout.sets) {
+          if (cachedSet.id == setId) {
+            currentSet = cachedSet.copyWith(
+              isValided: true,
+              validedAt: DateTime.now(),
+              exercises: exercises,
+            );
+
+            final sets = cachedWorkout.sets;
+            sets[i] = currentSet;
+
+            cachedWorkout.copyWith(sets: sets);
+
+            final data = OfflineDto(cachedWorkouts).toJson();
+            // final workoutsJson = jsonEncode(cachedWorkouts);
+            await workoutsBox.put('data', data);
+
+            return currentSet;
+          }
+
+          i++;
+        }
+        i = 0;
+      }
+
+      return currentSet;
+    }
+
     on<ValidateSet>((event, emit) async {
       emit(SetLoading());
+      final setBox = await Hive.openBox<String>('set${set.id}');
 
       try {
         final set =
@@ -59,6 +130,26 @@ class SetBloc extends Bloc<SetEvent, SetState> {
         // print(e.toString());
 
         if (e is HttpException) {
+          if (e is CommunicationTimeoutException && setBox.isNotEmpty) {
+            final setJson = setBox.get('data');
+            if (setJson != null) {
+              isOffline = true;
+
+              final cachedSetUpdated =
+                  await validateSetOffline(set.id, event.exercises);
+
+              emit(
+                SetLoaded(
+                  cachedSetUpdated!,
+                  isOffline: true,
+                ),
+              );
+
+              // todo calendarbloc emit started
+
+              return;
+            }
+          }
           emit(SetError(e));
         } else {
           emit(SetError(ExceptionUnknown()));
@@ -66,12 +157,13 @@ class SetBloc extends Bloc<SetEvent, SetState> {
       }
     });
 
-    on<IncrementRepetition>((event, emit) {
+    on<IncrementRepetition>((event, emit) async {
       event.set.exercises[event.index].repetition++;
 
       emit(
         SetLoaded(
           event.set,
+          isOffline: isOffline,
         ),
       );
     });
@@ -82,6 +174,7 @@ class SetBloc extends Bloc<SetEvent, SetState> {
       emit(
         SetLoaded(
           event.set,
+          isOffline: isOffline,
         ),
       );
     });
@@ -92,6 +185,7 @@ class SetBloc extends Bloc<SetEvent, SetState> {
       emit(
         SetLoaded(
           event.set,
+          isOffline: isOffline,
         ),
       );
     });
@@ -102,6 +196,7 @@ class SetBloc extends Bloc<SetEvent, SetState> {
       emit(
         SetLoaded(
           event.set,
+          isOffline: isOffline,
         ),
       );
     });
@@ -113,4 +208,6 @@ class SetBloc extends Bloc<SetEvent, SetState> {
   final SetRepository _setRepository;
 
   List<Workout> previousWorkout = [];
+
+  bool isOffline = false;
 }

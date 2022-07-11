@@ -15,12 +15,14 @@ class CalendarLoaded extends CalendarState {
   const CalendarLoaded({
     this.workouts = const [],
     this.format = CalendarFormat.week,
+    this.isOffline = false,
     required this.selectDay,
   });
   final List<Workout> workouts;
 
   final CalendarFormat format;
   final DateTime selectDay;
+  final bool isOffline;
 
   @override
   List<Object> get props => [workouts, format, selectDay];

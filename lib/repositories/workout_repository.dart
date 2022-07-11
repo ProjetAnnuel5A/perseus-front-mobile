@@ -5,6 +5,8 @@ import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:perseus_front_mobile/common/error/exceptions.dart';
 import 'package:perseus_front_mobile/common/interceptor/jwt_interceptor.dart';
 import 'package:perseus_front_mobile/common/secure_storage.dart';
+import 'package:perseus_front_mobile/model/dto/offline_dto.dart';
+import 'package:perseus_front_mobile/model/set.dart';
 import 'package:perseus_front_mobile/model/workout.dart';
 
 class WorkoutRepository {
@@ -125,6 +127,51 @@ class WorkoutRepository {
 
       if (response.statusCode == 200 && response.data != null) {
         return;
+      }
+    } catch (e, stackTrace) {
+      if (e is DioError && e.response != null) {
+        switch (e.response!.statusCode) {
+          case 404:
+            throw NotFoundException(stackTrace);
+        }
+      }
+    }
+
+    throw InternalServerException(StackTrace.current);
+  }
+
+  Future<List<Workout>> saveOfflineWorkouts(List<Workout> workoutsCached) async {
+    await checkToken();
+
+    final sets = <Set>[];
+
+    for (final workoutCached in workoutsCached) {
+      for (final set in workoutCached.sets) {
+        sets.add(set);
+      }
+    }
+
+    final data = OfflineDto(workoutsCached).toJson();
+
+    try {
+      final response = await _dio.post<String>(
+        '$_baseUrl/v1/workouts/offlineWorkouts/',
+        data: data,
+      );
+
+      if (response.statusCode == 200 ||
+          response.statusCode == 201 && response.data != null) {
+        final workouts = <Workout>[];
+        final dataList = jsonDecode(response.data!) as List;
+
+        for (final element in dataList) {
+          final map = element as Map<String, dynamic>;
+          final workout = Workout.fromMap(map);
+
+          workouts.add(workout);
+        }
+
+        return workouts;
       }
     } catch (e, stackTrace) {
       if (e is DioError && e.response != null) {

@@ -9,8 +9,13 @@ class SetInitial extends SetState {}
 class SetLoading extends SetState {}
 
 class SetLoaded extends SetState {
-  const SetLoaded(this.set);
+  SetLoaded(
+    this.set, {
+    this.isOffline = false,
+  });
+  
   final Set set;
+  bool isOffline;
 }
 
 class SetError extends SetState {

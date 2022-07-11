@@ -98,6 +98,7 @@ class RegisterView extends StatelessWidget {
           return null;
         },
         decoration: InputDecoration(
+          errorMaxLines: 3,
           border: const OutlineInputBorder(),
           labelText: l10n.email,
         ),
@@ -125,6 +126,7 @@ class RegisterView extends StatelessWidget {
           return null;
         },
         decoration: InputDecoration(
+          errorMaxLines: 6,
           border: const OutlineInputBorder(),
           labelText: l10n.username,
         ),
@@ -153,6 +155,7 @@ class RegisterView extends StatelessWidget {
           return null;
         },
         decoration: InputDecoration(
+          errorMaxLines: 6,
           border: const OutlineInputBorder(),
           labelText: l10n.password,
         ),
@@ -178,6 +181,7 @@ class RegisterView extends StatelessWidget {
           return null;
         },
         decoration: InputDecoration(
+          errorMaxLines: 3,
           border: const OutlineInputBorder(),
           labelText: l10n.confirmation,
         ),
