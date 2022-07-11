@@ -14,16 +14,11 @@ class SettingsPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return MultiBlocProvider(
-      providers: [
-        BlocProvider(
-          create: (_) => SettingsBloc(
-            context.read<AuthBloc>(),
-            context.read<ProfileRepository>(),
-          ),
-        ),
-        // BlocProvider.value(value: BlocProvider.of<AuthBloc>(context))
-      ],
+    return BlocProvider(
+      create: (_) => SettingsBloc(
+        context.read<AuthBloc>(),
+        context.read<ProfileRepository>(),
+      ),
       child: const SettingsView(),
     );
   }
