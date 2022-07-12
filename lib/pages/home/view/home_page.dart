@@ -599,7 +599,7 @@ class HomeView extends StatelessWidget {
               icon: const Icon(Icons.save),
               color: Colors.white,
               onPressed: () {
-                context.read<CalendarBloc>().add(SaveOfflineWorkouts());
+                saveOfflineConfirmation(context);
               },
             ),
             Expanded(
@@ -614,12 +614,75 @@ class HomeView extends StatelessWidget {
               icon: const Icon(Icons.refresh),
               color: Colors.white,
               onPressed: () {
+                resetOfflineConfirmation(context);
                 context.read<CalendarBloc>().add(ReloadCache());
               },
             ),
           ],
         ),
       ),
+    );
+  }
+
+  Future<String?> saveOfflineConfirmation(
+    BuildContext blocContext,
+  ) {
+    return showCupertinoDialog<String>(
+      context: blocContext,
+      builder: (context) {
+        return CupertinoAlertDialog(
+          title: Text(context.l10n.confirmation),
+          content: Text(
+            context.l10n.syncConfirmation,
+          ),
+          actions: [
+            CupertinoDialogAction(
+              child: Text(context.l10n.no),
+              onPressed: () {
+                Navigator.of(context).pop();
+              },
+            ),
+            CupertinoDialogAction(
+              child: Text(context.l10n.yes),
+              onPressed: () {
+                context.read<CalendarBloc>().add(SaveOfflineWorkouts());
+                Navigator.of(context).pop();
+              },
+            )
+          ],
+        );
+      },
+    );
+  }
+
+  Future<String?> resetOfflineConfirmation(
+    BuildContext blocContext,
+  ) {
+    return showCupertinoDialog<String>(
+      context: blocContext,
+      builder: (context) {
+        return CupertinoAlertDialog(
+          title: Text(context.l10n.confirmation),
+          content: Text(
+            context.l10n.resetConfirmation,
+          ),
+          actions: [
+            CupertinoDialogAction(
+              child: Text(context.l10n.no),
+              onPressed: () {
+                Navigator.of(context).pop();
+              },
+            ),
+            CupertinoDialogAction(
+              child: Text(context.l10n.yes),
+              onPressed: () {
+                blocContext.read<CalendarBloc>().add(CalendarStarted());
+                Navigator.of(context).pop();
+              },
+            )
+          ],
+        );
+      },
     );
   }
 }

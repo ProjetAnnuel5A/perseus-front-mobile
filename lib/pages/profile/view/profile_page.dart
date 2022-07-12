@@ -261,7 +261,7 @@ class ProfileView extends StatelessWidget {
           }
 
           final number = int.parse(value);
-          if (number > 250 || number < 0) {
+          if (number > 250 || number < 100) {
             return context.l10n.validWeight;
           }
 
@@ -309,7 +309,7 @@ class ProfileView extends StatelessWidget {
 
           final number = double.parse(value);
 
-          if (number > 250 || number < 100) {
+          if (number > 250 || number < 40) {
             return context.l10n.validWeight;
           }
 

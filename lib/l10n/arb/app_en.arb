@@ -27,7 +27,7 @@
     "close": "Close",
     "validEmail": "Please enter a valid Email",
     "validUsername": "Please enter a valid Username\n- must not exist\n- must have more than 5 characters and less than 29 characters",
-    "validPassword": "Please enter a valid Password\n- must have more than 8 characters\n- contains both digits and letters",
+    "validPassword": "Please enter a valid Password\n- must have more than 8 characters\n- must contains both digits and letters, a capital letter and a special character",
     "password": "Password",
     "confirmPassword": "Please confirm your password",
     "confirmation": "Confirmation",
@@ -88,5 +88,8 @@
     "formValid": "The form isn't valid",
     "informations": "Informations",
     "offline": "You are offline.",
-    "offlineProfile": "You can't update your profile while being offline."
+    "offlineProfile": "You can't update your profile while being offline.",
+    "firstBootDialog": "This application works in symbiosis with the web application.\nOnce your profile is completed, don't forget to generate your program on the web interface",
+    "resetConfirmation": "Do you want to try to reconnect to the internet ? (Your offline data will not be synced)",
+    "syncConfirmation": "Do you want to synchronize your data and reconnect ?"
 }

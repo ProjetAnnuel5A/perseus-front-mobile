@@ -27,7 +27,7 @@
     "close": "Fermer",
     "validEmail": "S'il vous plait entrez une addresse email valide",
     "validUsername": "S'il vous plait entrez un pseudo valide\n- Le pseudo ne doit pas déjà exister\n- Le pseudo doit avoir entre 5 caractères et 29 caractères",
-    "validPassword": "S'il vous plait entrez un mot de passe valide\n- 8 caractères ou plus \n- contenir des chiffres, des lettres et un caractère spécial",
+    "validPassword": "S'il vous plait entrez un mot de passe valide\n- 8 caractères ou plus \n- doit contenir des chiffres, des lettres, une majuscule et un caractère spécial",
     "password": "Mot de passe",
     "confirmPassword": "S'il vous plait confirmez votre mot de passe",
     "confirmation": "Confirmation",
@@ -88,5 +88,8 @@
     "formValid": "Le formulaire n'est pas valide",
     "informations": "Informations",
     "offline": "Vous êtes hors ligne.",
-    "offlineProfile": "Vous ne pouvez pas mettre à jour votre profile quand vous êtes hors ligne."
+    "offlineProfile": "Vous ne pouvez pas mettre à jour votre profile quand vous êtes hors ligne.",
+    "firstBootDialog": "Cette application fonctionne en symbiose avec l'application web.\nUne fois votre profil rempli n'oubliez pas de generer votre programme sur l'interface web.",
+    "resetConfirmation": "Voulez vous essayer de vous reconnecter à internet ? (Vos données hors ligne ne seront pas synchronisées)",
+    "syncConfirmation": "Voulez vous synchroniser vos données et vous reconnecter ?"
 }

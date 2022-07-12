@@ -18,8 +18,8 @@ class SetRepository {
 
   final Dio _dio = Dio(
     BaseOptions(
-      connectTimeout: 3000,
-      receiveTimeout: 3000,
+      connectTimeout: 6000,
+      receiveTimeout: 6000,
     ),
   );
   final _storage = SecureStorage();

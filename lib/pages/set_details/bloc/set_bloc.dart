@@ -153,8 +153,6 @@ class SetBloc extends Bloc<SetEvent, SetState> {
               ),
             );
 
-            // todo calendarbloc emit started
-
             return;
           }
           emit(SetError(e));

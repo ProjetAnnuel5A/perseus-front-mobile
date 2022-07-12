@@ -247,17 +247,12 @@ class LoginView extends StatelessWidget {
   Future<String?> applicationInformations(
     BuildContext blocContext,
   ) {
-    // TODO DESC + TRAD
     return showCupertinoDialog<String>(
       context: blocContext,
       builder: (context) {
         return CupertinoAlertDialog(
           title: Text(context.l10n.informations),
-          content: const Text(
-            "Cette application fonctionne en symbiose avec l'application web.\n"
-            'Une fois votre profil rempli, '
-            "n'oubliez pas de generer votre programme sur l'interface web.",
-          ),
+          content: Text(context.l10n.firstBootDialog),
           actions: [
             CupertinoDialogAction(
               child: Text(context.l10n.close),
